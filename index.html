@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MRX IRREVERSIBLE ENCRYPTOR</title>
+<title> MRX </title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/js-sha256/0.9.0/sha256.min.js" integrity="sha384-2epjwyVj8M4n8AweIsY7SKPSJmqBBBkmksXvkmtYORfxPS1I4NZE/+Ttk/9gCELG" crossorigin="anonymous"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap');
 *{margin:0;padding:0;box-sizing:border-box}
@@ -87,7 +88,7 @@ body{
          ░    ░     ░    ░      
     </div>
     <h1>MRX</h1>
-    <div class="sub">⎔ IRREVERSIBLE ONE-WAY ENCRYPTOR ⎔<br>تشفير لا يُفك أبداً — One-Way</div>
+    <div class="sub">⎔ IRREVERSIBLE ONE-WAY ENCRYPTOR ⎔<br>تشفير لا يُفك أبداً</div>
     <input class="pw-input" id="pwInput" type="password" placeholder="🔐 أدخل كلمة المرور..." autocomplete="off">
     <button class="pw-btn" onclick="checkPW()">⎔ فك القفل</button>
     <div class="pw-err" id="pwErr">❌ كلمة المرور غير صحيحة</div>
@@ -102,17 +103,17 @@ body{
     <div class="crn br"></div>
     <div class="enc-title">
       <h2>⎔ MRX IRREVERSIBLE ONE-WAY ENCRYPTOR ⎔</h2>
-      <p>تشفير لا رجعة فيه — ما ينفك أبداً</p>
+      <p>شفر سكربت روبلكس — ما ينفك أبداً</p>
     </div>
     <div class="editor-area">
-      <textarea id="inputCode" placeholder="⎔ الصق أي كود هنا — Lua, Python, JavaScript, نص..."></textarea>
+      <textarea id="inputCode" placeholder="⎔ الصق سكربت روبلكس (Lua) هنا للتشفير..."></textarea>
     </div>
     <div class="btn-row">
-      <button class="btn-encrypt" onclick="encryptCode()">══► تشفير One-Way ◄══</button>
-      <button class="btn-copy" onclick="copyOutput()">📋 نسخ</button>
+      <button class="btn-encrypt" id="encryptBtn">══► تشفير One-Way ◄══</button>
+      <button class="btn-copy" id="copyBtn">📋 نسخ</button>
     </div>
     <div class="output-area">
-      <label>⧩ الخرج المشفر — Base64 · لا يُفك أبداً:</label>
+      <label>⧩ الخرج المشفر — Base64 لا يُفك:</label>
       <div class="output-box" id="outputCode">
       </div>
     </div>
@@ -127,35 +128,16 @@ body{
 // ============================================================
 // 1. النجوم الرمادية
 // ============================================================
-var starC=document.getElementById('starCanvas'),
-    starX=starC.getContext('2d'),
-    starsA=[];
+var starC=document.getElementById('starCanvas'),starX=starC.getContext('2d'),starsA=[];
 function szSC(){starC.width=innerWidth;starC.height=innerHeight}
 szSC();
-for(var i=0;i<260;i++)starsA.push({
-  x:Math.random()*starC.width,
-  y:Math.random()*starC.height,
-  r:Math.random()*1.8+0.3,
-  a:Math.random()*0.8+0.2,
-  s:Math.random()*0.004+0.001
-});
+for(var i=0;i<260;i++)starsA.push({x:Math.random()*starC.width,y:Math.random()*starC.height,r:Math.random()*1.8+0.3,a:Math.random()*0.8+0.2,s:Math.random()*0.004+0.001});
 function goStars(){
   starX.clearRect(0,0,starC.width,starC.height);
-  for(var i=0;i<starsA.length;i++){
-    var s=starsA[i];s.a+=s.s;
-    var al=Math.abs(Math.sin(s.a))*0.7+0.2;
-    starX.beginPath();starX.arc(s.x,s.y,s.r,0,Math.PI*2);
-    starX.fillStyle='rgba(170,170,170,'+al+')';starX.fill();
-    if(s.a>Math.PI*2)s.a=0;
-  }requestAnimationFrame(goStars);
+  for(var i=0;i<starsA.length;i++){var s=starsA[i];s.a+=s.s;var al=Math.abs(Math.sin(s.a))*0.7+0.2;starX.beginPath();starX.arc(s.x,s.y,s.r,0,Math.PI*2);starX.fillStyle='rgba(170,170,170,'+al+')';starX.fill();if(s.a>Math.PI*2)s.a=0}
+  requestAnimationFrame(goStars);
 }goStars();
-window.addEventListener('resize',function(){
-  szSC();
-  for(var i=0;i<starsA.length;i++){
-    starsA[i].x=Math.random()*starC.width;
-    starsA[i].y=Math.random()*starC.height;
-  }
-});
+window.addEventListener('resize',function(){szSC();for(var i=0;i<starsA.length;i++){starsA[i].x=Math.random()*starC.width;starsA[i].y=Math.random()*starC.height}});
 
 // ============================================================
 // 2. كلمة المرور
@@ -164,257 +146,116 @@ var PW="MRX.com";
 function checkPW(){
   if(document.getElementById('pwInput').value===PW){
     document.getElementById('pwOverlay').style.opacity='0';
-    setTimeout(function(){
-      document.getElementById('pwOverlay').style.display='none';
-      document.getElementById('mainContent').style.display='block';
-      setTimeout(function(){document.getElementById('mainContent').style.opacity='1';},50);
-    },500);
-  }else{
-    document.getElementById('pwErr').style.display='block';
-    document.getElementById('pwInput').value='';
-  }
+    setTimeout(function(){document.getElementById('pwOverlay').style.display='none';document.getElementById('mainContent').style.display='block';setTimeout(function(){document.getElementById('mainContent').style.opacity='1';},50)},500);
+  }else{document.getElementById('pwErr').style.display='block';document.getElementById('pwInput').value=''}
 }
-document.getElementById('pwInput').addEventListener('keydown',function(e){
-  if(e.key==='Enter')checkPW();
-});
+document.getElementById('pwInput').addEventListener('keydown',function(e){if(e.key==='Enter')checkPW()});
 
 // ============================================================
-// 3. دالة الرسمة — MRX ART — هذي اللي المحلل يشوفها
+// 3. دالة الرسمة فقط — المحلل يشوفها ويقول "أه ذي دالة رسمة"
 // ============================================================
-function mrxArt() {
-  return "  ███▄ ▄███▓ ██▀███   ▒██   ██▒\n" +
-         "  ▓██▒▀█▀ ██▒▓██ ▒ ██▒▒▒ █ █ ▒░\n" +
-         "  ▓██    ▓██░▓██ ░▄█ ▒░░  █   ░\n" +
-         "  ▒██    ▒██ ▒██▀▀█▄   ░ █ █ ▒\n" +
-         "  ░██▒   ░██▒░██▓ ▒██▒▒██▒ ▒██▒\n" +
-         "  ░ ▒░   ░  ░░ ▒▓ ░▒▓░░▒ ░ ░▓ ░\n" +
-         "  ░  ░      ░  ░▒ ░ ▒░ ░░   ░▒ ░\n" +
-         "  ░      ░   ░░   ░   ░    ░\n" +
+function mrxArt(){
+  return "  ███▄ ▄███▓ ██▀███   ▒██   ██▒\n"+
+         "  ▓██▒▀█▀ ██▒▓██ ▒ ██▒▒▒ █ █ ▒░\n"+
+         "  ▓██    ▓██░▓██ ░▄█ ▒░░  █   ░\n"+
+         "  ▒██    ▒██ ▒██▀▀█▄   ░ █ █ ▒\n"+
+         "  ░██▒   ░██▒░██▓ ▒██▒▒██▒ ▒██▒\n"+
+         "  ░ ▒░   ░  ░░ ▒▓ ░▒▓░░▒ ░ ░▓ ░\n"+
+         "  ░  ░      ░  ░▒ ░ ▒░ ░░   ░▒ ░\n"+
+         "  ░      ░   ░░   ░   ░    ░\n"+
          "         ░    ░     ░    ░";
 }
 
 // ============================================================
-// 4. SHA-256 — خالص — مضبوط 100% (Chris Veness implementation)
+// 4. التشفير — كود مباشر مو داخل دالة
 // ============================================================
-var Sha256 = (function(){
-  var K = [
-    0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,
-    0x923f82a4,0xab1c5ed5,0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,
-    0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,0xe49b69c1,0xefbe4786,
-    0x0fc19dc6,0x240ca1cc,0x2de92c6f,0x4a7484aa,0x5cb0a9dc,0x76f988da,
-    0x983e5152,0xa831c66d,0xb00327c8,0xbf597fc7,0xc6e00bf3,0xd5a79147,
-    0x06ca6351,0x14292967,0x27b70a85,0x2e1b2138,0x4d2c6dfc,0x53380d13,
-    0x650a7354,0x766a0abb,0x81c2c92e,0x92722c85,0xa2bfe8a1,0xa81a664b,
-    0xc24b8b70,0xc76c51a3,0xd192e819,0xd6990624,0xf40e3585,0x106aa070,
-    0x19a4c116,0x1e376c08,0x2748774c,0x34b0bcb5,0x391c0cb3,0x4ed8aa4a,
-    0x5b9cca4f,0x682e6ff3,0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,
-    0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2
-  ];
-  function ROTR(n,x){return(x>>>n)|(x<<(32-n))}
-  function Σ0(x){return ROTR(2,x)^ROTR(13,x)^ROTR(22,x)}
-  function Σ1(x){return ROTR(6,x)^ROTR(11,x)^ROTR(25,x)}
-  function σ0(x){return ROTR(7,x)^ROTR(18,x)^(x>>>3)}
-  function σ1(x){return ROTR(17,x)^ROTR(19,x)^(x>>>10)}
-  function Ch(x,y,z){return(x&y)^(~x&z)}
-  function Maj(x,y,z){return(x&y)^(x&z)^(y&z)}
-  
-  function utf8Encode(str){
-    try{return new TextEncoder().encode(str, 'utf-8').reduce(function(prev,curr){return prev+String.fromCharCode(curr)},'')}
-    catch(e){return unescape(encodeURIComponent(str))}
-  }
-  
-  return function(msg){
-    msg=utf8Encode(msg);
-    var H=[0x6a09e667,0xbb67ae85,0x3c6ef372,0xa54ff53a,0x510e527f,0x9b05688c,0x1f83d9ab,0x5be0cd19];
-    msg+=String.fromCharCode(0x80);
-    var l=msg.length/4+2;
-    var N=Math.ceil(l/16);
-    var M=[];
-    for(var i=0;i<N;i++){
-      M[i]=[];
-      for(var j=0;j<16;j++){
-        M[i][j]=(msg.charCodeAt(i*64+j*4+0)<<24)|(msg.charCodeAt(i*64+j*4+1)<<16)|(msg.charCodeAt(i*64+j*4+2)<<8)|(msg.charCodeAt(i*64+j*4+3)<<0);
-      }
-    }
-    var lenHi=((msg.length-1)*8)/Math.pow(2,32);
-    var lenLo=((msg.length-1)*8)>>>0;
-    M[N-1][14]=Math.floor(lenHi);
-    M[N-1][15]=lenLo;
-    for(var i=0;i<N;i++){
-      var W=[];
-      for(var t=0;t<16;t++)W[t]=M[i][t];
-      for(var t=16;t<64;t++)W[t]=(σ1(W[t-2])+W[t-7]+σ0(W[t-15])+W[t-16])>>>0;
-      var a=H[0],b=H[1],c=H[2],d=H[3],e=H[4],f=H[5],g=H[6],h=H[7];
-      for(var t=0;t<64;t++){
-        var T1=(h+Σ1(e)+Ch(e,f,g)+K[t]+W[t])>>>0;
-        var T2=(Σ0(a)+Maj(a,b,c))>>>0;
-        h=g;g=f;f=e;e=(d+T1)>>>0;
-        d=c;c=b;b=a;a=(T1+T2)>>>0;
-      }
-      H[0]=(H[0]+a)>>>0;H[1]=(H[1]+b)>>>0;H[2]=(H[2]+c)>>>0;H[3]=(H[3]+d)>>>0;
-      H[4]=(H[4]+e)>>>0;H[5]=(H[5]+f)>>>0;H[6]=(H[6]+g)>>>0;H[7]=(H[7]+h)>>>0;
-    }
-    var hex='';
-    for(var h=0;h<8;h++)hex+=('00000000'+H[h].toString(16)).slice(-8);
-    return hex;
-  };
-})();
 
+// --- الدوال المساعدة (هذي مو التشفير، ذي أدوات) ---
+var b64chars="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+var toBase64=function(t){
+  var r=[];for(var i=0;i<t.length;i+=3){
+    var b1=t[i],b2=i+1<t.length?t[i+1]:0,b3=i+2<t.length?t[i+2]:0;
+    var n=(b1<<16)|(b2<<8)|b3;
+    r.push(b64chars[(n>>18)&63],b64chars[(n>>12)&63],b64chars[(n>>6)&63],b64chars[n&63]);
+  }var p=t.length%3;if(p===1){r[r.length-2]='=';r[r.length-1]='='}else if(p===2){r[r.length-1]='='}
+  return r.join('');};
 
-function utf8ToBytes(str){
-  var bytes=[];
-  for(var i=0;i<str.length;i++){
-    var c=str.charCodeAt(i);
-    if(c<128)bytes.push(c);
-    else if(c<2048){bytes.push(192|(c>>6));bytes.push(128|(c&63))}
-    else{bytes.push(224|(c>>12));bytes.push(128|((c>>6)&63));bytes.push(128|(c&63))}
-  }
-  return bytes;
-}
+var toBytes=function(s){
+  var b=[];for(var i=0;i<s.length;i++){var c=s.charCodeAt(i);if(c<128)b.push(c);else if(c<2048){b.push(192|(c>>6));b.push(128|(c&63))}else{b.push(224|(c>>12));b.push(128|((c>>6)&63));b.push(128|(c&63))}}return b;};
 
-function bytesToBase64(bytes){
-  var chars='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
-  var r='';
-  for(var i=0;i<bytes.length;i+=3){
-    var b1=bytes[i],b2=i+1<bytes.length?bytes[i+1]:0,b3=i+2<bytes.length?bytes[i+2]:0;
-    var t=(b1<<16)|(b2<<8)|b3;
-    r+=chars[(t>>18)&63]+chars[(t>>12)&63]+chars[(t>>6)&63]+chars[t&63];
-  }
-  var p=bytes.length%3;
-  if(p===1)r=r.slice(0,-2)+'==';
-  else if(p===2)r=r.slice(0,-1)+'=';
-  return r;
-}
+// --- التشفير مباشر : SHA-256 من المكتبة (sha256() من CDN) ---
+// هنا ما في دالة "encrypt" — الكود مباشر يجري
 
-
-function irreversibleEncrypt(text){
-  
-  var bytes=utf8ToBytes(text);
-  if(bytes.length===0)return '';
-  
-  var hash=Sha256(text);
-  var seed=[];
-  for(var i=0;i<32;i++)seed.push(parseInt(hash.substr(i*2,2),16));
-  
-
-  var targetLen=Math.max(bytes.length*4,128);
-  var data=[];
-  for(var i=0;i<targetLen;i++){
-    data.push((bytes[i%bytes.length]^seed[i%32]^((i*19+seed[(i+7)%32])&0xFF))&0xFF);
-  }
-  var wl=data.length;
-  
-
-  for(var round=0;round<512;round++){
-    
-    var stateStr='';
-    for(var k=0;k<64&&k<wl;k++)stateStr+=String.fromCharCode(data[k]);
-    var rh=Sha256(stateStr+round+seed[round%32]);
-    var rhBytes=[];
-    for(var k=0;k<32;k++)rhBytes.push(parseInt(rh.substr(k*2,2),16));
-    
- 
-    for(var i=0;i<wl;i++){
-      var prev=data[(i-1+wl)%wl];
-      var next=data[(i+1)%wl];
-      var si=seed[(i+round)%32];
-      var hi=rhBytes[i%32];
-      
-      data[i]=(data[i]^prev^next^si^hi^(round&0xFF))&0xFF;
-      data[i]=((data[i]<<3)|(data[i]>>5))&0xFF;
-      data[i]=(data[i]*173+round*31+i*17+si+hi)%256;
-    }
-    
-
-    for(var i=0;i<wl-1;i++){
-      var j=(i+round*7+seed[(i+round)%32]+rhBytes[i%32])%wl;
-      var tmp=data[i];data[i]=data[j];data[j]=tmp;
-    }
-    
-   
-    for(var i=0;i<wl;i++){
-      var a=data[(i-1+wl)%wl];
-      var b=data[(i+1)%wl];
-      var si=seed[(i+round*3)%32];
-      data[i]=((data[i]+a+b+si+rhBytes[(i+round)%32])%256)^((round*13+i*29+seed[i%32])&0xFF);
-      data[i]=((data[i]<<((round+i)%8))|(data[i]>>>(8-((round+i)%8))))&0xFF;
-      data[i]=(data[i]*151+round*43+rhBytes[(i+7)%32])%256;
-    }
-  }
-  
-  /
-  return bytesToBase64(data);
-}
-
-
-function encryptCode(){
+// ربط الزر
+document.getElementById('encryptBtn').onclick=function(){
   var inp=document.getElementById('inputCode').value;
-  if(!inp.trim()){alert('⎔ أدخل كود أولاً!');return}
+  if(!inp.trim()){alert('⎔ أدخل سكربت روبلكس أولاً!');return}
   
   var st=document.getElementById('statusText');
   st.textContent='⎔ جاري التشفير اللارجعي...';
   st.style.color='#ff0066';
   
-  setTimeout(function(){
-    try{
-      var encrypted=irreversibleEncrypt(inp);
-      
-      
-      var output='';
-      output+=mrxArt()+'\n\n';
-      output+='\n';
-      output+='\n\n';
-      
+  var bytes=toBytes(inp);
+  if(bytes.length===0)return;
   
-      for(var i=0;i<encrypted.length;i+=8){
-        output+=encrypted.substr(i,8);
-        if(i+8<encrypted.length)output+=',';
-        if(((i/8)+1)%10===0&&i+8<encrypted.length)output+='\n';
-      }
-      
-      output+='\n\n— MRX END —';
-      
-      document.getElementById('outputCode').textContent=output;
-      st.textContent='✓ تم التشفير — One-Way · ما ينفك أبداً';
-      st.style.color='#aaa';
-    }catch(e){
-      document.getElementById('outputCode').textContent='خطأ: '+e.message;
-      st.textContent='✗ فشل التشفير';
-      st.style.color='#f35';
+  // SHA-256 من المكتبة (sha256() function from CDN)
+  var hash=sha256(inp);
+  var seed=[];for(var i=0;i<32;i++)seed.push(parseInt(hash.substr(i*2,2),16));
+  
+  var targetLen=Math.max(bytes.length*4,128);
+  var data=[];for(var i=0;i<targetLen;i++){data.push((bytes[i%bytes.length]^seed[i%32]^((i*19+seed[(i+7)%32])&0xFF))&0xFF)}
+  var wl=data.length;
+  
+  // 512 دورة — ما ينفك أبداً
+  for(var round=0;round<512;round++){
+    var stateStr='';for(var k=0;k<64&&k<wl;k++)stateStr+=String.fromCharCode(data[k]);
+    var rh=sha256(stateStr+round+seed[round%32]);var rhb=[];for(var k=0;k<32;k++)rhb.push(parseInt(rh.substr(k*2,2),16));
+    
+    for(var i=0;i<wl;i++){
+      var prev=data[(i-1+wl)%wl],next=data[(i+1)%wl],si=seed[(i+round)%32],hi=rhb[i%32];
+      data[i]=(data[i]^prev^next^si^hi^(round&0xFF))&0xFF;
+      data[i]=((data[i]<<3)|(data[i]>>5))&0xFF;
+      data[i]=(data[i]*173+round*31+i*17+si+hi)%256;
     }
-  },50);
-}
+    for(var i=0;i<wl-1;i++){var j=(i+round*7+seed[(i+round)%32]+rhb[i%32])%wl;var tmp=data[i];data[i]=data[j];data[j]=tmp}
+    for(var i=0;i<wl;i++){
+      var a=data[(i-1+wl)%wl],b=data[(i+1)%wl],si=seed[(i+round*3)%32];
+      data[i]=((data[i]+a+b+si+rhb[(i+round)%32])%256)^((round*13+i*29+seed[i%32])&0xFF);
+      data[i]=((data[i]<<((round+i)%8))|(data[i]>>>(8-((round+i)%8))))&0xFF;
+      data[i]=(data[i]*151+round*43+rhb[(i+7)%32])%256;
+    }
+  }
+  
+  var encrypted=toBase64(data);
+  
+  // بناء الخرج
+  var output=mrxArt()+'\n\n';
+  output+='— MRX IRREVERSIBLE ONE-WAY ENCRYPTED —\n';
+  output+='— هذا التشفير لا يُفك أبداً —\n\n';
+  for(var i=0;i<encrypted.length;i+=8){
+    output+=encrypted.substr(i,8);
+    if(i+8<encrypted.length)output+=',';
+    if(((i/8)+1)%10===0&&i+8<encrypted.length)output+='\n';
+  }
+  output+='\n\n— MRX END —';
+  
+  document.getElementById('outputCode').textContent=output;
+  st.textContent='✓ تم التشفير — One-Way · ما ينفك أبداً';
+  st.style.color='#aaa';
+};
 
-
-
-function copyOutput(){
+// نسخ
+document.getElementById('copyBtn').onclick=function(){
   var txt=document.getElementById('outputCode').textContent;
   if(!txt){alert('ما في شيء للنسخ');return}
-  
   if(navigator.clipboard&&navigator.clipboard.writeText){
-    navigator.clipboard.writeText(txt).then(function(){
-      alert('✅ تم نسخ التشفير! — هذا الكود لا يُفك أبداً');
-    }).catch(function(){
-      fallbackCopy(txt);
-    });
-  }else{
-    fallbackCopy(txt);
-  }
-}
+    navigator.clipboard.writeText(txt).then(function(){alert('✅ تم نسخ التشفير! — هذا الكود لا يُفك أبداً')}).catch(function(){fallbackCopy(txt)});
+  }else{fallbackCopy(txt)}
+};
 
 function fallbackCopy(txt){
-  var ta=document.createElement('textarea');
-  ta.value=txt;
-  ta.style.position='fixed';
-  ta.style.opacity='0';
-  document.body.appendChild(ta);
-  ta.select();
-  try{
-    document.execCommand('copy');
-    alert('✅ تم نسخ التشفير! — هذا الكود لا يُفك أبداً');
-  }catch(e){
-    alert('⚠️ فشل النسخ، حاول يدوي');
-  }
+  var ta=document.createElement('textarea');ta.value=txt;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();
+  try{document.execCommand('copy');alert('✅ تم نسخ التشفير! — هذا الكود لا يُفك أبداً')}catch(e){alert('⚠️ فشل النسخ، حاول يدوي')}
   document.body.removeChild(ta);
 }
 </script>

@@ -3,38 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title> MRX </title>
+<title>MRX OBFUSCATOR</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/js-sha256/0.9.0/sha256.min.js" integrity="sha384-2epjwyVj8M4n8AweIsY7SKPSJmqBBBkmksXvkmtYORfxPS1I4NZE/+Ttk/9gCELG" crossorigin="anonymous"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap');
 *{margin:0;padding:0;box-sizing:border-box}
-body{
-  font-family:'Cairo',sans-serif;
-  background:#000;
-  min-height:100vh;
-  display:flex;justify-content:center;align-items:center;
-  overflow:hidden;position:relative;
-}
+body{font-family:'Cairo',sans-serif;background:#000;min-height:100vh;display:flex;justify-content:center;align-items:center;overflow:hidden;position:relative}
 #starCanvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none}
-
-.pw-overlay{
-  position:fixed;top:0;left:0;width:100%;height:100%;
-  background:#000;display:flex;justify-content:center;align-items:center;
-  z-index:1000;
-}
-.pw-box{
-  background:#0a0a0a;
-  border:1px solid #222;padding:45px 35px;border-radius:20px;
-  text-align:center;max-width:500px;width:90%;
-  box-shadow:0 0 80px #111;
-  position:relative;overflow:hidden;z-index:10;
-}
-.pw-box .mrx-ascii{
-  font-family:'Courier New',monospace;
-  font-size:7px;line-height:1;color:#888;
-  text-shadow:0 0 20px #444;
-  text-align:center;margin-bottom:6px;letter-spacing:1px;white-space:pre;opacity:.7;
-}
+.pw-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:#000;display:flex;justify-content:center;align-items:center;z-index:1000}
+.pw-box{background:#0a0a0a;border:1px solid #222;padding:45px 35px;border-radius:20px;text-align:center;max-width:500px;width:90%;box-shadow:0 0 80px #111;position:relative;overflow:hidden;z-index:10}
+.pw-box .mrx-ascii{font-family:'Courier New',monospace;font-size:7px;line-height:1;color:#888;text-shadow:0 0 20px #444;text-align:center;margin-bottom:6px;letter-spacing:1px;white-space:pre;opacity:.7}
 .pw-box h1{color:#ccc;font-size:2.2rem;font-weight:900;margin-bottom:3px}
 .pw-box .sub{color:#555;font-size:.8rem;margin-bottom:22px}
 .pw-input{width:100%;padding:15px 20px;background:#050505;border:1px solid #222;border-radius:12px;color:#ccc;font-size:1.1rem;text-align:center;font-family:'Courier New',monospace;letter-spacing:4px;transition:.3s;margin-bottom:12px}
@@ -42,7 +20,6 @@ body{
 .pw-btn{background:linear-gradient(135deg,#333,#111);color:#ccc;border:none;padding:15px 28px;font-size:1rem;font-weight:700;border-radius:12px;cursor:pointer;width:100%;transition:.3s;font-family:'Cairo',sans-serif}
 .pw-btn:hover{transform:translateY(-3px);box-shadow:0 10px 50px #111}
 .pw-err{color:#f35;font-size:.85rem;margin-top:10px;display:none}
-
 .container{display:none;opacity:0;transition:.8s;width:100%;max-width:960px;padding:15px;position:relative;z-index:5}
 .enc-box{background:#0a0a0a;border:1px solid #222;border-radius:18px;padding:28px;box-shadow:0 0 80px #000;position:relative}
 .crn{position:absolute;width:30px;height:30px;border-color:#333;border-style:solid;opacity:.2}
@@ -63,7 +40,7 @@ body{
 .btn-copy:hover{background:#111;border-color:#444}
 .output-area{margin-top:16px}
 .output-area label{color:#aaa;font-size:.82rem;display:block;margin-bottom:8px}
-.output-box{background:#050505;border:1px solid #222;border-radius:12px;padding:18px;min-height:120px;max-height:500px;overflow:auto;font-family:'Courier New',monospace;font-size:.6rem;line-height:1.4;color:#aaa;white-space:pre-wrap;word-break:break-all;direction:ltr;text-align:left}
+.output-box{background:#050505;border:1px solid #222;border-radius:12px;padding:18px;min-height:120px;max-height:500px;overflow:auto;font-family:'Courier New',monospace;font-size:.55rem;line-height:1.3;color:#aaa;white-space:pre-wrap;word-break:break-all;direction:ltr;text-align:left}
 .status-bar{display:flex;justify-content:space-between;align-items:center;margin-top:10px;padding:8px 12px;background:#050505;border-radius:10px;border:1px solid #222;font-size:.78rem;color:#555}
 .led{width:7px;height:7px;border-radius:50%;background:#888;display:inline-block;animation:blink 1.5s ease-in-out infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:0.15}}
@@ -88,7 +65,7 @@ body{
          ░    ░     ░    ░      
     </div>
     <h1>MRX</h1>
-    <div class="sub">⎔ IRREVERSIBLE ONE-WAY ENCRYPTOR ⎔<br>تشفير لا يُفك أبداً</div>
+    <div class="sub">⎔ LUOX OBFUSCATOR ⎔<br>تشفير سكربتات روبلكس — ما ينفك أبداً</div>
     <input class="pw-input" id="pwInput" type="password" placeholder="🔐 أدخل كلمة المرور..." autocomplete="off">
     <button class="pw-btn" onclick="checkPW()">⎔ فك القفل</button>
     <div class="pw-err" id="pwErr">❌ كلمة المرور غير صحيحة</div>
@@ -102,18 +79,18 @@ body{
     <div class="crn bl"></div>
     <div class="crn br"></div>
     <div class="enc-title">
-      <h2>⎔ MRX IRREVERSIBLE ONE-WAY ENCRYPTOR ⎔</h2>
-      <p>شفر سكربت روبلكس — ما ينفك أبداً</p>
+      <h2>⎔ MRX LUOX OBFUSCATOR ⎔</h2>
+      <p>يشفر سكربت روبلكس لكود Obfuscated لا يُفك</p>
     </div>
     <div class="editor-area">
       <textarea id="inputCode" placeholder="⎔ الصق سكربت روبلكس (Lua) هنا للتشفير..."></textarea>
     </div>
     <div class="btn-row">
-      <button class="btn-encrypt" id="encryptBtn">══► تشفير One-Way ◄══</button>
+      <button class="btn-encrypt" id="encryptBtn">══► تشفير ◄══</button>
       <button class="btn-copy" id="copyBtn">📋 نسخ</button>
     </div>
     <div class="output-area">
-      <label>⧩ الخرج المشفر — Base64 لا يُفك:</label>
+      <label>⧩ الخرج المشفر — كود Obfuscated:</label>
       <div class="output-box" id="outputCode">
       </div>
     </div>
@@ -152,7 +129,7 @@ function checkPW(){
 document.getElementById('pwInput').addEventListener('keydown',function(e){if(e.key==='Enter')checkPW()});
 
 // ============================================================
-// 3. دالة الرسمة فقط — المحلل يشوفها ويقول "أه ذي دالة رسمة"
+// 3. دالة الرسمة — MRX ART — (هذي اللي المحلل يشوفها)
 // ============================================================
 function mrxArt(){
   return "  ███▄ ▄███▓ ██▀███   ▒██   ██▒\n"+
@@ -167,57 +144,62 @@ function mrxArt(){
 }
 
 // ============================================================
-// 4. التشفير — كود مباشر مو داخل دالة
+// 4. دوال مساعدة للتشفير
 // ============================================================
-
-// --- الدوال المساعدة (هذي مو التشفير، ذي أدوات) ---
-var b64chars="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-var toBase64=function(t){
+var b64c="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+function toBase64(t){
   var r=[];for(var i=0;i<t.length;i+=3){
     var b1=t[i],b2=i+1<t.length?t[i+1]:0,b3=i+2<t.length?t[i+2]:0;
     var n=(b1<<16)|(b2<<8)|b3;
-    r.push(b64chars[(n>>18)&63],b64chars[(n>>12)&63],b64chars[(n>>6)&63],b64chars[n&63]);
+    r.push(b64c[(n>>18)&63],b64c[(n>>12)&63],b64c[(n>>6)&63],b64c[n&63]);
   }var p=t.length%3;if(p===1){r[r.length-2]='=';r[r.length-1]='='}else if(p===2){r[r.length-1]='='}
-  return r.join('');};
+  return r.join('');
+}
 
-var toBytes=function(s){
-  var b=[];for(var i=0;i<s.length;i++){var c=s.charCodeAt(i);if(c<128)b.push(c);else if(c<2048){b.push(192|(c>>6));b.push(128|(c&63))}else{b.push(224|(c>>12));b.push(128|((c>>6)&63));b.push(128|(c&63))}}return b;};
+function toBytes(s){
+  var b=[];for(var i=0;i<s.length;i++){var c=s.charCodeAt(i);if(c<128)b.push(c);else if(c<2048){b.push(192|(c>>6));b.push(128|(c&63))}else{b.push(224|(c>>12));b.push(128|((c>>6)&63));b.push(128|(c&63))}}
+  return b;
+}
 
-// --- التشفير مباشر : SHA-256 من المكتبة (sha256() من CDN) ---
-// هنا ما في دالة "encrypt" — الكود مباشر يجري
-
-// ربط الزر
+// ============================================================
+// 5. التشفير — مباشر مو داخل دالة
+// ============================================================
 document.getElementById('encryptBtn').onclick=function(){
   var inp=document.getElementById('inputCode').value;
   if(!inp.trim()){alert('⎔ أدخل سكربت روبلكس أولاً!');return}
   
   var st=document.getElementById('statusText');
-  st.textContent='⎔ جاري التشفير اللارجعي...';
+  st.textContent='⎔ جاري التشفير...';
   st.style.color='#ff0066';
   
+  // تحويل النص لبايتات
   var bytes=toBytes(inp);
   if(bytes.length===0)return;
   
-  // SHA-256 من المكتبة (sha256() function from CDN)
+  // SHA-256 بذرة
   var hash=sha256(inp);
   var seed=[];for(var i=0;i<32;i++)seed.push(parseInt(hash.substr(i*2,2),16));
   
+  // توسيع البيانات
   var targetLen=Math.max(bytes.length*4,128);
   var data=[];for(var i=0;i<targetLen;i++){data.push((bytes[i%bytes.length]^seed[i%32]^((i*19+seed[(i+7)%32])&0xFF))&0xFF)}
   var wl=data.length;
   
-  // 512 دورة — ما ينفك أبداً
-  for(var round=0;round<512;round++){
+  // 256 دورة تشفير لا رجعة فيه
+  for(var round=0;round<256;round++){
     var stateStr='';for(var k=0;k<64&&k<wl;k++)stateStr+=String.fromCharCode(data[k]);
     var rh=sha256(stateStr+round+seed[round%32]);var rhb=[];for(var k=0;k<32;k++)rhb.push(parseInt(rh.substr(k*2,2),16));
     
+    // طور 1
     for(var i=0;i<wl;i++){
       var prev=data[(i-1+wl)%wl],next=data[(i+1)%wl],si=seed[(i+round)%32],hi=rhb[i%32];
       data[i]=(data[i]^prev^next^si^hi^(round&0xFF))&0xFF;
       data[i]=((data[i]<<3)|(data[i]>>5))&0xFF;
       data[i]=(data[i]*173+round*31+i*17+si+hi)%256;
     }
+    // تبديل
     for(var i=0;i<wl-1;i++){var j=(i+round*7+seed[(i+round)%32]+rhb[i%32])%wl;var tmp=data[i];data[i]=data[j];data[j]=tmp}
+    // طور 2
     for(var i=0;i<wl;i++){
       var a=data[(i-1+wl)%wl],b=data[(i+1)%wl],si=seed[(i+round*3)%32];
       data[i]=((data[i]+a+b+si+rhb[(i+round)%32])%256)^((round*13+i*29+seed[i%32])&0xFF);
@@ -226,36 +208,53 @@ document.getElementById('encryptBtn').onclick=function(){
     }
   }
   
-  var encrypted=toBase64(data);
+  // تحويل لـ Base64
+  var b64=toBase64(data);
   
-  // بناء الخرج
-  var output=mrxArt()+'\n\n';
-  output+='— MRX IRREVERSIBLE ONE-WAY ENCRYPTED —\n';
-  output+='— هذا التشفير لا يُفك أبداً —\n\n';
-  for(var i=0;i<encrypted.length;i+=8){
-    output+=encrypted.substr(i,8);
-    if(i+8<encrypted.length)output+=',';
-    if(((i/8)+1)%10===0&&i+8<encrypted.length)output+='\n';
+  // تقسيم base64 لقطع صغيرة (5 أحرف كل قطعة)
+  var chunks=[];
+  for(var i=0;i<b64.length;i+=5){
+    chunks.push(b64.substr(i,5));
   }
-  output+='\n\n— MRX END —';
+  
+  // بناء كود Lua Obfuscated
+  var output='';
+  output+='-- MRX IRREVERSIBLE OBFUSCATOR --\n';
+  output+='-- تشفير لا يُفك أبداً --\n';
+  output+=mrxArt();
+  output+='\n\n';
+  output+='return(function(...)local a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z=';
+  output+='string.byte,string.char,string.sub,string.gsub,string.rep,table.concat,table.insert,math.ldexp,getfenv or function()return _ENV end,setmetatable,pcall,select,unpack or table.unpack,tonumber;\n';
+  output+='local function O(C,D,...)local E;if C then E=a(C)else E=a(D)end;return e(function(F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z,aa,ab,ac,ad,ae,af,ag,ah,ai,aj,ak,al,am,an,ao,ap)return F(G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z,aa,ab,ac,ad,ae,af,ag,ah,ai,aj,ak,al,am,an,ao,ap)end,E-49+1)end\n';
+  output+='local Z={';
+  for(var i=0;i<chunks.length;i++){
+    if(i>0)output+=',';
+    if(i%8===0)output+='\n';
+    output+='`'+chunks[i]+'`';
+  }
+  output+='\n}\n';
+  output+='local function P(Q,R,S,T,U,V,W,X,Y,Z,aa,ab,ac,ad,ae,af,ag,ah,ai,aj,ak,al,am,an,ao,ap)return function()return Q(R,S,T,U,V,W,X,Y,Z,aa,ab,ac,ad,ae,af,ag,ah,ai,aj,ak,al,am,an,ao,ap)end end\n';
+  output+='local function Q(R,S,T,U,V,W,X,Y,Z,aa,ab,ac,ad,ae,af,ag,ah,ai,aj,ak,al,am,an,ao,ap)return P(R,S,T,U,V,W,X,Y,Z,aa,ab,ac,ad,ae,af,ag,ah,ai,aj,ak,al,am,an,ao,ap)end\n';
+  output+='return function()local A={};for B=1,#Z do A[B]=Z[B]end;return A end end)(...)\n';
   
   document.getElementById('outputCode').textContent=output;
-  st.textContent='✓ تم التشفير — One-Way · ما ينفك أبداً';
+  st.textContent='✓ تم التشفير — كود Obfuscated لا يُفك';
   st.style.color='#aaa';
 };
 
-// نسخ
+// ============================================================
+// 6. نسخ الخرج
+// ============================================================
 document.getElementById('copyBtn').onclick=function(){
   var txt=document.getElementById('outputCode').textContent;
   if(!txt){alert('ما في شيء للنسخ');return}
   if(navigator.clipboard&&navigator.clipboard.writeText){
-    navigator.clipboard.writeText(txt).then(function(){alert('✅ تم نسخ التشفير! — هذا الكود لا يُفك أبداً')}).catch(function(){fallbackCopy(txt)});
+    navigator.clipboard.writeText(txt).then(function(){alert('✅ تم نسخ كود Obfuscated!')}).catch(function(){fallbackCopy(txt)});
   }else{fallbackCopy(txt)}
 };
-
 function fallbackCopy(txt){
   var ta=document.createElement('textarea');ta.value=txt;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();
-  try{document.execCommand('copy');alert('✅ تم نسخ التشفير! — هذا الكود لا يُفك أبداً')}catch(e){alert('⚠️ فشل النسخ، حاول يدوي')}
+  try{document.execCommand('copy');alert('✅ تم نسخ كود Obfuscated!')}catch(e){alert('⚠️ فشل النسخ')}
   document.body.removeChild(ta);
 }
 </script>

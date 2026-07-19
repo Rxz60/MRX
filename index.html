@@ -3,336 +3,91 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MRX ENCRYPTOR</title>
+<title>MRX 500× MYSTIC ENCRYPTOR</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap');
 *{margin:0;padding:0;box-sizing:border-box}
 body{
   font-family:'Cairo',sans-serif;
-  background:#0a0a0f;
+  background:#000;
   min-height:100vh;
   display:flex;justify-content:center;align-items:center;
-  overflow:hidden;
-  position:relative;
+  overflow:hidden;position:relative;
 }
-body::before{
-  content:'';
-  position:fixed;
-  top:0;left:0;width:100%;height:100%;
-  background:
-    radial-gradient(circle at 20% 50%, rgba(0,255,255,0.05) 0%, transparent 50%),
-    radial-gradient(circle at 80% 20%, rgba(255,0,100,0.05) 0%, transparent 50%),
-    radial-gradient(circle at 50% 80%, rgba(255,215,0,0.03) 0%, transparent 50%);
-  pointer-events:none;
-  z-index:0;
-}
-.mrx-ascii{
-  font-family:'Courier New',monospace;
-  font-size:8px;
-  line-height:1;
-  color:#00ff88;
-  text-shadow:0 0 20px #00ff88,0 0 60px #00ff8844;
-  text-align:center;
-  margin-bottom:20px;
-  letter-spacing:2px;
-  white-space:pre;
-  opacity:0.9;
-  animation:pulseText 3s ease-in-out infinite;
-}
-@keyframes pulseText{
-  0%,100%{text-shadow:0 0 20px #00ff88,0 0 60px #00ff8844}
-  50%{text-shadow:0 0 30px #00ff88,0 0 80px #00ff8866,0 0 120px #00ff8822}
-}
-/* ===== شاشة كلمة السر ===== */
+#starCanvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none}
+#bubbleCanvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:1;pointer-events:none}
+
 .pw-overlay{
   position:fixed;top:0;left:0;width:100%;height:100%;
-  background:rgba(5,5,15,0.98);
-  display:flex;justify-content:center;align-items:center;
+  background:rgba(0,0,0,0.98);display:flex;justify-content:center;align-items:center;
   z-index:1000;
-  backdrop-filter:blur(20px);
 }
 .pw-box{
-  background:linear-gradient(145deg,#0d0d1a,#1a1a2e);
-  border:1px solid #00ff8844;
-  padding:50px 40px;
-  border-radius:20px;
-  text-align:center;
-  max-width:420px;
-  width:90%;
-  box-shadow:0 0 60px #00ff8822,inset 0 0 60px #00ff8808;
-  position:relative;
-  overflow:hidden;
+  background:linear-gradient(145deg,#020a02,#050f05);
+  border:1px solid #0f04;padding:45px 35px;border-radius:20px;
+  text-align:center;max-width:500px;width:90%;
+  box-shadow:0 0 100px #0f02,inset 0 0 100px #0f01;
+  position:relative;overflow:hidden;z-index:10;
 }
 .pw-box::before{
-  content:'';
-  position:absolute;top:-2px;left:-2px;right:-2px;bottom:-2px;
-  background:linear-gradient(45deg,#00ff88,#ff0066,#00ff88);
-  border-radius:22px;
-  z-index:-1;
-  animation:borderGlow 3s linear infinite;
-  background-size:300% 300%;
+  content:'';position:absolute;top:-2px;left:-2px;right:-2px;bottom:-2px;
+  background:linear-gradient(45deg,#0f0,#0a0,#0f0,#0a0);
+  border-radius:22px;z-index:-1;animation:brdr 4s linear infinite;
+  background-size:400% 400%;
 }
-@keyframes borderGlow{
-  0%{background-position:0% 50%}
-  50%{background-position:100% 50%}
-  100%{background-position:0% 50%}
-}
-.pw-box h1{
-  color:#00ff88;
-  font-size:2.8rem;
-  font-weight:900;
-  text-shadow:0 0 30px #00ff8844;
-  margin-bottom:5px;
-}
-.pw-box .sub{
-  color:#888;
-  font-size:.9rem;
-  margin-bottom:30px;
-}
-.pw-input{
-  width:100%;
-  padding:16px 20px;
-  background:#0a0a15;
-  border:1px solid #00ff8844;
-  border-radius:12px;
-  color:#fff;
-  font-size:1.2rem;
-  text-align:center;
+@keyframes brdr{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+.pw-box .mrx-ascii{
   font-family:'Courier New',monospace;
-  letter-spacing:4px;
-  transition:.3s;
-  margin-bottom:15px;
+  font-size:7px;line-height:1;color:#0f0;
+  text-shadow:0 0 30px #0f0,0 0 80px #0f04;
+  text-align:center;margin-bottom:6px;letter-spacing:1px;white-space:pre;opacity:.95;
+  animation:pulse 3s ease-in-out infinite;
 }
-.pw-input:focus{
-  border-color:#00ff88;
-  outline:none;
-  box-shadow:0 0 30px #00ff8822;
-}
-.pw-btn{
-  background:linear-gradient(135deg,#00ff88,#00cc6a);
-  color:#0a0a0f;
-  border:none;
-  padding:16px 30px;
-  font-size:1.1rem;
-  font-weight:700;
-  border-radius:12px;
-  cursor:pointer;
-  width:100%;
-  transition:.3s;
-  font-family:'Cairo',sans-serif;
-}
-.pw-btn:hover{
-  transform:translateY(-3px);
-  box-shadow:0 10px 40px #00ff8844;
-}
-.pw-err{
-  color:#ff3355;
-  font-size:.85rem;
-  margin-top:10px;
-  display:none;
-}
+@keyframes pulse{0%,100%{text-shadow:0 0 30px #0f0,0 0 80px #0f04}50%{text-shadow:0 0 50px #0f0,0 0 100px #0f06,0 0 150px #0f02}}
+.pw-box h1{color:#0f0;font-size:2.2rem;font-weight:900;text-shadow:0 0 30px #0f04;margin-bottom:3px}
+.pw-box .sub{color:#484;font-size:.8rem;margin-bottom:22px}
+.pw-input{width:100%;padding:15px 20px;background:#010801;border:1px solid #0f04;border-radius:12px;color:#0f0;font-size:1.1rem;text-align:center;font-family:'Courier New',monospace;letter-spacing:4px;transition:.3s;margin-bottom:12px}
+.pw-input:focus{border-color:#0f0;outline:none;box-shadow:0 0 40px #0f02}
+.pw-btn{background:linear-gradient(135deg,#0f0,#0a0);color:#000;border:none;padding:15px 28px;font-size:1rem;font-weight:700;border-radius:12px;cursor:pointer;width:100%;transition:.3s;font-family:'Cairo',sans-serif}
+.pw-btn:hover{transform:translateY(-3px);box-shadow:0 10px 50px #0f04}
+.pw-err{color:#f35;font-size:.85rem;margin-top:10px;display:none}
 
-/* ===== المحتوى الرئيسي ===== */
-.container{
-  display:none;
-  opacity:0;
-  transition:.8s;
-  width:100%;
-  max-width:900px;
-  padding:20px;
-  position:relative;
-  z-index:1;
-}
-.enc-box{
-  background:linear-gradient(145deg,#0d0d1a,#151527);
-  border:1px solid #00ff8822;
-  border-radius:20px;
-  padding:35px;
-  box-shadow:0 0 80px #00ff8810,inset 0 0 80px #00ff8805;
-  position:relative;
-}
-.enc-box .corner{
-  position:absolute;
-  width:30px;height:30px;
-  border-color:#00ff88;
-  border-style:solid;
-  opacity:0.3;
-}
-.enc-box .corner.tl{top:10px;left:10px;border-width:2px 0 0 2px}
-.enc-box .corner.tr{top:10px;right:10px;border-width:2px 2px 0 0}
-.enc-box .corner.bl{bottom:10px;left:10px;border-width:0 0 2px 2px}
-.enc-box .corner.br{bottom:10px;right:10px;border-width:0 2px 2px 0}
-
-.enc-title{
-  text-align:center;
-  margin-bottom:25px;
-}
-.enc-title h2{
-  color:#00ff88;
-  font-size:1.8rem;
-  font-weight:700;
-  text-shadow:0 0 20px #00ff8833;
-}
-.enc-title p{
-  color:#666;
-  font-size:.85rem;
-}
-
-.mrx-logo{
-  text-align:center;
-  margin-bottom:30px;
-  padding:15px;
-  background:#0a0a12;
-  border-radius:12px;
-  border:1px solid #00ff8811;
-  overflow:hidden;
-}
-.mrx-logo pre{
-  font-family:'Courier New',monospace;
-  font-size:6px;
-  line-height:1.1;
-  color:#00ff88;
-  text-shadow:0 0 10px #00ff8844;
-  letter-spacing:0.5px;
-}
-
-.editor-area textarea{
-  width:100%;
-  min-height:250px;
-  padding:20px;
-  background:#050510;
-  border:1px solid #00ff8822;
-  border-radius:12px;
-  color:#00ff88;
-  font-family:'Courier New',monospace;
-  font-size:.85rem;
-  line-height:1.6;
-  resize:vertical;
-  transition:.3s;
-}
-.editor-area textarea:focus{
-  border-color:#00ff88;
-  outline:none;
-  box-shadow:0 0 40px #00ff8811;
-}
-.editor-area textarea::placeholder{
-  color:#334;
-  font-style:italic;
-}
-
-.btn-row{
-  display:flex;
-  gap:15px;
-  margin:20px 0;
-  flex-wrap:wrap;
-}
-.btn-encrypt{
-  flex:1;
-  min-width:200px;
-  background:linear-gradient(135deg,#ff0066,#cc0052);
-  color:#fff;
-  border:none;
-  padding:16px 30px;
-  font-size:1.1rem;
-  font-weight:700;
-  border-radius:12px;
-  cursor:pointer;
-  transition:.3s;
-  font-family:'Cairo',sans-serif;
-  text-shadow:0 0 10px #ff006644;
-  box-shadow:0 0 30px #ff006622;
-}
-.btn-encrypt:hover{
-  transform:translateY(-3px) scale(1.02);
-  box-shadow:0 10px 50px #ff006644;
-}
-.btn-copy{
-  flex:0 0 auto;
-  background:#1a1a2e;
-  color:#00ff88;
-  border:1px solid #00ff8822;
-  padding:16px 25px;
-  font-size:1rem;
-  border-radius:12px;
-  cursor:pointer;
-  transition:.3s;
-  font-family:'Cairo',sans-serif;
-}
-.btn-copy:hover{
-  background:#00ff8811;
-  border-color:#00ff88;
-}
-
-.output-area{
-  margin-top:20px;
-}
-.output-area label{
-  color:#00ff88;
-  font-size:.9rem;
-  display:block;
-  margin-bottom:10px;
-}
-.output-box{
-  background:#050510;
-  border:1px solid #00ff8822;
-  border-radius:12px;
-  padding:20px;
-  min-height:150px;
-  max-height:400px;
-  overflow:auto;
-  font-family:'Courier New',monospace;
-  font-size:.75rem;
-  line-height:1.5;
-  color:#0f0;
-  white-space:pre-wrap;
-  word-break:break-all;
-}
-
-.status-bar{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-top:15px;
-  padding:10px 15px;
-  background:#0a0a12;
-  border-radius:10px;
-  border:1px solid #00ff8811;
-  font-size:.8rem;
-  color:#666;
-}
-.status-bar .led{
-  width:10px;height:10px;
-  border-radius:50%;
-  background:#00ff88;
-  display:inline-block;
-  animation:blink 1.5s ease-in-out infinite;
-}
-@keyframes blink{
-  0%,100%{opacity:1}
-  50%{opacity:0.3}
-}
-.status-bar .stat-ready{color:#00ff88}
-.status-bar .stat-enc{color:#ff0066}
-
-.progress-bar{
-  height:3px;
-  background:#0a0a12;
-  border-radius:3px;
-  margin-top:15px;
-  overflow:hidden;
-}
-.progress-fill{
-  height:100%;
-  width:0%;
-  background:linear-gradient(90deg,#00ff88,#ff0066);
-  border-radius:3px;
-  transition:width 2s ease;
-}
+.container{display:none;opacity:0;transition:.8s;width:100%;max-width:960px;padding:15px;position:relative;z-index:5}
+.enc-box{background:linear-gradient(145deg,#020a02,#050f05);border:1px solid #0f02;border-radius:18px;padding:28px;box-shadow:0 0 100px #0f01,inset 0 0 100px #0f005;position:relative}
+.crn{position:absolute;width:30px;height:30px;border-color:#0f0;border-style:solid;opacity:.2}
+.crn.tl{top:8px;left:8px;border-width:2px 0 0 2px}
+.crn.tr{top:8px;right:8px;border-width:2px 2px 0 0}
+.crn.bl{bottom:8px;left:8px;border-width:0 0 2px 2px}
+.crn.br{bottom:8px;right:8px;border-width:0 2px 2px 0}
+.enc-title{text-align:center;margin-bottom:18px}
+.enc-title h2{color:#0f0;font-size:1.6rem;font-weight:700;text-shadow:0 0 20px #0f03}
+.enc-title p{color:#363;font-size:.8rem}
+.mrx-logo{text-align:center;margin-bottom:20px;padding:10px;background:#000402;border-radius:12px;border:1px solid #0f01;overflow:hidden}
+.mrx-logo pre{font-family:'Courier New',monospace;font-size:5.5px;line-height:1.05;color:#0f0;text-shadow:0 0 6px #0f02;letter-spacing:0.4px}
+.editor-area textarea{width:100%;min-height:200px;padding:18px;background:#000402;border:1px solid #0f02;border-radius:12px;color:#0f0;font-family:'Courier New',monospace;font-size:.82rem;line-height:1.5;resize:vertical;transition:.3s}
+.editor-area textarea:focus{border-color:#0f0;outline:none;box-shadow:0 0 50px #0f01}
+.editor-area textarea::placeholder{color:#141;font-style:italic}
+.btn-row{display:flex;gap:12px;margin:16px 0;flex-wrap:wrap}
+.btn-encrypt{flex:1;min-width:200px;background:linear-gradient(135deg,#0f0,#0a0);color:#000;border:none;padding:14px 28px;font-size:1rem;font-weight:700;border-radius:12px;cursor:pointer;transition:.3s;font-family:'Cairo',sans-serif;box-shadow:0 0 30px #0f02}
+.btn-encrypt:hover{transform:translateY(-3px) scale(1.02);box-shadow:0 10px 50px #0f04}
+.btn-copy{flex:0 0 auto;background:#050f05;color:#0f0;border:1px solid #0f02;padding:14px 22px;font-size:.95rem;border-radius:12px;cursor:pointer;transition:.3s;font-family:'Cairo',sans-serif}
+.btn-copy:hover{background:#0f01;border-color:#0f0}
+.output-area{margin-top:16px}
+.output-area label{color:#0f0;font-size:.82rem;display:block;margin-bottom:8px}
+.output-box{background:#000402;border:1px solid #0f02;border-radius:12px;padding:18px;min-height:100px;max-height:400px;overflow:auto;font-family:'Courier New',monospace;font-size:.65rem;line-height:1.5;color:#0f0;white-space:pre-wrap;word-break:break-all;direction:ltr;text-align:left}
+.status-bar{display:flex;justify-content:space-between;align-items:center;margin-top:10px;padding:8px 12px;background:#000402;border-radius:10px;border:1px solid #0f01;font-size:.78rem;color:#363}
+.led{width:7px;height:7px;border-radius:50%;background:#0f0;display:inline-block;animation:blink 1.5s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.15}}
+.stt-redy{color:#0f0}
+.progress-bar{height:3px;background:#000402;border-radius:3px;margin-top:8px;overflow:hidden}
+.progress-fill{height:100%;width:0%;background:linear-gradient(90deg,#0f0,#0a0);border-radius:3px;transition:width 1.5s ease}
 </style>
 </head>
 <body>
 
-<!-- ===== شاشة كلمة السر ===== -->
+<canvas id="starCanvas"></canvas>
+<canvas id="bubbleCanvas"></canvas>
+
 <div class="pw-overlay" id="pwOverlay">
   <div class="pw-box">
     <div class="mrx-ascii">
@@ -346,67 +101,53 @@ body::before{
   ░      ░   ░░   ░   ░    ░  
          ░    ░     ░    ░      
     </div>
-    <div class="sub">⎔ ENCRYPTOR v3.0 — نظام التشفير القصي</div>
+    <h1>MRX</h1>
+    <div class="sub">⎔ 500 LAYER MYSTIC ENCRYPTOR v7.0 ⎔<br>تشفير طلاسم لا يُفك أبداً</div>
     <input class="pw-input" id="pwInput" type="password" placeholder="🔐 أدخل كلمة المرور..." autocomplete="off">
     <button class="pw-btn" onclick="checkPW()">⎔ فك القفل</button>
     <div class="pw-err" id="pwErr">❌ كلمة المرور غير صحيحة</div>
   </div>
 </div>
 
-<!-- ===== المحتوى الرئيسي ===== -->
 <div class="container" id="mainContent">
   <div class="enc-box">
-    <div class="corner tl"></div>
-    <div class="corner tr"></div>
-    <div class="corner bl"></div>
-    <div class="corner br"></div>
-
+    <div class="crn tl"></div>
+    <div class="crn tr"></div>
+    <div class="crn bl"></div>
+    <div class="crn br"></div>
     <div class="enc-title">
-      <h2>⎔ MRX LUA ENCRYPTOR ⎔</h2>
-      <p>نظام تشفير Lua من المستوى الأعلى — تشفير لا يُفك</p>
+      <h2>⎔ MRX 500× MYSTIC ENCRYPTOR ⎔</h2>
+      <p>تشفير 500 طبقة بالطلاسم — لا يُفك أبداً</p>
     </div>
-
-    <!-- Logo MRX -->
     <div class="mrx-logo">
       <pre>
-  ███▄ ▄███▓ ██▀███   ▒██   ██▒ ██▓███  
-  ▓██▒▀█▀ ██▒▓██ ▒ ██▒▒▒ █ █ ▒░▓██░  ██▒
-  ▓██    ▓██░▓██ ░▄█ ▒░░  █   ░▓██░ ██▓▒
-  ▒██    ▒██ ▒██▀▀█▄   ░ █ █ ▒ ▒██▄█▓▒ ▒
-  ░██▒   ░██▒░██▓ ▒██▒▒██▒ ▒██▒▒██▒ ░  ░
-  ░ ▒░   ░  ░░ ▒▓ ░▒▓░░▒ ░ ░▓ ░▒▓▒░ ░  ░
-  ░  ░      ░  ░▒ ░ ▒░ ░░   ░▒ ░░▒ ░     
-  ░      ░   ░░   ░   ░    ░  ░░░       
-         ░    ░     ░    ░      ░        
+  ███▄ ▄███▓ ██▀███   ▒██   ██▒ ██▓███       █     █░ ▄▄▄       ███▄ ▄███▓
+  ▓██▒▀█▀ ██▒▓██ ▒ ██▒▒▒ █ █ ▒░▓██░  ██▒    ▓█░ █ ░█░▒████▄    ▓██▒▀█▀ ██▒
+  ▓██    ▓██░▓██ ░▄█ ▒░░  █   ░▓██░ ██▓▒    ▒█░ █ ░█ ▒██  ▀█▄  ▓██    ▓██░
+  ▒██    ▒██ ▒██▀▀█▄   ░ █ █ ▒ ▒██▄█▓▒ ▒    ░█░ █ ░█ ░██▄▄▄▄██ ▒██    ▒██▒
+  ░██▒   ░██▒░██▓ ▒██▒▒██▒ ▒██▒▒██▒ ░  ░    ░░██▒██▓  ▓█   ▓██▒░██▒   ░██▒
+  ░ ▒░   ░  ░░ ▒▓ ░▒▓░░▒ ░ ░▓ ░▒▓▒░ ░  ░    ░ ▓░▒ ▒   ▒▒   ▓▒█░░ ▒░   ░  ░
+  ░  ░      ░  ░▒ ░ ▒░ ░░   ░▒ ░░▒ ░         ░ ▒░ ░    ▒   ▒▒ ░░  ░      ░
+  ░      ░   ░░   ░   ░    ░  ░░░           ░ ░ ░     ░   ▒   ░      ░
+         ░    ░     ░    ░      ░              ░           ░  ░       ░
       </pre>
     </div>
-
-    <!-- منطقة الإدخال -->
     <div class="editor-area">
       <textarea id="inputCode" placeholder="⎔ الصق كود Lua هنا للتشفير..."></textarea>
     </div>
-
-    <!-- الأزرار -->
     <div class="btn-row">
-      <button class="btn-encrypt" onclick="encryptCode()">══► تشفير السكربت ◄══</button>
+      <button class="btn-encrypt" onclick="encryptCode()">══► تشفير بـ 500 طبقة ◄══</button>
       <button class="btn-copy" onclick="copyOutput()">📋 نسخ</button>
     </div>
-
-    <!-- المخرجات -->
     <div class="output-area">
-      <label>⧩ الكود المشفر:</label>
+      <label>⧩ الخرج المشفر — طلاسم 500 طبقة:</label>
       <div class="output-box" id="outputCode">
-<span style="color:#445">// الكود المشفر سيظهر هنا...</span>
       </div>
     </div>
-
-    <!-- شريط الحالة -->
     <div class="status-bar">
-      <span><span class="led"></span> النظام: <span class="stat-ready" id="statusText">جاهز</span></span>
-      <span>⎔ MRX v3.0 ⎔</span>
+      <span><span class="led"></span> النظام: <span class="stt-redy" id="statusText">جاهز</span></span>
+      <span>⎔ MRX 500× v7.0 ⎔</span>
     </div>
-
-    <!-- شريط التقدم -->
     <div class="progress-bar">
       <div class="progress-fill" id="progressFill"></div>
     </div>
@@ -414,144 +155,173 @@ body::before{
 </div>
 
 <script>
-// ===== كلمة المرور =====
-var PASSWORD = "MRX.com";
+var starC=document.getElementById('starCanvas');
+var starX=starC.getContext('2d');
+var starsA=[];
+function szSC(){starC.width=innerWidth;starC.height=innerHeight}
+szSC();
+for(var i=0;i<280;i++)starsA.push({x:Math.random()*starC.width,y:Math.random()*starC.height,r:Math.random()*2+0.3,a:Math.random()*0.8+0.2,s:Math.random()*0.004+0.001});
+function goStars(){
+  starX.clearRect(0,0,starC.width,starC.height);
+  for(var i=0;i<starsA.length;i++){
+    var st=starsA[i];st.a+=st.s;
+    var al=Math.abs(Math.sin(st.a))*0.8+0.2;
+    starX.beginPath();starX.arc(st.x,st.y,st.r,0,Math.PI*2);
+    starX.fillStyle='rgba(0,255,136,'+al+')';starX.fill();
+    if(st.a>Math.PI*2)st.a=0;
+  }
+  requestAnimationFrame(goStars);
+}
+goStars();
+addEventListener('resize',function(){szSC();for(var i=0;i<starsA.length;i++){starsA[i].x=Math.random()*starC.width;starsA[i].y=Math.random()*starC.height}});
 
+var bubC=document.getElementById('bubbleCanvas');
+var bubX=bubC.getContext('2d');
+var bubs=[];var maxB=45;
+function szBC(){bubC.width=innerWidth;bubC.height=innerHeight}
+szBC();
+function mkBub(){var s=Math.random()*9+3;return{x:Math.random()*bubC.width,y:bubC.height+s,r:s,spd:Math.random()*1.3+0.3,al:Math.random()*0.3+0.08,wb:Math.random()*2.5,ws:Math.random()*0.025+0.01,ph:Math.random()*Math.PI*2}}
+for(var i=0;i<maxB;i++)bubs.push(mkBub());
+function goBubs(){
+  bubX.clearRect(0,0,bubC.width,bubC.height);
+  for(var i=0;i<bubs.length;i++){
+    var b=bubs[i];b.y-=b.spd;b.ph+=b.ws;b.x+=Math.sin(b.ph)*b.wb;
+    if(b.y<-b.r*2){bubs[i]=mkBub();b=bubs[i]}
+    bubX.beginPath();bubX.arc(b.x,b.y,b.r,0,Math.PI*2);
+    bubX.strokeStyle='rgba(0,255,136,'+b.al+')';bubX.lineWidth=1;bubX.stroke();
+    bubX.beginPath();bubX.arc(b.x,b.y,b.r*0.65,0,Math.PI*2);
+    bubX.fillStyle='rgba(0,255,136,'+(b.al*0.25)+')';bubX.fill();
+    bubX.beginPath();bubX.arc(b.x-b.r*0.3,b.y-b.r*0.3,b.r*0.2,0,Math.PI*2);
+    bubX.fillStyle='rgba(0,255,136,'+(b.al*0.5)+')';bubX.fill();
+  }
+  requestAnimationFrame(goBubs);
+}
+goBubs();
+addEventListener('resize',szBC);
+
+var PW="MRX.com";
 function checkPW(){
-  if(document.getElementById('pwInput').value === PASSWORD){
-    document.getElementById('pwOverlay').style.opacity = '0';
+  if(document.getElementById('pwInput').value===PW){
+    document.getElementById('pwOverlay').style.opacity='0';
     setTimeout(function(){
-      document.getElementById('pwOverlay').style.display = 'none';
-      document.getElementById('mainContent').style.display = 'block';
-      setTimeout(function(){document.getElementById('mainContent').style.opacity = '1';}, 50);
-    }, 500);
-  } else {
-    document.getElementById('pwErr').style.display = 'block';
-    document.getElementById('pwInput').value = '';
+      document.getElementById('pwOverlay').style.display='none';
+      document.getElementById('mainContent').style.display='block';
+      setTimeout(function(){document.getElementById('mainContent').style.opacity='1';},50);
+    },500);
+  }else{
+    document.getElementById('pwErr').style.display='block';
+    document.getElementById('pwInput').value='';
   }
 }
-document.getElementById('pwInput').addEventListener('keydown', function(e){
-  if(e.key === 'Enter') checkPW();
-});
+document.getElementById('pwInput').addEventListener('keydown',function(e){if(e.key==='Enter')checkPW()});
 
-// ===== نظام التشفير =====
-var ENCRYPTION_KEY = (function(){
-  var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}|;:,.<>?/`~';
-  var key = '';
-  for(var i = 0; i < 256; i++){
-    key += chars.charAt(Math.floor(Math.random() * chars.length));
+var MYSTIC=[
+'ᚠ','ᚢ','ᚦ','ᚨ','ᚱ','ᚲ','ᚷ','ᚹ','ᚺ','ᚾ','ᛁ','ᛃ','ᛇ','ᛈ','ᛉ','ᛊ',
+'ᛏ','ᛒ','ᛖ','ᛗ','ᛚ','ᛜ','ᛞ','ᛟ','ᚡ','ᚣ','ᚤ','ᚥ','ᚧ','ᚩ','ᚪ','ᚫ',
+'ᚬ','ᚭ','ᚮ','ᚯ','ᚰ','ᚱ','ᚲ','ᚳ','ᚴ','ᚵ','ᚶ','ᚸ','ᚺ','ᚻ','ᚼ','ᚽ',
+'𓀀','𓀁','𓀂','𓀃','𓀄','𓀅','𓀆','𓀇','𓀈','𓀉','𓀊','𓀋','𓀌','𓀍','𓀎','𓀏',
+'𓀐','𓀑','𓀒','𓀓','𓀔','𓀕','𓀖','𓀗','𓀘','𓀙','𓀚','𓀛','𓀜','𓀝','𓀞','𓀟',
+'𓃠','𓃡','𓃢','𓃣','𓃤','𓃥','𓃦','𓃧','𓃨','𓃩','𓃫','𓃬','𓃭','𓃮','𓃯',
+'𓆣','𓆤','𓆥','𓆦','𓆧','𓆨','𓆩','𓆪','𓆫','𓆬','𓆭','𓆮','𓆯','𓆰','𓆱','𓆲',
+'𐐀','𐐁','𐐂','𐐃','𐐄','𐐅','𐐆','𐐇','𐐈','𐐉','𐐊','𐐋','𐐌','𐐍','𐐎','𐐏',
+'𐐐','𐐑','𐐒','𐐓','𐐔','𐐕','𐐖','𐐗','𐐘','𐐙','𐐚','𐐛','𐐜','𐐝','𐐞','𐐟',
+'𐐠','𐐡','𐐢','𐐣','𐐤','𐐥','𐐦','𐐧','𐐨','𐐩','𐐪','𐐫','𐐬','𐐭','𐐮','𐐯',
+'🜀','🜁','🜂','🜃','🜄','🜅','🜆','🜇','🜈','🜉','🜊','🜋','🜌','🜍','🜎','🜏',
+'🜐','🜑','🜒','🜓','🜔','🜕','🜖','🜗','🜘','🜙','🜚','🜛','🜜','🜝','🜞','🜟',
+'𐌀','𐌁','𐌂','𐌃','𐌄','𐌅','𐌆','𐌇','𐌈','𐌉','𐌊','𐌋','𐌌','𐌍','𐌎','𐌏',
+'𐌐','𐌑','𐌒','𐌓','𐌔','𐌕','𐌖','𐌗','𐌘','𐌙','𐌚','𐌛','𐌜','𐌝','𐌞',
+'𐎀','𐎁','𐎂','𐎃','𐎄','𐎅','𐎆','𐎇','𐎈','𐎉','𐎊','𐎋','𐎌','𐎍','𐎎','𐎏',
+'𐎐','𐎑','𐎒','𐎓','𐎔','𐎕','𐎖','𐎗','𐎘','𐎙','𐎚','𐎛','𐎜','𐎝','𐎟',
+'𐌰','𐌱','𐌲','𐌳','𐌴','𐌵','𐌶','𐌷','𐌸','𐌹','𐌺','𐌻','𐌼','𐌽','𐌾','𐌿',
+'𓄿','𓅓','𓅱','𓆑','𓆓','𓃀','𓃕','𓃗','𓃘','𓁹','𓁿','𓂀','𓂑','𓄣','𓅬','𓇋',
+'𑀀','𑀁','𑀂','𑀃','𑀄','𑀅','𑀆','𑀇','𑀈','𑀉','𑀊','𑀋','𑀌','𑀍','𑀎','𑀏'
+];
+
+function genKeys(){
+  var keys=[];
+  for(var l=0;l<500;l++){
+    var k=new Uint8Array(256);
+    for(var i=0;i<256;i++)k[i]=(l*173+i*59+Math.floor(Math.random()*256))%256;
+    keys.push(k);
   }
-  return key;
-})();
+  return keys;
+}
+var RKEYS=genKeys();
+
+function encrypt500(data){
+  var d=new Uint8Array(data);
+  var L=d.length;
+  for(var LAY=0;LAY<500;LAY++){
+    var K=RKEYS[LAY];
+    for(var i=0;i<L;i++)d[i]^=K[i%256];
+    for(var i=0;i<L;i++){
+      var B=d[i];
+      B=(B*37+LAY*11+i*23)%256;
+      var R=(LAY*7+i*13+K[i%256])%8;
+      B=((B<<R)|(B>>>(8-R)))&0xFF;
+      d[i]=B;
+    }
+    if(LAY%3===0){for(var i=0;i<L-1;i+=2){var T=d[i];d[i]=d[i+1];d[i+1]=T}}
+    if(LAY%7===6)d.reverse();
+    for(var i=0;i<L;i++)d[i]=(d[i]+LAY*31+i*17)%256;
+  }
+  return d;
+}
+
+function encToMystic(script){
+  var enc=new TextEncoder();
+  var bytes=enc.encode(script);
+  var ed=encrypt500(bytes);
+  var R='';
+  for(var i=0;i<ed.length;i++)R+=MYSTIC[ed[i]%MYSTIC.length];
+  return R;
+}
 
 function encryptCode(){
-  var input = document.getElementById('inputCode').value;
-  if(!input.trim()){
-    alert('⎔ أدخل كود Lua أولاً!');
-    return;
-  }
-
-  // تحديث الحالة
-  document.getElementById('statusText').textContent = 'جاري التشفير...';
-  document.getElementById('statusText').style.color = '#ff0066';
-  document.getElementById('progressFill').style.width = '0%';
-
-  // تشغيل شريط التقدم
-  setTimeout(function(){document.getElementById('progressFill').style.width = '30%';}, 100);
-  setTimeout(function(){document.getElementById('progressFill').style.width = '60%';}, 300);
-  setTimeout(function(){document.getElementById('progressFill').style.width = '85%';}, 600);
-
-  // تنفيذ التشفير بعد تأخير بسيط
+  var inp=document.getElementById('inputCode').value;
+  if(!inp.trim()){alert('⎔ أدخل كود Lua أولاً!');return}
+  var st=document.getElementById('statusText');
+  st.textContent='⎔ جاري التشفير بـ 500 طبقة...';
+  st.style.color='#ff0066';
+  document.getElementById('progressFill').style.width='0%';
+  setTimeout(function(){document.getElementById('progressFill').style.width='8%';},20);
+  setTimeout(function(){document.getElementById('progressFill').style.width='25%';},70);
+  setTimeout(function(){document.getElementById('progressFill').style.width='50%';},180);
+  setTimeout(function(){document.getElementById('progressFill').style.width='75%';},350);
   setTimeout(function(){
-    var encrypted = applyMRXEncryption(input);
-    document.getElementById('outputCode').innerHTML = encrypted;
-    document.getElementById('progressFill').style.width = '100%';
-    document.getElementById('statusText').textContent = '✓ تم التشفير بنجاح';
-    document.getElementById('statusText').style.color = '#00ff88';
-  }, 800);
-}
-
-function applyMRXEncryption(code){
-  // ===== تشفير متعدد الطبقات =====
-  
-  // الطبقة 1: تحويل النص إلى base64 مع تشويش
-  var b64 = btoa(unescape(encodeURIComponent(code)));
-  
-  // الطبقة 2: عكس النص
-  var reversed = b64.split('').reverse().join('');
-  
-  // الطبقة 3: تشفير XOR مع مفتاح عشوائي
-  var xorKey = ENCRYPTION_KEY.substring(0, 32);
-  var xored = '';
-  for(var i = 0; i < reversed.length; i++){
-    var k = xorKey.charCodeAt(i % xorKey.length);
-    var c = reversed.charCodeAt(i) ^ k;
-    xored += String.fromCharCode(c);
-  }
-  
-  // الطبقة 4: تحويل إلى base64 مرة أخرى
-  var b64xored = btoa(unescape(encodeURIComponent(xored)));
-  
-  // الطبقة 5: تقسيم النص إلى أجزاء (زي الشكل اللي طلبته)
-  var parts = [];
-  for(var i = 0; i < b64xored.length; i += 4){
-    var chunk = b64xored.substring(i, i + 4);
-    if(chunk.length < 4) chunk = chunk.padEnd(4, '=');
-    parts.push(chunk);
-  }
-  
-  // بناء الناتج النهائي بالشكل المطلوب
-  var result = '';
-  result += '-- ⎔ MRX ENCRYPTED v3.0 ⎔\n';
-  result += '-- لا تحاول فك التشفير — مستحيل\n';
-  result += '-- KEY: [' + xorKey.substring(0, 16) + '...' + xorKey.substring(24) + ']\n';
-  result += '-- ═══════════════════════════\n';
-  result += 'local mrx = {\n';
-  
-  for(var i = 0; i < parts.length; i++){
-    var line = '  [`' + parts[i] + '`]';
-    // إضافة أرقام عشوائية زي المثال
-    var num = Math.floor(Math.random() * 80) + 10;
-    if(i % 3 === 0) line += ' = ' + num + ',';
-    else if(i % 3 === 1) line += ' = `' + String.fromCharCode(65 + (i % 26)) + '`' + num + ',';
-    else line += ' = ' + num + ' + `' + parts[i] + '`,';
-    result += line + '\n';
-  }
-  
-  result += '}\n';
-  result += '-- ═══════════════════════════\n';
-  result += '-- مدمج + تشفير متعدد الطبقات\n';
-  result += 'local function _deco()\n';
-  result += '  local k = "' + xorKey + '"\n';
-  result += '  local s = ""\n';
-  result += '  for _, v in pairs(mrx) do\n';
-  result += '    if type(v) == "string" then\n';
-  result += '      s = s .. v\n';
-  result += '    end\n';
-  result += '  end\n';
-  result += '  s = s:gsub("=", "")\n';
-  result += '  local d = (s:reverse())\n';
-  result += '  local x = ""\n';
-  result += '  for i = 1, #d do\n';
-  result += '    local c = d:byte(i) ~= k:byte(((i-1) % #k) + 1)\n';
-  result += '    x = x .. string.char(c)\n';
-  result += '  end\n';
-  result += '  local b = (x:reverse())\n';
-  result += '  local dec = loadstring(b)\n';
-  result += '  if dec then dec() end\n';
-  result += 'end\n';
-  result += '_deco()\n';
-  result += '-- ⎔ END ⎔\n';
-  
-  return result;
+    try{
+      var M=encToMystic(inp);
+      var O='';
+      O+='— وا MRX 500× MYSTIC ENCRYPTED\n';
+      O+='ᚠᛟᚢᚱᛚᚨᚲᛖᚱᛊ ᚦᚢᚱᛃᚨᚲᚱᚢᛈᛏ\n\n';
+      var L='';
+      for(var i=0;i<M.length;i++){
+        L+=M[i];
+        if(i%14===13||L.length>=70){O+=L+'\n';L='';}
+      }
+      if(L.length>0)O+=L+'\n';
+      O+='\n— وا MRX 500× END';
+      document.getElementById('outputCode').textContent=O;
+      document.getElementById('progressFill').style.width='100%';
+      st.textContent='✓ تم التشفير بـ 500 طبقة من الطلاسم';
+      st.style.color='#0f0';
+    }catch(e){
+      document.getElementById('outputCode').textContent='';
+      st.textContent='✗ فشل التشفير';
+      st.style.color='#f35';
+    }
+  },450);
 }
 
 function copyOutput(){
-  var text = document.getElementById('outputCode').textContent;
-  navigator.clipboard.writeText(text).then(function(){
-    alert('✅ تم نسخ الكود المشفر!');
-  }).catch(function(){
-    alert('انسخ يدويًا');
+  var txt=document.getElementById('outputCode').textContent;
+  if(!txt){alert('ما في شيء للنسخ');return}
+  navigator.clipboard.writeText(txt).then(function(){alert('✅ تم نسخ الطلاسم المشفرة!')}).catch(function(){
+    var ta=document.createElement('textarea');
+    ta.value=txt;document.body.appendChild(ta);
+    ta.select();document.execCommand('copy');
+    document.body.removeChild(ta);
+    alert('✅ تم نسخ الطلاسم المشفرة!');
   });
 }
 </script>

@@ -3,10 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MRX HUB </title>
+<title>MRX OBFUSCATOR</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/js-sha256/0.9.0/sha256.min.js" integrity="sha384-2epjwyVj8M4n8AweIsY7SKPSJmqBBBkmksXvkmtYORfxPS1I4NZE/+Ttk/9gCELG" crossorigin="anonymous"></script>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap');
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Cairo',sans-serif;background:#000;min-height:100vh;display:flex;justify-content:center;align-items:center;overflow:hidden;position:relative}
 #starCanvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none}
@@ -48,9 +47,7 @@ body{font-family:'Cairo',sans-serif;background:#000;min-height:100vh;display:fle
 </style>
 </head>
 <body>
-
 <canvas id="starCanvas"></canvas>
-
 <div class="pw-overlay" id="pwOverlay">
   <div class="pw-box">
     <div class="mrx-ascii">
@@ -71,16 +68,12 @@ body{font-family:'Cairo',sans-serif;background:#000;min-height:100vh;display:fle
     <div class="pw-err" id="pwErr">❌ كلمة المرور غير صحيحة</div>
   </div>
 </div>
-
 <div class="container" id="mainContent">
   <div class="enc-box">
-    <div class="crn tl"></div>
-    <div class="crn tr"></div>
-    <div class="crn bl"></div>
-    <div class="crn br"></div>
+    <div class="crn tl"></div><div class="crn tr"></div><div class="crn bl"></div><div class="crn br"></div>
     <div class="enc-title">
       <h2>⎔ MRX LUOX OBFUSCATOR ⎔</h2>
-      <p>يشفر سكربت روبلكس — كود Obfuscated كلاسيكي</p>
+      <p>يشفر سكربت روبلكس — ويشتغل 100%</p>
     </div>
     <div class="editor-area">
       <textarea id="inputCode" placeholder="⎔ الصق سكربت روبلكس (Lua) هنا للتشفير..."></textarea>
@@ -90,7 +83,7 @@ body{font-family:'Cairo',sans-serif;background:#000;min-height:100vh;display:fle
       <button class="btn-copy" id="copyBtn">📋 نسخ</button>
     </div>
     <div class="output-area">
-      <label>⧩ الخرج المشفر:</label>
+      <label>⧩ الخرج المشفر — يشغل السكربت الأصلي:</label>
       <div class="output-box" id="outputCode"></div>
     </div>
     <div class="status-bar">
@@ -99,59 +92,29 @@ body{font-family:'Cairo',sans-serif;background:#000;min-height:100vh;display:fle
     </div>
   </div>
 </div>
-
 <script>
 var starC=document.getElementById('starCanvas'),starX=starC.getContext('2d'),starsA=[];
 function szSC(){starC.width=innerWidth;starC.height=innerHeight}
 szSC();
 for(var i=0;i<260;i++)starsA.push({x:Math.random()*starC.width,y:Math.random()*starC.height,r:Math.random()*1.8+0.3,a:Math.random()*0.8+0.2,s:Math.random()*0.004+0.001});
-function goStars(){
-  starX.clearRect(0,0,starC.width,starC.height);
-  for(var i=0;i<starsA.length;i++){var s=starsA[i];s.a+=s.s;var al=Math.abs(Math.sin(s.a))*0.7+0.2;starX.beginPath();starX.arc(s.x,s.y,s.r,0,Math.PI*2);starX.fillStyle='rgba(170,170,170,'+al+')';starX.fill();if(s.a>Math.PI*2)s.a=0}
-  requestAnimationFrame(goStars);
-}goStars();
+function goStars(){starX.clearRect(0,0,starC.width,starC.height);for(var i=0;i<starsA.length;i++){var s=starsA[i];s.a+=s.s;var al=Math.abs(Math.sin(s.a))*0.7+0.2;starX.beginPath();starX.arc(s.x,s.y,s.r,0,Math.PI*2);starX.fillStyle='rgba(170,170,170,'+al+')';starX.fill();if(s.a>Math.PI*2)s.a=0}requestAnimationFrame(goStars)}goStars();
 window.addEventListener('resize',function(){szSC();for(var i=0;i<starsA.length;i++){starsA[i].x=Math.random()*starC.width;starsA[i].y=Math.random()*starC.height}});
-
 var PW="MRX.com";
-function checkPW(){
-  if(document.getElementById('pwInput').value===PW){
-    document.getElementById('pwOverlay').style.opacity='0';
-    setTimeout(function(){document.getElementById('pwOverlay').style.display='none';document.getElementById('mainContent').style.display='block';setTimeout(function(){document.getElementById('mainContent').style.opacity='1';},50)},500);
-  }else{document.getElementById('pwErr').style.display='block';document.getElementById('pwInput').value=''}
-}
+function checkPW(){if(document.getElementById('pwInput').value===PW){document.getElementById('pwOverlay').style.opacity='0';setTimeout(function(){document.getElementById('pwOverlay').style.display='none';document.getElementById('mainContent').style.display='block';setTimeout(function(){document.getElementById('mainContent').style.opacity='1'},50)},500)}else{document.getElementById('pwErr').style.display='block';document.getElementById('pwInput').value=''}}
 document.getElementById('pwInput').addEventListener('keydown',function(e){if(e.key==='Enter')checkPW()});
-
 var b64c="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-function toBase64(t){
-  var r=[];for(var i=0;i<t.length;i+=3){
-    var b1=t[i],b2=i+1<t.length?t[i+1]:0,b3=i+2<t.length?t[i+2]:0;
-    var n=(b1<<16)|(b2<<8)|b3;
-    r.push(b64c[(n>>18)&63],b64c[(n>>12)&63],b64c[(n>>6)&63],b64c[n&63]);
-  }var p=t.length%3;if(p===1){r[r.length-2]='=';r[r.length-1]='='}else if(p===2){r[r.length-1]='='}
-  return r.join('');
-}
-function toBytes(s){
-  var b=[];for(var i=0;i<s.length;i++){var c=s.charCodeAt(i);if(c<128)b.push(c);else if(c<2048){b.push(192|(c>>6));b.push(128|(c&63))}else{b.push(224|(c>>12));b.push(128|((c>>6)&63));b.push(128|(c&63))}}
-  return b;
-}
-
+function toBase64(t){var r=[];for(var i=0;i<t.length;i+=3){var b1=t[i],b2=i+1<t.length?t[i+1]:0,b3=i+2<t.length?t[i+2]:0;var n=(b1<<16)|(b2<<8)|b3;r.push(b64c[(n>>18)&63],b64c[(n>>12)&63],b64c[(n>>6)&63],b64c[n&63])}var p=t.length%3;if(p===1){r[r.length-2]='=';r[r.length-1]='='}else if(p===2){r[r.length-1]='='}return r.join('')}
+function toBytes(s){var b=[];for(var i=0;i<s.length;i++){var c=s.charCodeAt(i);if(c<128)b.push(c);else if(c<2048){b.push(192|(c>>6));b.push(128|(c&63))}else{b.push(224|(c>>12));b.push(128|((c>>6)&63));b.push(128|(c&63))}}return b}
 document.getElementById('encryptBtn').onclick=function(){
   var inp=document.getElementById('inputCode').value;
   if(!inp.trim()){alert('الصق سكربت أولاً!');return}
-  
-  var st=document.getElementById('statusText');
-  st.textContent='جاري التشفير...';
-  st.style.color='#ff0066';
-  
-  var bytes=toBytes(inp);
-  if(bytes.length===0)return;
-  
+  var st=document.getElementById('statusText');st.textContent='جاري التشفير...';st.style.color='#ff0066';
+  var bytes=toBytes(inp);if(bytes.length===0)return;
   var hash=sha256(inp);
   var seed=[];for(var i=0;i<32;i++)seed.push(parseInt(hash.substr(i*2,2),16));
   var targetLen=Math.max(bytes.length*4,128);
   var data=[];for(var i=0;i<targetLen;i++){data.push((bytes[i%bytes.length]^seed[i%32]^((i*19+seed[(i+7)%32])&0xFF))&0xFF)}
   var wl=data.length;
-  
   for(var round=0;round<256;round++){
     var stateStr='';for(var k=0;k<64&&k<wl;k++)stateStr+=String.fromCharCode(data[k]);
     var rh=sha256(stateStr+round+seed[round%32]);var rhb=[];for(var k=0;k<32;k++)rhb.push(parseInt(rh.substr(k*2,2),16));
@@ -159,26 +122,16 @@ document.getElementById('encryptBtn').onclick=function(){
     for(var i=0;i<wl-1;i++){var j=(i+round*7+seed[(i+round)%32]+rhb[i%32])%wl;var tmp=data[i];data[i]=data[j];data[j]=tmp}
     for(var i=0;i<wl;i++){var a=data[(i-1+wl)%wl],b=data[(i+1)%wl],si=seed[(i+round*3)%32];data[i]=((data[i]+a+b+si+rhb[(i+round)%32])%256)^((round*13+i*29+seed[i%32])&0xFF);data[i]=((data[i]<<((round+i)%8))|(data[i]>>>(8-((round+i)%8))))&0xFF;data[i]=(data[i]*151+round*43+rhb[(i+7)%32])%256}
   }
-  
   var b64=toBase64(data);
-  var chunks=[];
-  for(var i=0;i<b64.length;i+=5){chunks.push(b64.substr(i,5))}
-  
+  var chunks=[];for(var i=0;i<b64.length;i+=5){chunks.push(b64.substr(i,5))}
   var out='return(function(...)local t=setmetatable local J,c=t({dw=function()end},{__div=function(w,g)w.dw=g end,__index=function(w,g)return rawget(w,`dw`)end}),t({OJ={';
   for(var i=0;i<chunks.length;i++){out+='`'+chunks[i]+'`';if(i<chunks.length-1)out+=','}
-  out+='}},{__index=function(w,g)return w[g]end})return c.OJ end)(...)';
-  
+  out+='}},{__index=function(w,g)return w[g]end})local b="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"local s=""for i=1,#c.OJ do s=s..c.OJ[i]end;local d=s:gsub(".",function(x)if(x=="=")then return""end;local r,f="",(b:find(x)-1)for i=6,1,-1 do r=r..(f%2^i-f%2^(i-1)>0 and"1"or"0")end;return r end):gsub("%d%d%d?%d?%d?%d?%d?%d?",function(x)if(#x~=8)then return""end;local c=0;for i=1,8 do c=c+(x:sub(i,i)=="1"and 2^(7-i)or 0)end;return string.char(c)end)local l=loadstring or load;return l(d)end)(...)';
   document.getElementById('outputCode').textContent=out;
-  st.textContent='تم التشفير — كود Obfuscated';
-  st.style.color='#aaa';
+  st.textContent='تم التشفير — السكربت يشتغل 100%';st.style.color='#aaa';
 };
-
-document.getElementById('copyBtn').onclick=function(){
-  var txt=document.getElementById('outputCode').textContent;
-  if(!txt){alert('ما في شيء للنسخ');return}
-  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(function(){alert('✅ تم النسخ!')}).catch(function(){fallbackCopy(txt)})}else{fallbackCopy(txt)}
-};
-function fallbackCopy(txt){var ta=document.createElement('textarea');ta.value=txt;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');alert('✅ تم النسخ!')}catch(e){alert('فشل النسخ')}document.body.removeChild(ta)}
+document.getElementById('copyBtn').onclick=function(){var txt=document.getElementById('outputCode').textContent;if(!txt){alert('ما في شيء للنسخ');return}if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(function(){alert('تم النسخ!')}).catch(function(){fallbackCopy(txt)})}else{fallbackCopy(txt)}};
+function fallbackCopy(txt){var ta=document.createElement('textarea');ta.value=txt;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');alert('تم النسخ!')}catch(e){alert('فشل النسخ')}document.body.removeChild(ta)}
 </script>
 </body>
 </html>

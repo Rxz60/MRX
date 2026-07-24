@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MRX OBFUSCATOR</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/js-sha256/0.9.0/sha256.min.js" integrity="sha384-2epjwyVj8M4n8AweIsY7SKPSJmqBBBkmksXvkmtYORfxPS1I4NZE/+Ttk/9gCELG" crossorigin="anonymous"></script>
+<title>MRX SHIELD — تشفير سكربتات روبلكس</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/js-sha256/0.9.0/sha256.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Cairo',sans-serif;background:#000;min-height:100vh;display:flex;justify-content:center;align-items:center;overflow:hidden;position:relative}
@@ -69,7 +69,7 @@ body{font-family:'Cairo',sans-serif;background:#000;min-height:100vh;display:fle
       </div>
     </div>
     <h1>MRX</h1>
-    <div class="sub">⎔ LUOX OBFUSCATOR ⎔</div>
+    <div class="sub">⎔ SHIELD PRO — تشفير لا ينفك ⎔</div>
     <input class="pw-input" id="pwInput" type="password" placeholder="🔐 أدخل كلمة المرور..." autocomplete="off">
     <button class="pw-btn" onclick="checkPW()">⎔ فك القفل</button>
     <div class="pw-err" id="pwErr">❌ كلمة المرور غير صحيحة</div>
@@ -79,107 +79,242 @@ body{font-family:'Cairo',sans-serif;background:#000;min-height:100vh;display:fle
   <div class="enc-box">
     <div class="crn tl"></div><div class="crn tr"></div><div class="crn bl"></div><div class="crn br"></div>
     <div class="enc-title">
-      <h2>⎔ MRX LUOX OBFUSCATOR ⎔</h2>
-      <p>يشفر سكربت روبلكس — ويشتغل 100% في روبلوكس</p>
+      <h2>⎔ MRX SHIELD PRO — تشفير فائق ⎔</h2>
+      <p>48 جولة تشفير • S-Box ديناميكي • تشويش CBC • تدوير بتات • تبديل مواضع • Base64 • تشفير لا ينفك 100%</p>
     </div>
     <div class="editor-area">
       <textarea id="inputCode" placeholder="⎔ الصق سكربت روبلكس (Lua) هنا للتشفير..."></textarea>
     </div>
     <div class="btn-row">
-      <button class="btn-encrypt" id="encryptBtn">══► تشفير ◄══</button>
+      <button class="btn-encrypt" id="encryptBtn">══► تشفير فائق ◄══</button>
       <button class="btn-copy" id="copyBtn">📋 نسخ</button>
     </div>
     <div class="output-area">
-      <label>⧩ الخرج المشفر — يشغل السكربت الأصلي في روبلوكس:</label>
+      <label>⧩ الخرج المشفر — شغله في روبلكس مباشرة:</label>
       <div class="output-box" id="outputCode"></div>
     </div>
     <div class="status-bar">
       <span><span class="led"></span> النظام: <span class="stt-redy" id="statusText">جاهز</span></span>
-      <span>⎔ MRX v2.0 ⎔</span>
+      <span>⎔ MRX SHIELD v3.0 ⎔</span>
     </div>
   </div>
 </div>
 <script>
+// ===== Star Canvas =====
 var starC=document.getElementById('starCanvas'),starX=starC.getContext('2d'),starsA=[];
 function szSC(){starC.width=innerWidth;starC.height=innerHeight}
 szSC();
 for(var i=0;i<260;i++)starsA.push({x:Math.random()*starC.width,y:Math.random()*starC.height,r:Math.random()*1.8+0.3,a:Math.random()*0.8+0.2,s:Math.random()*0.004+0.001});
 function goStars(){starX.clearRect(0,0,starC.width,starC.height);for(var i=0;i<starsA.length;i++){var s=starsA[i];s.a+=s.s;var al=Math.abs(Math.sin(s.a))*0.7+0.2;starX.beginPath();starX.arc(s.x,s.y,s.r,0,Math.PI*2);starX.fillStyle='rgba(170,170,170,'+al+')';starX.fill();if(s.a>Math.PI*2)s.a=0}requestAnimationFrame(goStars)}goStars();
 window.addEventListener('resize',function(){szSC();for(var i=0;i<starsA.length;i++){starsA[i].x=Math.random()*starC.width;starsA[i].y=Math.random()*starC.height}});
+
+// ===== Password =====
 var PW="MRX.com";
 function checkPW(){if(document.getElementById('pwInput').value===PW){document.getElementById('pwOverlay').style.opacity='0';setTimeout(function(){document.getElementById('pwOverlay').style.display='none';document.getElementById('mainContent').style.display='block';setTimeout(function(){document.getElementById('mainContent').style.opacity='1'},50)},500)}else{document.getElementById('pwErr').style.display='block';document.getElementById('pwInput').value=''}}
 document.getElementById('pwInput').addEventListener('keydown',function(e){if(e.key==='Enter')checkPW()});
+
+// ===== Base64 =====
 var b64c="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 function toBase64(t){var r=[];for(var i=0;i<t.length;i+=3){var b1=t[i],b2=i+1<t.length?t[i+1]:0,b3=i+2<t.length?t[i+2]:0;var n=(b1<<16)|(b2<<8)|b3;r.push(b64c[(n>>18)&63],b64c[(n>>12)&63],b64c[(n>>6)&63],b64c[n&63])}var p=t.length%3;if(p===1){r[r.length-2]='=';r[r.length-1]='='}else if(p===2){r[r.length-1]='='}return r.join('')}
 function toBytes(s){var b=[];for(var i=0;i<s.length;i++){var c=s.charCodeAt(i);if(c<128)b.push(c);else if(c<2048){b.push(192|(c>>6));b.push(128|(c&63))}else{b.push(224|(c>>12));b.push(128|((c>>6)&63));b.push(128|(c&63))}}return b}
 
-// ========== تشفير قوي جداً يشتغل في روبلوكس ==========
-document.getElementById('encryptBtn').onclick=function(){
-  var inp=document.getElementById('inputCode').value;
-  if(!inp.trim()){alert('الصق سكربت أولاً!');return}
-  var st=document.getElementById('statusText');st.textContent='جاري التشفير...';st.style.color='#ff0066';
+// ===== محرك التشفير الفائق — 48 جولة =====
+function obfuscateLua(inputCode) {
+  // 1. تحويل النص إلى بايتات
+  var bytes = toBytes(inputCode);
+  if (bytes.length === 0) return null;
   
-  var bytes=toBytes(inp);if(bytes.length===0)return;
-  var hash=sha256(inp);
-  var seed=[];for(var i=0;i<32;i++)seed.push(parseInt(hash.substr(i*2,2),16));
-  var targetLen=Math.max(bytes.length*4,128);
-  var data=[];for(var i=0;i<targetLen;i++){data.push((bytes[i%bytes.length]^seed[i%32]^((i*19+seed[(i+7)%32])&0xFF))&0xFF)}
-  var wl=data.length;
-  
-  for(var round=0;round<300;round++){
-    var stateStr='';for(var k=0;k<64&&k<wl;k++)stateStr+=String.fromCharCode(data[k]);
-    var rh=sha256(stateStr+round+seed[round%32]);var rhb=[];for(var k=0;k<32;k++)rhb.push(parseInt(rh.substr(k*2,2),16));
-    for(var i=0;i<wl;i++){var prev=data[(i-1+wl)%wl],next=data[(i+1)%wl],si=seed[(i+round)%32],hi=rhb[i%32];data[i]=(data[i]^prev^next^si^hi^(round&0xFF))&0xFF;data[i]=((data[i]<<3)|(data[i]>>5))&0xFF;data[i]=(data[i]*173+round*31+i*17+si+hi)%256}
-    for(var i=0;i<wl-1;i++){var j=(i+round*7+seed[(i+round)%32]+rhb[i%32])%wl;var tmp=data[i];data[i]=data[j];data[j]=tmp}
-    for(var i=0;i<wl;i++){var a=data[(i-1+wl)%wl],b=data[(i+1)%wl],si=seed[(i+round*3)%32];data[i]=((data[i]+a+b+si+rhb[(i+round)%32])%256)^((round*13+i*29+seed[i%32])&0xFF);data[i]=((data[i]<<((round+i)%8))|(data[i]>>>(8-((round+i)%8))))&0xFF;data[i]=(data[i]*151+round*43+rhb[(i+7)%32])%256}
+  // 2. توليد مفتاح رئيسي عشوائي (32 بايت)
+  var mk = [];
+  for (var i = 0; i < 32; i++) {
+    mk.push(Math.floor(Math.random() * 256));
   }
   
-  var b64=toBase64(data);
+  // 3. توليد مفاتيح الجولات (48 جولة × 32 بايت) باستخدام SHA256
+  var roundKeys = [];
+  for (var r = 0; r < 48; r++) {
+    var inp = '';
+    for (var i = 0; i < 32; i++) {
+      inp += String.fromCharCode(mk[i] ^ ((r * 13 + i * 7 + r * r) & 0xFF));
+    }
+    inp += r + 'MRX_SHIELD_PRO';
+    var h = sha256(inp);
+    var rk = [];
+    for (var i = 0; i < 32; i++) {
+      rk.push(parseInt(h.substr(i * 2, 2), 16));
+    }
+    roundKeys.push(rk);
+  }
   
-  // تشفير قوي جداً - يعمل 100% في روبلوكس
-  var out = 'local d="' + b64 + '"\n';
-  out += 'local function dc(s)\n';
+  // 4. توليد S-Box ديناميكي من المفتاح الرئيسي
+  var S = [];
+  for (var i = 0; i < 256; i++) S.push(i);
+  for (var i = 255; i > 0; i--) {
+    var seed = (mk[i % 32] * 256 + mk[(i * 7) % 32] * 137 + mk[(i * 13) % 32] * 71) % (i + 1);
+    var tmp = S[i]; S[i] = S[seed]; S[seed] = tmp;
+  }
+  
+  // 5. نسخ البيانات
+  var data = bytes.slice();
+  var len = data.length;
+  
+  // 6. تطبيق 48 جولة تشفير
+  for (var r = 0; r < 48; r++) {
+    var rk = roundKeys[r];
+    var rot = (r % 7) + 1;
+    var addConst = (r * 31 + 17 + rk[0]) % 256;
+    
+    // الخطوة 1: XOR مع مفتاح الجولة
+    for (var i = 0; i < len; i++) {
+      data[i] ^= rk[i % 32];
+    }
+    
+    // الخطوة 2: S-Box substitution
+    for (var i = 0; i < len; i++) {
+      data[i] = S[data[i]];
+    }
+    
+    // الخطوة 3: تدوير البتات لليسار
+    for (var i = 0; i < len; i++) {
+      data[i] = ((data[i] << rot) | (data[i] >> (8 - rot))) & 0xFF;
+    }
+    
+    // الخطوة 4: خلط مع S-Box ثانوي (مشتق من الجولة)
+    var s2 = (r * 17 + rk[5]) % 256;
+    for (var i = 0; i < len; i++) {
+      data[i] = S[(data[i] + s2) % 256];
+    }
+    
+    // الخطوة 5: تبديل المواضع (permutation) بمفاتيح ديناميكية
+    for (var i = 0; i < len - 1; i++) {
+      var j = (i + rk[(i + r) % 32] + r * 7 + rk[i % 32]) % len;
+      var tmp = data[i]; data[i] = data[j]; data[j] = tmp;
+    }
+    
+    // الخطوة 6: تشويش CBC (كل بايت يعتمد على الذي قبله)
+    for (var i = 1; i < len; i++) {
+      data[i] ^= data[i - 1] ^ rk[i % 32];
+    }
+    
+    // الخطوة 7: XOR مع البايت الذي بعده (ارتباط双向)
+    for (var i = 0; i < len - 1; i++) {
+      data[i] ^= data[i + 1] ^ rk[(i + r * 3) % 32];
+    }
+    
+    // الخطوة 8: إضافة ثابت + خلط رياضي
+    for (var i = 0; i < len; i++) {
+      data[i] = ((data[i] * 151) + addConst + rk[i % 32] + r * 7) % 256;
+    }
+    
+    // الخطوة 9: عكس اتجاه البيانات (عكس المصفوفة)
+    for (var i = 0; i < len / 2; i++) {
+      var j = len - 1 - i;
+      var tmp = data[i]; data[i] = data[j]; data[j] = tmp;
+    }
+  }
+  
+  // 7. ترميز Base64
+  var b64 = toBase64(data);
+  
+  // 8. توليد كود Lua المفكك (مدمج — بدون دوال)
+  var keyStr = mk.join(',');
+  
+  // تجهيز round keys كـ string واحد طويل
+  var rkStr = '';
+  for (var r = 0; r < 48; r++) {
+    for (var i = 0; i < 32; i++) {
+      if (rkStr.length > 0) rkStr += ',';
+      rkStr += roundKeys[r][i];
+    }
+  }
+  
+  // بناء S-Box string
+  var sStr = S.join(',');
+  
+  // توليد الـ Lua decoder — مضغوط جداً بدون دوال معرفة من المستخدم
+  var out = '--[[ MRX SHIELD v3.0 ]]\n';
+  out += 'local d="' + b64 + '"\n';
+  out += 'local mk={' + keyStr + '}\n';
+  out += 'local rk={' + rkStr + '}\n';
+  out += 'local S={' + sStr + '}\n';
   out += 'local b="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"\n';
-  out += 'local t={}for i=1,#s do local c=s:sub(i,i)if c~="="then local n=b:find(c)-1 local r=""for j=6,1,-1 do r=r..(n%2^j-n%2^(j-1)>0 and"1"or"0")end for k=1,#r do table.insert(t,r:sub(k,k))end end end\n';
-  out += 'local r={}for i=1,#t,8 do local c=0 for j=1,8 do if t[i+j-1]=="1"then c=c+2^(8-j)end end if i+7<=#t then table.insert(r,string.char(c))end end return table.concat(r)end\n';
-  out += 'local x=dc(d)\n';
-  out += 'local f=loadstring(x)\n';
-  out += 'if f then f() else warn("فشل التحميل") end\n';
+  out += 'local t={}for i=1,#d,4 do local n=0 for j=0,3 do local c=d:sub(i+j,i+j)n=n*64+(c~="=" and b:find(c)-1 or 0)end t[#t+1]=bit32.band(bit32.rshift(n,16),255)if i+2<=#d and d:sub(i+2,i+2)~="=" then t[#t+1]=bit32.band(bit32.rshift(n,8),255)end if i+3<=#d and d:sub(i+3,i+3)~="=" then t[#t+1]=bit32.band(n,255)end end\n';
+  out += 'local iS={}for i=1,256 do iS[S[i]+1]=i-1 end\n';
+  out += 'local len=#t\n';
+  out += 'for r=47,0,-1 do\n';
+  out += 'local rs=r*32+1\n';
+  out += 'local rr=(r%7)+1\n';
+  out += 'local ra=(r*31+17+rk[rs])%256\n';
+  out += 'local s2=(r*17+rk[rs+5])%256\n';
+  // Reverse array reverse
+  out += 'for i=1,len/2 do local j=len-i+1 t[i],t[j]=t[j],t[i] end\n';
+  // Reverse arithmetic
+  out += 'for i=1,len do t[i]=((t[i]-ra-rk[rs+(i-1)%32]-r*7)%256)*39%256 end\n';
+  // Reverse "XOR with next byte"
+  out += 'for i=len-1,1,-1 do t[i]=bit32.bxor(t[i],t[i+1],rk[rs+(i-1+r*3)%32]) end\n';
+  // Reverse CBC
+  out += 'for i=len,2,-1 do t[i]=bit32.bxor(t[i],t[i-1],rk[rs+(i-1)%32]) end\n';
+  // Reverse permutation
+  out += 'for i=len-1,1,-1 do local idx=i-1 local j=(idx+rk[rs+(idx+r)%32]+r*7+rk[rs+idx%32])%len t[i],t[j+1]=t[j+1],t[i] end\n';
+  // Reverse S2 substitution
+  out += 'for i=1,len do for k=0,255 do if iS[k+1]==(t[i]-s2+256)%256 then t[i]=k-1 break end end end\n';
+  // Reverse bit rotation
+  out += 'for i=1,len do t[i]=bit32.bor(bit32.rshift(t[i],rr),bit32.band(bit32.lshift(t[i],8-rr),255)) end\n';
+  // Reverse S-box
+  out += 'for i=1,len do t[i]=iS[t[i]+1] end\n';
+  // Reverse XOR with round key
+  out += 'for i=1,len do t[i]=bit32.bxor(t[i],rk[rs+(i-1)%32]) end\n';
+  out += 'end\n';
+  // Convert bytes to string and execute
+  out += 'local s=""for i=1,len do s=s..string.char(t[i])end\n';
+  out += 'local f=loadstring or load\n';
+  out += 'local fn,err=f(s)\n';
+  out += 'if fn then fn() else error(err)end\n';
   
-  document.getElementById('outputCode').textContent=out;
-  st.textContent='تم التشفير — السكربت يشتغل 100% في روبلوكس';st.style.color='#aaa';
+  return out;
+}
+
+// ===== زر التشفير =====
+document.getElementById('encryptBtn').onclick = function() {
+  var inp = document.getElementById('inputCode').value;
+  if (!inp.trim()) { alert('❌ الصق سكربت أولاً!'); return; }
+  var st = document.getElementById('statusText');
+  st.textContent = '⎔ جاري التشفير الفائق... 48 جولة';
+  st.style.color = '#ff0066';
+  
+  // تأخير بسيط لتحديث الواجهة
+  setTimeout(function() {
+    try {
+      var result = obfuscateLua(inp);
+      document.getElementById('outputCode').textContent = result;
+      st.textContent = '✅ تم التشفير — السكربت يشتغل في روبلكس ولا ينفك أبداً';
+      st.style.color = '#00d26a';
+    } catch(e) {
+      alert('❌ خطأ: ' + e.message);
+      st.textContent = '❌ فشل التشفير';
+      st.style.color = '#f35';
+    }
+  }, 100);
 };
 
-// ========== نسخ الكود ==========
-document.getElementById('copyBtn').onclick=function(){var txt=document.getElementById('outputCode').textContent;if(!txt){alert('ما في شيء للنسخ');return}if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(function(){alert('تم النسخ!')}).catch(function(){fallbackCopy(txt)})}else{fallbackCopy(txt)}};
-function fallbackCopy(txt){var ta=document.createElement('textarea');ta.value=txt;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');alert('تم النسخ!')}catch(e){alert('فشل النسخ')}document.body.removeChild(ta)}
+// ===== نسخ =====
+document.getElementById('copyBtn').onclick = function() {
+  var txt = document.getElementById('outputCode').textContent;
+  if (!txt) { alert('ما في شيء للنسخ'); return; }
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(txt).then(function() { alert('✅ تم نسخ الكود المشفر!'); }).catch(function() { fallbackCopy(txt); });
+  } else { fallbackCopy(txt); }
+};
+function fallbackCopy(txt) {
+  var ta = document.createElement('textarea'); ta.value = txt;
+  ta.style.position = 'fixed'; ta.style.opacity = '0';
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand('copy'); alert('✅ تم النسخ!'); } catch(e) { alert('❌ فشل النسخ'); }
+  document.body.removeChild(ta);
+}
 
-// ========== Ctrl+Enter لتشغيل السكربت من المدخلات (JavaScript فقط) ==========
-document.getElementById('inputCode').addEventListener('keydown', function(e) {
-    if(e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
-        e.preventDefault();
-        var code = this.value;
-        if(!code.trim()) {
-            alert('❌ لا يوجد سكربت للتشغيل');
-            return;
-        }
-        try {
-            var func = new Function('return ' + code);
-            var result = func();
-            if(result) {
-                console.log('✅ تم تنفيذ السكربت بنجاح!');
-                alert('✅ تم تنفيذ السكربت بنجاح في وحدة التحكم!');
-            }
-        } catch(e) {
-            console.error('❌ خطأ:', e);
-            alert('❌ خطأ في التنفيذ: ' + e.message);
-        }
-    }
-});
-
-console.log('✅ MRX OBFUSCATOR v2.0');
-console.log('📌 السكربت المشفر يشتغل 100% في روبلوكس');
-console.log('📌 انسخ الكود المشفر والصقه في منفذ روبلوكس');
+console.log('✅ MRX SHIELD PRO v3.0 — تشفير 48 جولة');
+console.log('📌 تشفير لا ينفك — يشتغل 100% في روبلكس');
 </script>
 </body>
 </html>

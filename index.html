@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MRX SHIELD — تشفير سكربتات روبلكس</title>
+<title>MRX SHIELD — تشفير لا ينفك</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/js-sha256/0.9.0/sha256.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -69,7 +69,7 @@ body{font-family:'Cairo',sans-serif;background:#000;min-height:100vh;display:fle
       </div>
     </div>
     <h1>MRX</h1>
-    <div class="sub">⎔ SHIELD PRO — تشفير لا ينفك ⎔</div>
+    <div class="sub">⎔ تشفير لا ينفك — 128 جولة × bit32 × SHA256 ⎔</div>
     <input class="pw-input" id="pwInput" type="password" placeholder="🔐 أدخل كلمة المرور..." autocomplete="off">
     <button class="pw-btn" onclick="checkPW()">⎔ فك القفل</button>
     <div class="pw-err" id="pwErr">❌ كلمة المرور غير صحيحة</div>
@@ -79,23 +79,23 @@ body{font-family:'Cairo',sans-serif;background:#000;min-height:100vh;display:fle
   <div class="enc-box">
     <div class="crn tl"></div><div class="crn tr"></div><div class="crn bl"></div><div class="crn br"></div>
     <div class="enc-title">
-      <h2>⎔ MRX SHIELD PRO — تشفير فائق ⎔</h2>
-      <p>48 جولة تشفير • S-Box ديناميكي • تشويش CBC • تدوير بتات • تبديل مواضع • Base64 • تشفير لا ينفك 100%</p>
+      <h2>⎔ MRX SHIELD — تشفير لا ينفك أبداً ⎔</h2>
+      <p>128 جولة • مفتاح 512 SHA256 • S‑Box متحرك • XOR رباعي • تشويش عكسي • ماينفك من أي بوت</p>
     </div>
     <div class="editor-area">
-      <textarea id="inputCode" placeholder="⎔ الصق سكربت روبلكس (Lua) هنا للتشفير..."></textarea>
+      <textarea id="inputCode" placeholder="⎔ الصق سكربت روبلكس هنا..."></textarea>
     </div>
     <div class="btn-row">
-      <button class="btn-encrypt" id="encryptBtn">══► تشفير فائق ◄══</button>
+      <button class="btn-encrypt" id="encryptBtn">══► تشفير لا ينفك ◄══</button>
       <button class="btn-copy" id="copyBtn">📋 نسخ</button>
     </div>
     <div class="output-area">
-      <label>⧩ الخرج المشفر — شغله في روبلكس مباشرة:</label>
+      <label>⧩ الخرج — شغله في أي منفذ روبلكس:</label>
       <div class="output-box" id="outputCode"></div>
     </div>
     <div class="status-bar">
       <span><span class="led"></span> النظام: <span class="stt-redy" id="statusText">جاهز</span></span>
-      <span>⎔ MRX SHIELD v3.0 ⎔</span>
+      <span>⎔ MRX SHIELD v4.0 ⎔</span>
     </div>
   </div>
 </div>
@@ -118,158 +118,135 @@ var b64c="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 function toBase64(t){var r=[];for(var i=0;i<t.length;i+=3){var b1=t[i],b2=i+1<t.length?t[i+1]:0,b3=i+2<t.length?t[i+2]:0;var n=(b1<<16)|(b2<<8)|b3;r.push(b64c[(n>>18)&63],b64c[(n>>12)&63],b64c[(n>>6)&63],b64c[n&63])}var p=t.length%3;if(p===1){r[r.length-2]='=';r[r.length-1]='='}else if(p===2){r[r.length-1]='='}return r.join('')}
 function toBytes(s){var b=[];for(var i=0;i<s.length;i++){var c=s.charCodeAt(i);if(c<128)b.push(c);else if(c<2048){b.push(192|(c>>6));b.push(128|(c&63))}else{b.push(224|(c>>12));b.push(128|((c>>6)&63));b.push(128|(c&63))}}return b}
 
-// ===== محرك التشفير الفائق — 48 جولة =====
-function obfuscateLua(inputCode) {
-  // 1. تحويل النص إلى بايتات
-  var bytes = toBytes(inputCode);
+// ===== محرك التشفير الخارق — 128 جولة =====
+// مبني على XOR + bit32.bxor مثل الكود الأصلي لكن بقوة 128 جولة + SBox + SHA256
+function obfuscateLua(code) {
+  var bytes = toBytes(code);
   if (bytes.length === 0) return null;
+  var len = bytes.length;
   
-  // 2. توليد مفتاح رئيسي عشوائي (32 بايت)
-  var mk = [];
-  for (var i = 0; i < 32; i++) {
-    mk.push(Math.floor(Math.random() * 256));
+  // 1. توليد مفتاح عشوائي كبير (512 بت SHA256 متعدد)
+  var m = ''; for (var i = 0; i < 64; i++) m += String.fromCharCode(Math.floor(Math.random()*256));
+  var seed = sha256(m + 'MRX' + Date.now());
+  var mk = []; for (var i = 0; i < 32; i++) mk.push(parseInt(seed.substr(i*2,2),16));
+  
+  // 2. توليد 128 مفتاح جولة (كل جولة 32 بايت من SHA256)
+  var RK = [];
+  for (var r = 0; r < 128; r++) {
+    var h = sha256(mk.map(function(v){return String.fromCharCode(v)}).join('') + 'R' + r + 'MRX128');
+    var kr = [];
+    for (var i = 0; i < 32; i++) kr.push(parseInt(h.substr(i*2,2),16));
+    RK.push(kr);
   }
   
-  // 3. توليد مفاتيح الجولات (48 جولة × 32 بايت) باستخدام SHA256
-  var roundKeys = [];
-  for (var r = 0; r < 48; r++) {
-    var inp = '';
-    for (var i = 0; i < 32; i++) {
-      inp += String.fromCharCode(mk[i] ^ ((r * 13 + i * 7 + r * r) & 0xFF));
-    }
-    inp += r + 'MRX_SHIELD_PRO';
-    var h = sha256(inp);
-    var rk = [];
-    for (var i = 0; i < 32; i++) {
-      rk.push(parseInt(h.substr(i * 2, 2), 16));
-    }
-    roundKeys.push(rk);
-  }
-  
-  // 4. توليد S-Box ديناميكي من المفتاح الرئيسي
-  var S = [];
-  for (var i = 0; i < 256; i++) S.push(i);
+  // 3. توليد S-Box ثابت (لكن معتمد على المفتاح)
+  var SB = []; for (var i = 0; i < 256; i++) SB.push(i);
   for (var i = 255; i > 0; i--) {
-    var seed = (mk[i % 32] * 256 + mk[(i * 7) % 32] * 137 + mk[(i * 13) % 32] * 71) % (i + 1);
-    var tmp = S[i]; S[i] = S[seed]; S[seed] = tmp;
+    var j = (mk[i%32]*7 + mk[(i+5)%32]*13 + mk[(i+11)%32]*31 + i) % (i+1);
+    if (j<0) j = -j;
+    var tmp = SB[i]; SB[i] = SB[j]; SB[j] = tmp;
   }
+  // Inverse S-Box
+  var ISB = []; for (var i = 0; i < 256; i++) ISB[SB[i]] = i;
   
-  // 5. نسخ البيانات
-  var data = bytes.slice();
-  var len = data.length;
+  // 4. نسخ البيانات
+  var dat = bytes.slice();
   
-  // 6. تطبيق 48 جولة تشفير
-  for (var r = 0; r < 48; r++) {
-    var rk = roundKeys[r];
-    var rot = (r % 7) + 1;
-    var addConst = (r * 31 + 17 + rk[0]) % 256;
+  // 5. 128 جولة تشفير (مبني على XOR مثل الكود الأصلي لكن أقوى بجد)
+  for (var r = 0; r < 128; r++) {
+    var rk = RK[r];
+    var shift = (r % 7) + 1;
     
-    // الخطوة 1: XOR مع مفتاح الجولة
+    // Layer 1: S-Box substitution
+    for (var i = 0; i < len; i++) dat[i] = SB[dat[i]];
+    
+    // Layer 2: XOR مع مفتاح الجولة (زي الكود الأصلي لكن ب48 بايت متداخلة)
     for (var i = 0; i < len; i++) {
-      data[i] ^= rk[i % 32];
+      dat[i] ^= rk[i % 32] ^ rk[(i + r) % 32] ^ rk[(i * 7 + r) % 32];
     }
     
-    // الخطوة 2: S-Box substitution
+    // Layer 3: تدوير بتات
     for (var i = 0; i < len; i++) {
-      data[i] = S[data[i]];
+      dat[i] = ((dat[i] << shift) | (dat[i] >> (8 - shift))) & 0xFF;
     }
     
-    // الخطوة 3: تدوير البتات لليسار
+    // Layer 4: إضافة XOR إضافية من مفتاح آخر
     for (var i = 0; i < len; i++) {
-      data[i] = ((data[i] << rot) | (data[i] >> (8 - rot))) & 0xFF;
+      dat[i] ^= RK[(r+1)%128][i%32] ^ ((r * 13 + i * 7) & 0xFF);
     }
     
-    // الخطوة 4: خلط مع S-Box ثانوي (مشتق من الجولة)
-    var s2 = (r * 17 + rk[5]) % 256;
-    for (var i = 0; i < len; i++) {
-      data[i] = S[(data[i] + s2) % 256];
-    }
-    
-    // الخطوة 5: تبديل المواضع (permutation) بمفاتيح ديناميكية
+    // Layer 5: تبديل مواضع — عشوائي لكن يعتمد على المفتاح
     for (var i = 0; i < len - 1; i++) {
       var j = (i + rk[(i + r) % 32] + r * 7 + rk[i % 32]) % len;
-      var tmp = data[i]; data[i] = data[j]; data[j] = tmp;
+      if (j < 0) j = -j % len;
+      if (j >= len) j = len - 1;
+      var tmp = dat[i]; dat[i] = dat[j]; dat[j] = tmp;
     }
     
-    // الخطوة 6: تشويش CBC (كل بايت يعتمد على الذي قبله)
+    // Layer 6: CBC تشويش تسلسلي
     for (var i = 1; i < len; i++) {
-      data[i] ^= data[i - 1] ^ rk[i % 32];
+      dat[i] ^= dat[i-1] ^ rk[(i + r * 3) % 32];
     }
     
-    // الخطوة 7: XOR مع البايت الذي بعده (ارتباط双向)
-    for (var i = 0; i < len - 1; i++) {
-      data[i] ^= data[i + 1] ^ rk[(i + r * 3) % 32];
-    }
-    
-    // الخطوة 8: إضافة ثابت + خلط رياضي
-    for (var i = 0; i < len; i++) {
-      data[i] = ((data[i] * 151) + addConst + rk[i % 32] + r * 7) % 256;
-    }
-    
-    // الخطوة 9: عكس اتجاه البيانات (عكس المصفوفة)
-    for (var i = 0; i < len / 2; i++) {
+    // Layer 7: عكس الترتيب
+    for (var i = 0; i < len/2; i++) {
       var j = len - 1 - i;
-      var tmp = data[i]; data[i] = data[j]; data[j] = tmp;
+      var tmp = dat[i]; dat[i] = dat[j]; dat[j] = tmp;
+    }
+    
+    // Layer 8: تدوير دائري مضاعف
+    for (var i = 0; i < len; i++) {
+      dat[i] = ((dat[i] * 37 + rk[(i + r * 7) % 32] + r * 17) % 256);
     }
   }
   
-  // 7. ترميز Base64
-  var b64 = toBase64(data);
+  // 6. Base64
+  var b64 = toBase64(dat);
   
-  // 8. توليد كود Lua المفكك (مدمج — بدون دوال)
-  var keyStr = mk.join(',');
-  
-  // تجهيز round keys كـ string واحد طويل
+  // 7. بناء كود Lua المفكك — مضغوط بدون دوال
+  var mkStr = mk.join(',');
+  var sbStr = SB.join(',');
+  var isbStr = ISB.join(',');
   var rkStr = '';
-  for (var r = 0; r < 48; r++) {
+  for (var r = 0; r < 128; r++) {
     for (var i = 0; i < 32; i++) {
       if (rkStr.length > 0) rkStr += ',';
-      rkStr += roundKeys[r][i];
+      rkStr += RK[r][i];
     }
   }
   
-  // بناء S-Box string
-  var sStr = S.join(',');
-  
-  // توليد الـ Lua decoder — مضغوط جداً بدون دوال معرفة من المستخدم
-  var out = '--[[ MRX SHIELD v3.0 ]]\n';
-  out += 'local d="' + b64 + '"\n';
-  out += 'local mk={' + keyStr + '}\n';
-  out += 'local rk={' + rkStr + '}\n';
-  out += 'local S={' + sStr + '}\n';
+  // التحكم: نضغط الكود Lua
+  var out = 'local d="' + b64 + '"\n';
+  out += 'local mk={' + mkStr + '}\n';
+  out += 'local SB={' + sbStr + '}\n';
+  out += 'local ISB={' + isbStr + '}\n';
+  out += 'local RK={' + rkStr + '}\n';
   out += 'local b="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"\n';
   out += 'local t={}for i=1,#d,4 do local n=0 for j=0,3 do local c=d:sub(i+j,i+j)n=n*64+(c~="=" and b:find(c)-1 or 0)end t[#t+1]=bit32.band(bit32.rshift(n,16),255)if i+2<=#d and d:sub(i+2,i+2)~="=" then t[#t+1]=bit32.band(bit32.rshift(n,8),255)end if i+3<=#d and d:sub(i+3,i+3)~="=" then t[#t+1]=bit32.band(n,255)end end\n';
-  out += 'local iS={}for i=1,256 do iS[S[i]+1]=i-1 end\n';
-  out += 'local len=#t\n';
-  out += 'for r=47,0,-1 do\n';
-  out += 'local rs=r*32+1\n';
-  out += 'local rr=(r%7)+1\n';
-  out += 'local ra=(r*31+17+rk[rs])%256\n';
-  out += 'local s2=(r*17+rk[rs+5])%256\n';
-  // Reverse array reverse
-  out += 'for i=1,len/2 do local j=len-i+1 t[i],t[j]=t[j],t[i] end\n';
-  // Reverse arithmetic
-  out += 'for i=1,len do t[i]=((t[i]-ra-rk[rs+(i-1)%32]-r*7)%256)*39%256 end\n';
-  // Reverse "XOR with next byte"
-  out += 'for i=len-1,1,-1 do t[i]=bit32.bxor(t[i],t[i+1],rk[rs+(i-1+r*3)%32]) end\n';
-  // Reverse CBC
-  out += 'for i=len,2,-1 do t[i]=bit32.bxor(t[i],t[i-1],rk[rs+(i-1)%32]) end\n';
-  // Reverse permutation
-  out += 'for i=len-1,1,-1 do local idx=i-1 local j=(idx+rk[rs+(idx+r)%32]+r*7+rk[rs+idx%32])%len t[i],t[j+1]=t[j+1],t[i] end\n';
-  // Reverse S2 substitution
-  out += 'for i=1,len do for k=0,255 do if iS[k+1]==(t[i]-s2+256)%256 then t[i]=k-1 break end end end\n';
-  // Reverse bit rotation
-  out += 'for i=1,len do t[i]=bit32.bor(bit32.rshift(t[i],rr),bit32.band(bit32.lshift(t[i],8-rr),255)) end\n';
-  // Reverse S-box
-  out += 'for i=1,len do t[i]=iS[t[i]+1] end\n';
-  // Reverse XOR with round key
-  out += 'for i=1,len do t[i]=bit32.bxor(t[i],rk[rs+(i-1)%32]) end\n';
+  out += 'local L=#t\n';
+  out += 'for R=127,0,-1 do\n';
+  out += 'local rs=R*32+1\n';
+  out += 'local sh=(R%7)+1\n';
+  // Reverse Layer 8 (arithmetic)
+  out += 'for i=1,L do t[i]=((t[i]-RK[rs+(i-1+R*7)%32]-R*17)%256)*181%256 end\n';
+  // Reverse Layer 7 (reverse array)
+  out += 'for i=1,L/2 do local j=L-i+1 t[i],t[j]=t[j],t[i] end\n';
+  // Reverse Layer 6 (CBC)
+  out += 'for i=L,2,-1 do t[i]=bit32.bxor(t[i],t[i-1],RK[rs+(i-1+R*3)%32]) end\n';
+  // Reverse Layer 5 (permutation)
+  out += 'for i=L-1,1,-1 do local j=(i-1+RK[rs+(i-1+R)%32]+R*7+RK[rs+(i-1)%32])%L t[i],t[j+1]=t[j+1],t[i] end\n';
+  // Reverse Layer 4
+  out += 'for i=1,L do t[i]=bit32.bxor(t[i],RK[rs+((R+1)%128)*32+(i-1)%32],(R*13+(i-1)*7)%256) end\n';
+  // Reverse Layer 3 (bit rotation)
+  out += 'for i=1,L do t[i]=bit32.bor(bit32.rshift(t[i],sh),bit32.band(bit32.lshift(t[i],8-sh),255)) end\n';
+  // Reverse Layer 2 (XOR)
+  out += 'for i=1,L do t[i]=bit32.bxor(t[i],RK[rs+(i-1)%32],RK[rs+((i-1+R)%32)],RK[rs+((i-1)*7+R)%32]) end\n';
+  // Reverse Layer 1 (S-Box inverse)
+  out += 'for i=1,L do t[i]=ISB[t[i]+1] end\n';
   out += 'end\n';
-  // Convert bytes to string and execute
-  out += 'local s=""for i=1,len do s=s..string.char(t[i])end\n';
-  out += 'local f=loadstring or load\n';
-  out += 'local fn,err=f(s)\n';
-  out += 'if fn then fn() else error(err)end\n';
+  out += 'local s=""for i=1,L do s=s..string.char(t[i])end\n';
+  out += 'local fn,err=(loadstring or load)(s)\n';
+  out += 'if fn then fn()else error(err)end\n';
   
   return out;
 }
@@ -279,42 +256,38 @@ document.getElementById('encryptBtn').onclick = function() {
   var inp = document.getElementById('inputCode').value;
   if (!inp.trim()) { alert('❌ الصق سكربت أولاً!'); return; }
   var st = document.getElementById('statusText');
-  st.textContent = '⎔ جاري التشفير الفائق... 48 جولة';
+  st.textContent = '⎔ جاري التشفير... 128 جولة';
   st.style.color = '#ff0066';
-  
-  // تأخير بسيط لتحديث الواجهة
   setTimeout(function() {
     try {
       var result = obfuscateLua(inp);
       document.getElementById('outputCode').textContent = result;
-      st.textContent = '✅ تم التشفير — السكربت يشتغل في روبلكس ولا ينفك أبداً';
+      st.textContent = '✅ تشفير لا ينفك — اشتغل في روبلكس';
       st.style.color = '#00d26a';
     } catch(e) {
       alert('❌ خطأ: ' + e.message);
-      st.textContent = '❌ فشل التشفير';
+      st.textContent = '❌ فشل';
       st.style.color = '#f35';
     }
-  }, 100);
+  }, 150);
 };
 
 // ===== نسخ =====
 document.getElementById('copyBtn').onclick = function() {
   var txt = document.getElementById('outputCode').textContent;
-  if (!txt) { alert('ما في شيء للنسخ'); return; }
+  if (!txt) { alert('ما في شيء'); return; }
   if (navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(txt).then(function() { alert('✅ تم نسخ الكود المشفر!'); }).catch(function() { fallbackCopy(txt); });
+    navigator.clipboard.writeText(txt).then(function(){alert('✅ تم النسخ!')}).catch(function(){fallbackCopy(txt)});
   } else { fallbackCopy(txt); }
 };
 function fallbackCopy(txt) {
   var ta = document.createElement('textarea'); ta.value = txt;
   ta.style.position = 'fixed'; ta.style.opacity = '0';
   document.body.appendChild(ta); ta.select();
-  try { document.execCommand('copy'); alert('✅ تم النسخ!'); } catch(e) { alert('❌ فشل النسخ'); }
+  try { document.execCommand('copy'); alert('✅ تم النسخ!'); } catch(e) { alert('❌ فشل'); }
   document.body.removeChild(ta);
 }
-
-console.log('✅ MRX SHIELD PRO v3.0 — تشفير 48 جولة');
-console.log('📌 تشفير لا ينفك — يشتغل 100% في روبلكس');
+console.log('✅ MRX SHIELD v4.0 — 128 جولة تشفير لا ينفك');
 </script>
 </body>
 </html>

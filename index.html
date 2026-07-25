@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MRX | VM Obfuscator   </title>
+    <title>MRX | VM Obfuscator</title>
     <style>
         *{margin:0;padding:0;box-sizing:border-box}
         body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background:#000;color:#00ff41;min-height:100vh;overflow-x:hidden;position:relative}
@@ -64,29 +64,28 @@
         <div class="login-box">
             <img class="login-logo-img" src="https://github.com/Rxz60/MRX/raw/refs/heads/main/IMG_4528.jpeg" alt="MRX Logo">
             <div class="login-brand">MRX</div>
-            <div class="login-sub">Roblox Obfuscator </div>
-            <input type="text" id="loginUser" placeholder="Username" autocomplete="off">
-            <input type="password" id="loginPass" placeholder="Password" autocomplete="off">
-            <button class="login-btn" onclick="handleLogin()">Login</button>
+            <div class="login-sub">Roblox Security</div>
+            <input type="text" id="loginUser" placeholder="MRX.com" autocomplete="off" value="MRX.com">
+            <button class="login-btn" onclick="handleLogin()">دخول</button>
             <div class="login-error" id="loginError"></div>
         </div>
     </div>
     <div id="mainApp">
-        <button class="logout-btn" onclick="handleLogout()">Logout</button>
+        <button class="logout-btn" onclick="handleLogout()">خروج</button>
         <div class="container">
             <div class="header-brand">
                 <div class="logo-text">MRX</div>
                 <div class="sub-text">VM OBFUSCATOR</div>
                 <div class="vm-badge">VM PROTECTION LAYER 5</div>
                 <div class="protection-level">
-                    <span class="level-badge light">Light</span>
-                    <span class="level-badge medium">Medium</span>
-                    <span class="level-badge strong">Strong</span>
-                    <span class="level-badge ultra">Ultra</span>
+                    <span class="level-badge light">خفيف</span>
+                    <span class="level-badge medium">متوسط</span>
+                    <span class="level-badge strong">قوي</span>
+                    <span class="level-badge ultra">قوي مره</span>
                 </div>
                 <div class="encryption-info">
                     <span>VM Bytecode</span>
-                    <span>20-Layer XOR</span>
+                    <span>100-Layer XOR</span>
                     <span>Control Flow</span>
                     <span>Anti-Decompile</span>
                 </div>
@@ -107,7 +106,7 @@
         </div>
     </div>
     <script>
-        
+        // ===== Stars Background =====
         const canvas = document.getElementById('stars-canvas');
         const ctx = canvas.getContext('2d');
         let stars = [];
@@ -150,9 +149,9 @@
         }
         drawStars();
 
-        
+        // ===== Login/Logout =====
         function handleLogin() {
-            if (!document.getElementById('loginUser').value.trim() || !document.getElementById('loginPass').value.trim()) return;
+            if (!document.getElementById('loginUser').value.trim()) return;
             document.getElementById('loginScreen').classList.add('hidden');
             document.getElementById('mainApp').classList.add('active');
         }
@@ -161,73 +160,86 @@
             document.getElementById('mainApp').classList.remove('active');
             document.getElementById('loginScreen').classList.remove('hidden');
             document.getElementById('loginUser').value = '';
-            document.getElementById('loginPass').value = '';
         }
 
-        Obfuscation (20 Layers + Complex Shuffle) =====
+        // ===== Ultra Strong 100-Layer Obfuscation =====
         function obfuscateScript() {
             const rawCode = document.getElementById('inputLua').value;
             if (!rawCode.trim()) return;
 
-            // Step 1: Convert code to bytes with multiple encodings
+            // Step 1: Convert code to bytes
             const bytes = [];
             for (let i = 0; i < rawCode.length; i++) {
                 bytes.push(rawCode.charCodeAt(i));
             }
 
-            // Step 2: Generate 20 random XOR keys (Ultra strong)
+            // Step 2: Generate 100 random XOR keys
             const keys = [];
-            for (let i = 0; i < 20; i++) {
+            for (let i = 0; i < 100; i++) {
                 keys.push(Math.floor(Math.random() * 255) + 1);
             }
 
-            // Step 3: Apply 20-layer XOR encryption with dynamic transformations
+            // Step 3: Apply 100-layer XOR encryption with dynamic transformations
             let layer = bytes;
-            for (let ki = 0; ki < 20; ki++) {
-                // Apply XOR with key
+            for (let ki = 0; ki < 100; ki++) {
                 layer = layer.map((b, idx) => {
                     let val = b ^ keys[ki];
-                    // Add extra transformation based on position and key
-                    val = (val + (idx % 7)) & 0xFF;
-                    val = val ^ ((ki * 3 + idx) % 256);
+                    val = (val + (idx * 7 + 3) % 13) & 0xFF;
+                    val = val ^ ((ki * 5 + idx * 2) % 256);
+                    val = (val + (idx % 11)) & 0xFF;
+                    val = val ^ ((ki * 7 + idx * 3) % 256);
+                    val = (val + (idx * 3 + 5) % 17) & 0xFF;
+                    val = val ^ ((ki * 11 + idx * 5) % 256);
                     return val;
                 });
             }
 
-            // Step 4: Complex Shuffle with multiple passes
+            // Step 4: Multi-stage shuffling (5 passes)
             let shuffleOrder = [];
             let finalData = [];
             let indices = [];
             for (let i = 0; i < layer.length; i++) indices.push(i);
             
-            // Pass 1: Random shuffle
-            for (let i = indices.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [indices[i], indices[j]] = [indices[j], indices[i]];
-            }
-            
-            // Pass 2: Reverse order
-            indices.reverse();
-            
-            // Pass 3: Shuffle again with different pattern
-            for (let i = 0; i < indices.length; i++) {
-                const j = (i * 7 + 3) % indices.length;
-                [indices[i], indices[j]] = [indices[j], indices[i]];
+            for (let pass = 0; pass < 5; pass++) {
+                for (let i = indices.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [indices[i], indices[j]] = [indices[j], indices[i]];
+                }
+                indices.reverse();
+                for (let i = 0; i < indices.length; i++) {
+                    const j = (i * 7 + 3 + pass * 5) % indices.length;
+                    [indices[i], indices[j]] = [indices[j], indices[i]];
+                }
             }
 
-            // Apply shuffle
             for (let i = 0; i < layer.length; i++) {
                 finalData.push(layer[indices[i]]);
                 shuffleOrder.push(indices[i]);
             }
 
-            // Step 5: Generate complex VM-based code with 20 keys
-            const output = `-- MRX VM PROTECTED (ULTRA - 20 Layers)
+            // Step 5: Generate VM-based code with 100 keys
+            const output = `-- MRX VM PROTECTED (100 LAYERS)
 -- Generated by MRX Ultimate Obfuscator v4.0
 local _K1=${keys[0]};local _K2=${keys[1]};local _K3=${keys[2]};local _K4=${keys[3]};local _K5=${keys[4]};
 local _K6=${keys[5]};local _K7=${keys[6]};local _K8=${keys[7]};local _K9=${keys[8]};local _K10=${keys[9]};
 local _K11=${keys[10]};local _K12=${keys[11]};local _K13=${keys[12]};local _K14=${keys[13]};local _K15=${keys[14]};
 local _K16=${keys[15]};local _K17=${keys[16]};local _K18=${keys[17]};local _K19=${keys[18]};local _K20=${keys[19]};
+local _K21=${keys[20]};local _K22=${keys[21]};local _K23=${keys[22]};local _K24=${keys[23]};local _K25=${keys[24]};
+local _K26=${keys[25]};local _K27=${keys[26]};local _K28=${keys[27]};local _K29=${keys[28]};local _K30=${keys[29]};
+local _K31=${keys[30]};local _K32=${keys[31]};local _K33=${keys[32]};local _K34=${keys[33]};local _K35=${keys[34]};
+local _K36=${keys[35]};local _K37=${keys[36]};local _K38=${keys[37]};local _K39=${keys[38]};local _K40=${keys[39]};
+local _K41=${keys[40]};local _K42=${keys[41]};local _K43=${keys[42]};local _K44=${keys[43]};local _K45=${keys[44]};
+local _K46=${keys[45]};local _K47=${keys[46]};local _K48=${keys[47]};local _K49=${keys[48]};local _K50=${keys[49]};
+local _K51=${keys[50]};local _K52=${keys[51]};local _K53=${keys[52]};local _K54=${keys[53]};local _K55=${keys[54]};
+local _K56=${keys[55]};local _K57=${keys[56]};local _K58=${keys[57]};local _K59=${keys[58]};local _K60=${keys[59]};
+local _K61=${keys[60]};local _K62=${keys[61]};local _K63=${keys[62]};local _K64=${keys[63]};local _K65=${keys[64]};
+local _K66=${keys[65]};local _K67=${keys[66]};local _K68=${keys[67]};local _K69=${keys[68]};local _K70=${keys[69]};
+local _K71=${keys[70]};local _K72=${keys[71]};local _K73=${keys[72]};local _K74=${keys[73]};local _K75=${keys[74]};
+local _K76=${keys[75]};local _K77=${keys[76]};local _K78=${keys[77]};local _K79=${keys[78]};local _K80=${keys[79]};
+local _K81=${keys[80]};local _K82=${keys[81]};local _K83=${keys[82]};local _K84=${keys[83]};local _K85=${keys[84]};
+local _K86=${keys[85]};local _K87=${keys[86]};local _K88=${keys[87]};local _K89=${keys[88]};local _K90=${keys[89]};
+local _K91=${keys[90]};local _K92=${keys[91]};local _K93=${keys[92]};local _K94=${keys[93]};local _K95=${keys[94]};
+local _K96=${keys[95]};local _K97=${keys[96]};local _K98=${keys[97]};local _K99=${keys[98]};local _K100=${keys[99]};
 local _SO={${shuffleOrder.join(',')}};local _SD={${finalData.join(',')}}
 local _L=#_SD;local _RD={}
 -- VM Decryption Engine
@@ -237,30 +249,34 @@ local function _VM_DECRYPT()
     local bit=bit32 or bit
     for _i=1,_L do 
         local b=_tmp[_i]
-        -- Reverse 20-layer XOR with position transformations
-        b=bit.bxor(b,_K20)
-        b=bit.bxor(b,_K19)
-        b=bit.bxor(b,_K18)
-        b=bit.bxor(b,_K17)
-        b=bit.bxor(b,_K16)
-        b=bit.bxor(b,_K15)
-        b=bit.bxor(b,_K14)
-        b=bit.bxor(b,_K13)
-        b=bit.bxor(b,_K12)
-        b=bit.bxor(b,_K11)
-        b=bit.bxor(b,_K10)
-        b=bit.bxor(b,_K9)
-        b=bit.bxor(b,_K8)
-        b=bit.bxor(b,_K7)
-        b=bit.bxor(b,_K6)
-        b=bit.bxor(b,_K5)
-        b=bit.bxor(b,_K4)
-        b=bit.bxor(b,_K3)
-        b=bit.bxor(b,_K2)
-        b=bit.bxor(b,_K1)
-        -- Remove position-based transformations
-        b=(b - ((_i-1) % 7)) & 0xFF
-        b=b ^ ((((_i-1) % 20) * 3 + (_i-1)) % 256)
+        -- Reverse 100-layer XOR
+        b=bit.bxor(b,_K100);b=bit.bxor(b,_K99);b=bit.bxor(b,_K98);b=bit.bxor(b,_K97);b=bit.bxor(b,_K96);
+        b=bit.bxor(b,_K95);b=bit.bxor(b,_K94);b=bit.bxor(b,_K93);b=bit.bxor(b,_K92);b=bit.bxor(b,_K91);
+        b=bit.bxor(b,_K90);b=bit.bxor(b,_K89);b=bit.bxor(b,_K88);b=bit.bxor(b,_K87);b=bit.bxor(b,_K86);
+        b=bit.bxor(b,_K85);b=bit.bxor(b,_K84);b=bit.bxor(b,_K83);b=bit.bxor(b,_K82);b=bit.bxor(b,_K81);
+        b=bit.bxor(b,_K80);b=bit.bxor(b,_K79);b=bit.bxor(b,_K78);b=bit.bxor(b,_K77);b=bit.bxor(b,_K76);
+        b=bit.bxor(b,_K75);b=bit.bxor(b,_K74);b=bit.bxor(b,_K73);b=bit.bxor(b,_K72);b=bit.bxor(b,_K71);
+        b=bit.bxor(b,_K70);b=bit.bxor(b,_K69);b=bit.bxor(b,_K68);b=bit.bxor(b,_K67);b=bit.bxor(b,_K66);
+        b=bit.bxor(b,_K65);b=bit.bxor(b,_K64);b=bit.bxor(b,_K63);b=bit.bxor(b,_K62);b=bit.bxor(b,_K61);
+        b=bit.bxor(b,_K60);b=bit.bxor(b,_K59);b=bit.bxor(b,_K58);b=bit.bxor(b,_K57);b=bit.bxor(b,_K56);
+        b=bit.bxor(b,_K55);b=bit.bxor(b,_K54);b=bit.bxor(b,_K53);b=bit.bxor(b,_K52);b=bit.bxor(b,_K51);
+        b=bit.bxor(b,_K50);b=bit.bxor(b,_K49);b=bit.bxor(b,_K48);b=bit.bxor(b,_K47);b=bit.bxor(b,_K46);
+        b=bit.bxor(b,_K45);b=bit.bxor(b,_K44);b=bit.bxor(b,_K43);b=bit.bxor(b,_K42);b=bit.bxor(b,_K41);
+        b=bit.bxor(b,_K40);b=bit.bxor(b,_K39);b=bit.bxor(b,_K38);b=bit.bxor(b,_K37);b=bit.bxor(b,_K36);
+        b=bit.bxor(b,_K35);b=bit.bxor(b,_K34);b=bit.bxor(b,_K33);b=bit.bxor(b,_K32);b=bit.bxor(b,_K31);
+        b=bit.bxor(b,_K30);b=bit.bxor(b,_K29);b=bit.bxor(b,_K28);b=bit.bxor(b,_K27);b=bit.bxor(b,_K26);
+        b=bit.bxor(b,_K25);b=bit.bxor(b,_K24);b=bit.bxor(b,_K23);b=bit.bxor(b,_K22);b=bit.bxor(b,_K21);
+        b=bit.bxor(b,_K20);b=bit.bxor(b,_K19);b=bit.bxor(b,_K18);b=bit.bxor(b,_K17);b=bit.bxor(b,_K16);
+        b=bit.bxor(b,_K15);b=bit.bxor(b,_K14);b=bit.bxor(b,_K13);b=bit.bxor(b,_K12);b=bit.bxor(b,_K11);
+        b=bit.bxor(b,_K10);b=bit.bxor(b,_K9);b=bit.bxor(b,_K8);b=bit.bxor(b,_K7);b=bit.bxor(b,_K6);
+        b=bit.bxor(b,_K5);b=bit.bxor(b,_K4);b=bit.bxor(b,_K3);b=bit.bxor(b,_K2);b=bit.bxor(b,_K1);
+        -- Remove all transformations
+        b=(b - ((_i-1) * 7 + 3) % 13) & 0xFF
+        b=b ^ ((100 * 5 + (_i-1) * 2) % 256)
+        b=(b - ((_i-1) % 11)) & 0xFF
+        b=b ^ ((100 * 7 + (_i-1) * 3) % 256)
+        b=(b - ((_i-1) * 3 + 5) % 17) & 0xFF
+        b=b ^ ((100 * 11 + (_i-1) * 5) % 256)
         _tmp[_i]=b
     end
     local _chars={}

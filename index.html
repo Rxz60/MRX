@@ -1,293 +1,552 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MRX SHIELD — تشفير لا ينفك</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/js-sha256/0.9.0/sha256.min.js"></script>
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Cairo',sans-serif;background:#000;min-height:100vh;display:flex;justify-content:center;align-items:center;overflow:hidden;position:relative}
-#starCanvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none}
-.pw-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:#000;display:flex;justify-content:center;align-items:center;z-index:1000}
-.pw-box{background:#0a0a0a;border:1px solid #222;padding:35px 30px;border-radius:20px;text-align:center;max-width:550px;width:92%;box-shadow:0 0 80px #111;position:relative;overflow:hidden;z-index:10}
-.pw-box .mrx-row{display:flex;align-items:center;justify-content:center;gap:20px;margin-bottom:6px;flex-wrap:wrap}
-.pw-box .mrx-ascii{font-family:'Courier New',monospace;font-size:7px;line-height:1;color:#888;text-shadow:0 0 20px #444;text-align:center;letter-spacing:1px;white-space:pre;opacity:.7;flex-shrink:0}
-.pw-box .mrx-img img{width:100px;height:100px;border-radius:12px;object-fit:cover;border:1px solid #333;flex-shrink:0;opacity:.85}
-.pw-box h1{color:#ccc;font-size:2rem;font-weight:900;margin:2px 0}
-.pw-box .sub{color:#555;font-size:.78rem;margin-bottom:20px}
-.pw-input{width:100%;padding:14px 18px;background:#050505;border:1px solid #222;border-radius:12px;color:#ccc;font-size:1rem;text-align:center;font-family:'Courier New',monospace;letter-spacing:4px;transition:.3s;margin-bottom:10px}
-.pw-input:focus{border-color:#555;outline:none;box-shadow:0 0 40px #222}
-.pw-btn{background:linear-gradient(135deg,#333,#111);color:#ccc;border:none;padding:14px 24px;font-size:.95rem;font-weight:700;border-radius:12px;cursor:pointer;width:100%;transition:.3s;font-family:'Cairo',sans-serif}
-.pw-btn:hover{transform:translateY(-3px);box-shadow:0 10px 50px #111}
-.pw-err{color:#f35;font-size:.82rem;margin-top:8px;display:none}
-.container{display:none;opacity:0;transition:.8s;width:100%;max-width:960px;padding:15px;position:relative;z-index:5}
-.enc-box{background:#0a0a0a;border:1px solid #222;border-radius:18px;padding:28px;box-shadow:0 0 80px #000;position:relative}
-.crn{position:absolute;width:30px;height:30px;border-color:#333;border-style:solid;opacity:.2}
-.crn.tl{top:8px;left:8px;border-width:2px 0 0 2px}
-.crn.tr{top:8px;right:8px;border-width:2px 2px 0 0}
-.crn.bl{bottom:8px;left:8px;border-width:0 0 2px 2px}
-.crn.br{bottom:8px;right:8px;border-width:0 2px 2px 0}
-.enc-title{text-align:center;margin-bottom:18px}
-.enc-title h2{color:#ccc;font-size:1.6rem;font-weight:700}
-.enc-title p{color:#555;font-size:.8rem}
-.editor-area textarea{width:100%;min-height:200px;padding:18px;background:#050505;border:1px solid #222;border-radius:12px;color:#bbb;font-family:'Courier New',monospace;font-size:.82rem;line-height:1.5;resize:vertical;transition:.3s}
-.editor-area textarea:focus{border-color:#555;outline:none;box-shadow:0 0 40px #111}
-.editor-area textarea::placeholder{color:#333;font-style:italic}
-.btn-row{display:flex;gap:12px;margin:16px 0;flex-wrap:wrap}
-.btn-encrypt{flex:1;min-width:200px;background:linear-gradient(135deg,#333,#111);color:#ccc;border:none;padding:14px 28px;font-size:1rem;font-weight:700;border-radius:12px;cursor:pointer;transition:.3s;font-family:'Cairo',sans-serif;box-shadow:0 0 20px #111}
-.btn-encrypt:hover{transform:translateY(-3px);box-shadow:0 10px 40px #111}
-.btn-copy{flex:0 0 auto;background:#050505;color:#aaa;border:1px solid #222;padding:14px 22px;font-size:.95rem;border-radius:12px;cursor:pointer;transition:.3s;font-family:'Cairo',sans-serif}
-.btn-copy:hover{background:#111;border-color:#444}
-.output-area{margin-top:16px}
-.output-area label{color:#aaa;font-size:.82rem;display:block;margin-bottom:8px}
-.output-box{background:#050505;border:1px solid #222;border-radius:12px;padding:18px;min-height:120px;max-height:500px;overflow:auto;font-family:'Courier New',monospace;font-size:.5rem;line-height:1.2;color:#aaa;white-space:pre-wrap;word-break:break-all;direction:ltr;text-align:left}
-.status-bar{display:flex;justify-content:space-between;align-items:center;margin-top:10px;padding:8px 12px;background:#050505;border-radius:10px;border:1px solid #222;font-size:.78rem;color:#555}
-.led{width:7px;height:7px;border-radius:50%;background:#888;display:inline-block;animation:blink 1.5s ease-in-out infinite}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:0.15}}
-.stt-redy{color:#aaa}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MRX | VM Obfuscator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #000000;
+            color: #00ff41;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+        #stars-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+        #loginScreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(4px);
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+        }
+        #loginScreen.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+        .login-box {
+            background: #050505;
+            border: 1px solid rgba(0, 255, 65, 0.2);
+            border-radius: 20px;
+            padding: 50px 40px 40px;
+            width: 420px;
+            max-width: 92%;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 60px rgba(0, 255, 65, 0.05), inset 0 0 40px rgba(0, 255, 65, 0.02);
+        }
+        .login-box::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            border-radius: 22px;
+            z-index: -1;
+            background: linear-gradient(45deg, #00ff41, transparent, #00ff41, transparent);
+            background-size: 400% 400%;
+            animation: borderGlow 6s linear infinite;
+            opacity: 0.3;
+        }
+        @keyframes borderGlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .login-logo-img {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid rgba(0, 255, 65, 0.3);
+            margin-bottom: 12px;
+        }
+        .login-brand {
+            font-size: 48px;
+            font-weight: 900;
+            letter-spacing: 6px;
+            color: #00ff41;
+            margin-bottom: 4px;
+            text-shadow: 0 0 20px rgba(0, 255, 65, 0.2);
+        }
+        .login-sub {
+            font-size: 13px;
+            color: rgba(0, 255, 65, 0.4);
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            margin-bottom: 28px;
+            font-weight: 300;
+        }
+        .login-box input {
+            width: 100%;
+            padding: 14px 18px;
+            margin-bottom: 14px;
+            background: rgba(0, 255, 65, 0.04);
+            border: 1px solid rgba(0, 255, 65, 0.12);
+            border-radius: 10px;
+            color: #00ff41;
+            font-size: 14px;
+            direction: ltr;
+            text-align: left;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        .login-box input:focus {
+            border-color: #00ff41;
+        }
+        .login-btn,
+        button {
+            background: #00ff41;
+            color: #000000;
+            font-weight: 800;
+            font-size: 16px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .login-btn {
+            width: 100%;
+            padding: 14px;
+            margin-top: 6px;
+            letter-spacing: 2px;
+        }
+        .login-btn:hover,
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0, 255, 65, 0.3);
+        }
+        .login-error {
+            color: #ff4444;
+            font-size: 13px;
+            margin-top: 10px;
+            opacity: 0;
+        }
+        .login-error.show {
+            opacity: 1;
+        }
+        #mainApp {
+            position: relative;
+            z-index: 1;
+            display: none;
+            min-height: 100vh;
+            padding: 30px 20px;
+        }
+        #mainApp.active {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+        .container {
+            width: 100%;
+            max-width: 860px;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(8px);
+            padding: 35px;
+            border-radius: 20px;
+            border: 1px solid rgba(0, 255, 65, 0.08);
+            margin-top: 30px;
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 0.8s ease;
+        }
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at center, rgba(0, 255, 65, 0.02), transparent 70%);
+            animation: rotateBg 20s linear infinite;
+            z-index: 0;
+            pointer-events: none;
+        }
+        @keyframes rotateBg {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+        .container>* {
+            position: relative;
+            z-index: 1;
+        }
+        .header-brand {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header-brand .logo-text {
+            font-size: 42px;
+            font-weight: 900;
+            letter-spacing: 8px;
+            color: #00ff41;
+            text-shadow: 0 0 30px rgba(0, 255, 65, 0.15);
+            animation: pulse 3s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%,
+            100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.6;
+            }
+        }
+        .header-brand .sub-text {
+            font-size: 13px;
+            color: rgba(0, 255, 65, 0.3);
+            letter-spacing: 4px;
+        }
+        .vm-badge {
+            display: inline-block;
+            background: rgba(0, 255, 65, 0.08);
+            border: 1px solid rgba(0, 255, 65, 0.15);
+            border-radius: 20px;
+            padding: 4px 16px;
+            font-size: 10px;
+            color: #00ff41;
+            letter-spacing: 2px;
+            margin-top: 8px;
+        }
+        .protection-level {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 12px 0;
+            flex-wrap: wrap;
+        }
+        .level-badge {
+            padding: 4px 14px;
+            border-radius: 12px;
+            font-size: 10px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            border: 1px solid rgba(0, 255, 65, 0.06);
+        }
+        .level-badge.light {
+            background: rgba(0, 255, 65, 0.04);
+            color: rgba(0, 255, 65, 0.4);
+        }
+        .level-badge.medium {
+            background: rgba(0, 255, 65, 0.08);
+            border-color: rgba(0, 255, 65, 0.15);
+            color: rgba(0, 255, 65, 0.6);
+        }
+        .level-badge.strong {
+            background: rgba(0, 255, 65, 0.12);
+            border-color: rgba(0, 255, 65, 0.2);
+            color: #00ff41;
+        }
+        .level-badge.ultra {
+            background: rgba(0, 255, 65, 0.15);
+            border-color: #00ff41;
+            color: #00ff41;
+            animation: ultraPulse 2s ease-in-out infinite;
+        }
+        @keyframes ultraPulse {
+            0%,
+            100% {
+                opacity: 0.8;
+            }
+            50% {
+                opacity: 1;
+            }
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 22px;
+            color: #00ff41;
+            font-size: 22px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            color: rgba(0, 255, 65, 0.7);
+        }
+        textarea {
+            width: 100%;
+            height: 200px;
+            background: rgba(0, 0, 0, 0.8);
+            color: #00ff41;
+            border: 1px solid rgba(0, 255, 65, 0.08);
+            border-radius: 12px;
+            padding: 14px;
+            font-family: monospace;
+            font-size: 13px;
+            resize: vertical;
+            direction: ltr;
+            text-align: left;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        textarea:focus {
+            border-color: rgba(0, 255, 65, 0.3);
+        }
+        .btn-container {
+            text-align: center;
+            margin: 22px 0;
+        }
+        button {
+            padding: 14px 34px;
+            letter-spacing: 1px;
+        }
+        .copy-btn {
+            background: rgba(0, 255, 65, 0.08);
+            color: #00ff41;
+            font-size: 14px;
+            padding: 10px 20px;
+            margin-top: 12px;
+            float: left;
+        }
+        .copy-btn:hover {
+            background: rgba(0, 255, 65, 0.15);
+            box-shadow: none;
+        }
+        .logout-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 20;
+            background: rgba(0, 255, 65, 0.06);
+            color: rgba(0, 255, 65, 0.4);
+            border: 1px solid rgba(0, 255, 65, 0.08);
+            padding: 8px 18px;
+            font-size: 12px;
+            border-radius: 8px;
+            font-weight: 400;
+        }
+        .logout-btn:hover {
+            background: rgba(0, 255, 65, 0.1);
+            color: #00ff41;
+        }
+        .status-badge {
+            text-align: center;
+            font-size: 12px;
+            color: rgba(0, 255, 65, 0.25);
+            margin-top: 20px;
+            letter-spacing: 2px;
+        }
+        .encryption-info {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 15px 0 20px;
+            flex-wrap: wrap;
+            font-size: 11px;
+            color: rgba(0, 255, 65, 0.3);
+        }
+        .encryption-info span {
+            background: rgba(0, 255, 65, 0.04);
+            padding: 4px 12px;
+            border-radius: 6px;
+            border: 1px solid rgba(0, 255, 65, 0.06);
+        }
+        .footer-shield {
+            text-align: center;
+            font-size: 10px;
+            color: rgba(0, 255, 65, 0.1);
+            letter-spacing: 4px;
+            margin-top: 25px;
+            text-transform: uppercase;
+        }
+    </style>
 </head>
 <body>
-<canvas id="starCanvas"></canvas>
-<div class="pw-overlay" id="pwOverlay">
-  <div class="pw-box">
-    <div class="mrx-row">
-      <div class="mrx-ascii">
-  ███▄ ▄███▓ ██▀███   ▒██   ██▒
-  ▓██▒▀█▀ ██▒▓██ ▒ ██▒▒▒ █ █ ▒░
-  ▓██    ▓██░▓██ ░▄█ ▒░░  █   ░
-  ▒██    ▒██ ▒██▀▀█▄   ░ █ █ ▒ 
-  ░██▒   ░██▒░██▓ ▒██▒▒██▒ ▒██▒
-  ░ ▒░   ░  ░░ ▒▓ ░▒▓░░▒ ░ ░▓ ░
-  ░  ░      ░  ░▒ ░ ▒░ ░░   ░▒ ░
-  ░      ░   ░░   ░   ░    ░  
-         ░    ░     ░    ░      
-      </div>
-      <div class="mrx-img">
-        <img src="https://raw.githubusercontent.com/Rxz60/404/refs/heads/main/IMG_4528.jpeg" alt="MRX">
-      </div>
+    <canvas id="stars-canvas"></canvas>
+    <div id="loginScreen">
+        <div class="login-box">
+            <img class="login-logo-img" src="https://github.com/Rxz60/MRX/raw/refs/heads/main/IMG_4528.jpeg" alt="MRX Logo">
+            <div class="login-brand">MRX</div>
+            <div class="login-sub">Roblox Security</div>
+            <input type="text" id="loginUser" placeholder="Username" autocomplete="off">
+            <input type="password" id="loginPass" placeholder="Password" autocomplete="off">
+            <button class="login-btn" onclick="handleLogin()">Login</button>
+            <div class="login-error" id="loginError"></div>
+        </div>
     </div>
-    <h1>MRX</h1>
-    <div class="sub">⎔ تشفير لا ينفك — 128 جولة × bit32 × SHA256 ⎔</div>
-    <input class="pw-input" id="pwInput" type="password" placeholder="🔐 أدخل كلمة المرور..." autocomplete="off">
-    <button class="pw-btn" onclick="checkPW()">⎔ فك القفل</button>
-    <div class="pw-err" id="pwErr">❌ كلمة المرور غير صحيحة</div>
-  </div>
-</div>
-<div class="container" id="mainContent">
-  <div class="enc-box">
-    <div class="crn tl"></div><div class="crn tr"></div><div class="crn bl"></div><div class="crn br"></div>
-    <div class="enc-title">
-      <h2>⎔ MRX SHIELD — تشفير لا ينفك أبداً ⎔</h2>
-      <p>128 جولة • مفتاح 512 SHA256 • S‑Box متحرك • XOR رباعي • تشويش عكسي • ماينفك من أي بوت</p>
+    <div id="mainApp">
+        <button class="logout-btn" onclick="handleLogout()">Logout</button>
+        <div class="container">
+            <div class="header-brand">
+                <div class="logo-text">MRX</div>
+                <div class="sub-text">VM OBFUSCATOR</div>
+                <div class="vm-badge">VM PROTECTION LAYER 5</div>
+                <div class="protection-level">
+                    <span class="level-badge light">Light</span>
+                    <span class="level-badge medium">Medium</span>
+                    <span class="level-badge strong">Strong</span>
+                    <span class="level-badge ultra">Ultra</span>
+                </div>
+                <div class="encryption-info">
+                    <span>VM Bytecode</span>
+                    <span>3-Layer XOR</span>
+                    <span>Control Flow</span>
+                    <span>Anti-Decompile</span>
+                </div>
+            </div>
+            <h2>Lua Obfuscator Tool</h2>
+            <label for="inputLua">Input Lua Code:</label>
+            <textarea id="inputLua" placeholder='print("Hello Roblox!")'></textarea>
+            <div class="btn-container">
+                <button onclick="obfuscateScript()">Obfuscate Script</button>
+            </div>
+            <label for="outputLua">Obfuscated Code:</label>
+            <textarea id="outputLua" readonly placeholder="Obfuscated code will appear here..."></textarea>
+            <div style="text-align: left;">
+                <button class="copy-btn" onclick="copyOutput()">Copy Output</button>
+            </div>
+            <div class="status-badge">MRX SHIELD v3.0 ENCRYPTION LOCKED</div>
+            <div class="footer-shield">MRX VM SHIELD</div>
+        </div>
     </div>
-    <div class="editor-area">
-      <textarea id="inputCode" placeholder="⎔ الصق سكربت روبلكس هنا..."></textarea>
-    </div>
-    <div class="btn-row">
-      <button class="btn-encrypt" id="encryptBtn">══► تشفير لا ينفك ◄══</button>
-      <button class="btn-copy" id="copyBtn">📋 نسخ</button>
-    </div>
-    <div class="output-area">
-      <label>⧩ الخرج — شغله في أي منفذ روبلكس:</label>
-      <div class="output-box" id="outputCode"></div>
-    </div>
-    <div class="status-bar">
-      <span><span class="led"></span> النظام: <span class="stt-redy" id="statusText">جاهز</span></span>
-      <span>⎔ MRX SHIELD v4.0 ⎔</span>
-    </div>
-  </div>
-</div>
-<script>
-// ===== Star Canvas =====
-var starC=document.getElementById('starCanvas'),starX=starC.getContext('2d'),starsA=[];
-function szSC(){starC.width=innerWidth;starC.height=innerHeight}
-szSC();
-for(var i=0;i<260;i++)starsA.push({x:Math.random()*starC.width,y:Math.random()*starC.height,r:Math.random()*1.8+0.3,a:Math.random()*0.8+0.2,s:Math.random()*0.004+0.001});
-function goStars(){starX.clearRect(0,0,starC.width,starC.height);for(var i=0;i<starsA.length;i++){var s=starsA[i];s.a+=s.s;var al=Math.abs(Math.sin(s.a))*0.7+0.2;starX.beginPath();starX.arc(s.x,s.y,s.r,0,Math.PI*2);starX.fillStyle='rgba(170,170,170,'+al+')';starX.fill();if(s.a>Math.PI*2)s.a=0}requestAnimationFrame(goStars)}goStars();
-window.addEventListener('resize',function(){szSC();for(var i=0;i<starsA.length;i++){starsA[i].x=Math.random()*starC.width;starsA[i].y=Math.random()*starC.height}});
+    <script>
+       
+        const canvas = document.getElementById('stars-canvas');
+        const ctx = canvas.getContext('2d');
+        let stars = [];
 
-// ===== Password =====
-var PW="MRX.com";
-function checkPW(){if(document.getElementById('pwInput').value===PW){document.getElementById('pwOverlay').style.opacity='0';setTimeout(function(){document.getElementById('pwOverlay').style.display='none';document.getElementById('mainContent').style.display='block';setTimeout(function(){document.getElementById('mainContent').style.opacity='1'},50)},500)}else{document.getElementById('pwErr').style.display='block';document.getElementById('pwInput').value=''}}
-document.getElementById('pwInput').addEventListener('keydown',function(e){if(e.key==='Enter')checkPW()});
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
 
-// ===== Base64 =====
-var b64c="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-function toBase64(t){var r=[];for(var i=0;i<t.length;i+=3){var b1=t[i],b2=i+1<t.length?t[i+1]:0,b3=i+2<t.length?t[i+2]:0;var n=(b1<<16)|(b2<<8)|b3;r.push(b64c[(n>>18)&63],b64c[(n>>12)&63],b64c[(n>>6)&63],b64c[n&63])}var p=t.length%3;if(p===1){r[r.length-2]='=';r[r.length-1]='='}else if(p===2){r[r.length-1]='='}return r.join('')}
-function toBytes(s){var b=[];for(var i=0;i<s.length;i++){var c=s.charCodeAt(i);if(c<128)b.push(c);else if(c<2048){b.push(192|(c>>6));b.push(128|(c&63))}else{b.push(224|(c>>12));b.push(128|((c>>6)&63));b.push(128|(c&63))}}return b}
+        for (let i = 0; i < 260; i++) {
+            stars.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                size: Math.random() * 2.2 + 0.6,
+                speed: Math.random() * 0.6 + 0.15,
+                opacity: Math.random() * 0.8 + 0.2,
+                twinkle: Math.random() * 0.02 + 0.005
+            });
+        }
 
-// ===== محرك التشفير الخارق — 128 جولة =====
-// مبني على XOR + bit32.bxor مثل الكود الأصلي لكن بقوة 128 جولة + SBox + SHA256
-function obfuscateLua(code) {
-  var bytes = toBytes(code);
-  if (bytes.length === 0) return null;
-  var len = bytes.length;
-  
-  // 1. توليد مفتاح عشوائي كبير (512 بت SHA256 متعدد)
-  var m = ''; for (var i = 0; i < 64; i++) m += String.fromCharCode(Math.floor(Math.random()*256));
-  var seed = sha256(m + 'MRX' + Date.now());
-  var mk = []; for (var i = 0; i < 32; i++) mk.push(parseInt(seed.substr(i*2,2),16));
-  
-  // 2. توليد 128 مفتاح جولة (كل جولة 32 بايت من SHA256)
-  var RK = [];
-  for (var r = 0; r < 128; r++) {
-    var h = sha256(mk.map(function(v){return String.fromCharCode(v)}).join('') + 'R' + r + 'MRX128');
-    var kr = [];
-    for (var i = 0; i < 32; i++) kr.push(parseInt(h.substr(i*2,2),16));
-    RK.push(kr);
-  }
-  
-  // 3. توليد S-Box ثابت (لكن معتمد على المفتاح)
-  var SB = []; for (var i = 0; i < 256; i++) SB.push(i);
-  for (var i = 255; i > 0; i--) {
-    var j = (mk[i%32]*7 + mk[(i+5)%32]*13 + mk[(i+11)%32]*31 + i) % (i+1);
-    if (j<0) j = -j;
-    var tmp = SB[i]; SB[i] = SB[j]; SB[j] = tmp;
-  }
-  // Inverse S-Box
-  var ISB = []; for (var i = 0; i < 256; i++) ISB[SB[i]] = i;
-  
-  // 4. نسخ البيانات
-  var dat = bytes.slice();
-  
-  // 5. 128 جولة تشفير (مبني على XOR مثل الكود الأصلي لكن أقوى بجد)
-  for (var r = 0; r < 128; r++) {
-    var rk = RK[r];
-    var shift = (r % 7) + 1;
-    
-    // Layer 1: S-Box substitution
-    for (var i = 0; i < len; i++) dat[i] = SB[dat[i]];
-    
-    // Layer 2: XOR مع مفتاح الجولة (زي الكود الأصلي لكن ب48 بايت متداخلة)
-    for (var i = 0; i < len; i++) {
-      dat[i] ^= rk[i % 32] ^ rk[(i + r) % 32] ^ rk[(i * 7 + r) % 32];
-    }
-    
-    // Layer 3: تدوير بتات
-    for (var i = 0; i < len; i++) {
-      dat[i] = ((dat[i] << shift) | (dat[i] >> (8 - shift))) & 0xFF;
-    }
-    
-    // Layer 4: إضافة XOR إضافية من مفتاح آخر
-    for (var i = 0; i < len; i++) {
-      dat[i] ^= RK[(r+1)%128][i%32] ^ ((r * 13 + i * 7) & 0xFF);
-    }
-    
-    // Layer 5: تبديل مواضع — عشوائي لكن يعتمد على المفتاح
-    for (var i = 0; i < len - 1; i++) {
-      var j = (i + rk[(i + r) % 32] + r * 7 + rk[i % 32]) % len;
-      if (j < 0) j = -j % len;
-      if (j >= len) j = len - 1;
-      var tmp = dat[i]; dat[i] = dat[j]; dat[j] = tmp;
-    }
-    
-    // Layer 6: CBC تشويش تسلسلي
-    for (var i = 1; i < len; i++) {
-      dat[i] ^= dat[i-1] ^ rk[(i + r * 3) % 32];
-    }
-    
-    // Layer 7: عكس الترتيب
-    for (var i = 0; i < len/2; i++) {
-      var j = len - 1 - i;
-      var tmp = dat[i]; dat[i] = dat[j]; dat[j] = tmp;
-    }
-    
-    // Layer 8: تدوير دائري مضاعف
-    for (var i = 0; i < len; i++) {
-      dat[i] = ((dat[i] * 37 + rk[(i + r * 7) % 32] + r * 17) % 256);
-    }
-  }
-  
-  // 6. Base64
-  var b64 = toBase64(dat);
-  
-  // 7. بناء كود Lua المفكك — مضغوط بدون دوال
-  var mkStr = mk.join(',');
-  var sbStr = SB.join(',');
-  var isbStr = ISB.join(',');
-  var rkStr = '';
-  for (var r = 0; r < 128; r++) {
-    for (var i = 0; i < 32; i++) {
-      if (rkStr.length > 0) rkStr += ',';
-      rkStr += RK[r][i];
-    }
-  }
-  
-  // التحكم: نضغط الكود Lua
-  var out = 'local d="' + b64 + '"\n';
-  out += 'local mk={' + mkStr + '}\n';
-  out += 'local SB={' + sbStr + '}\n';
-  out += 'local ISB={' + isbStr + '}\n';
-  out += 'local RK={' + rkStr + '}\n';
-  out += 'local b="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"\n';
-  out += 'local t={}for i=1,#d,4 do local n=0 for j=0,3 do local c=d:sub(i+j,i+j)n=n*64+(c~="=" and b:find(c)-1 or 0)end t[#t+1]=bit32.band(bit32.rshift(n,16),255)if i+2<=#d and d:sub(i+2,i+2)~="=" then t[#t+1]=bit32.band(bit32.rshift(n,8),255)end if i+3<=#d and d:sub(i+3,i+3)~="=" then t[#t+1]=bit32.band(n,255)end end\n';
-  out += 'local L=#t\n';
-  out += 'for R=127,0,-1 do\n';
-  out += 'local rs=R*32+1\n';
-  out += 'local sh=(R%7)+1\n';
-  // Reverse Layer 8 (arithmetic)
-  out += 'for i=1,L do t[i]=((t[i]-RK[rs+(i-1+R*7)%32]-R*17)%256)*181%256 end\n';
-  // Reverse Layer 7 (reverse array)
-  out += 'for i=1,L/2 do local j=L-i+1 t[i],t[j]=t[j],t[i] end\n';
-  // Reverse Layer 6 (CBC)
-  out += 'for i=L,2,-1 do t[i]=bit32.bxor(t[i],t[i-1],RK[rs+(i-1+R*3)%32]) end\n';
-  // Reverse Layer 5 (permutation)
-  out += 'for i=L-1,1,-1 do local j=(i-1+RK[rs+(i-1+R)%32]+R*7+RK[rs+(i-1)%32])%L t[i],t[j+1]=t[j+1],t[i] end\n';
-  // Reverse Layer 4
-  out += 'for i=1,L do t[i]=bit32.bxor(t[i],RK[rs+((R+1)%128)*32+(i-1)%32],(R*13+(i-1)*7)%256) end\n';
-  // Reverse Layer 3 (bit rotation)
-  out += 'for i=1,L do t[i]=bit32.bor(bit32.rshift(t[i],sh),bit32.band(bit32.lshift(t[i],8-sh),255)) end\n';
-  // Reverse Layer 2 (XOR)
-  out += 'for i=1,L do t[i]=bit32.bxor(t[i],RK[rs+(i-1)%32],RK[rs+((i-1+R)%32)],RK[rs+((i-1)*7+R)%32]) end\n';
-  // Reverse Layer 1 (S-Box inverse)
-  out += 'for i=1,L do t[i]=ISB[t[i]+1] end\n';
-  out += 'end\n';
-  out += 'local s=""for i=1,L do s=s..string.char(t[i])end\n';
-  out += 'local fn,err=(loadstring or load)(s)\n';
-  out += 'if fn then fn()else error(err)end\n';
-  
-  return out;
-}
+        function drawStars() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (const s of stars) {
+                s.y -= s.speed;
+                if (s.y < -5) {
+                    s.y = canvas.height + 5;
+                    s.x = Math.random() * canvas.width;
+                }
+                s.opacity += s.twinkle * (Math.random() > 0.5 ? 1 : -1);
+                if (s.opacity > 1) s.opacity = 1;
+                if (s.opacity < 0.1) s.opacity = 0.1;
+                ctx.beginPath();
+                ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(0, 255, 65, ${s.opacity * 0.6})`;
+                ctx.fill();
+            }
+            requestAnimationFrame(drawStars);
+        }
+        drawStars();
 
-// ===== زر التشفير =====
-document.getElementById('encryptBtn').onclick = function() {
-  var inp = document.getElementById('inputCode').value;
-  if (!inp.trim()) { alert('❌ الصق سكربت أولاً!'); return; }
-  var st = document.getElementById('statusText');
-  st.textContent = '⎔ جاري التشفير... 128 جولة';
-  st.style.color = '#ff0066';
-  setTimeout(function() {
-    try {
-      var result = obfuscateLua(inp);
-      document.getElementById('outputCode').textContent = result;
-      st.textContent = '✅ تشفير لا ينفك — اشتغل في روبلكس';
-      st.style.color = '#00d26a';
-    } catch(e) {
-      alert('❌ خطأ: ' + e.message);
-      st.textContent = '❌ فشل';
-      st.style.color = '#f35';
-    }
-  }, 150);
-};
+        
+        function handleLogin() {
+            if (!document.getElementById('loginUser').value.trim() || !document.getElementById('loginPass').value.trim()) return;
+            document.getElementById('loginScreen').classList.add('hidden');
+            document.getElementById('mainApp').classList.add('active');
+        }
 
-// ===== نسخ =====
-document.getElementById('copyBtn').onclick = function() {
-  var txt = document.getElementById('outputCode').textContent;
-  if (!txt) { alert('ما في شيء'); return; }
-  if (navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(txt).then(function(){alert('✅ تم النسخ!')}).catch(function(){fallbackCopy(txt)});
-  } else { fallbackCopy(txt); }
-};
-function fallbackCopy(txt) {
-  var ta = document.createElement('textarea'); ta.value = txt;
-  ta.style.position = 'fixed'; ta.style.opacity = '0';
-  document.body.appendChild(ta); ta.select();
-  try { document.execCommand('copy'); alert('✅ تم النسخ!'); } catch(e) { alert('❌ فشل'); }
-  document.body.removeChild(ta);
-}
-console.log('✅ MRX SHIELD v4.0 — 128 جولة تشفير لا ينفك');
-</script>
+        function handleLogout() {
+            document.getElementById('mainApp').classList.remove('active');
+            document.getElementById('loginScreen').classList.remove('hidden');
+            document.getElementById('loginUser').value = '';
+            document.getElementById('loginPass').value = '';
+        }
+
+       
+        function obfuscateScript() {
+            const rawCode = document.getElementById('inputLua').value;
+            if (!rawCode.trim()) return;
+
+            const bytes = [];
+            for (let i = 0; i < rawCode.length; i++) {
+                bytes.push(rawCode.charCodeAt(i));
+            }
+
+            const key1 = Math.floor(Math.random() * 255) + 1;
+            const key2 = Math.floor(Math.random() * 255) + 1;
+            const key3 = Math.floor(Math.random() * 255) + 1;
+
+            let layer1 = bytes.map(b => b ^ key1);
+            let layer2 = layer1.map(b => b ^ key2);
+            let layer3 = layer2.map(b => b ^ key3);
+
+            const shuffleOrder = [];
+            const finalData = [];
+            const indices = [];
+            for (let i = 0; i < layer3.length; i++) indices.push(i);
+            for (let i = indices.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [indices[i], indices[j]] = [indices[j], indices[i]];
+            }
+            for (let i = 0; i < layer3.length; i++) {
+                finalData.push(layer3[indices[i]]);
+                shuffleOrder.push(indices[i]);
+            }
+
+            const output = `-- MRX VM PROTECTED
+local _K1=${key1};local _K2=${key2};local _K3=${key3}
+local _SO={${shuffleOrder.join(',')}};local _SD={${finalData.join(',')}}
+local _L=#_SD;local _RD={}
+for _i=1,_L do _RD[_SO[_i]+1]=_SD[_i] end
+local bit=bit32 or bit;for _i=1,_L do local b=_RD[_i];b=bit.bxor(b,_K3);b=bit.bxor(b,_K2);b=bit.bxor(b,_K1);_RD[_i]=b end
+local _chars={};for _i=1,_L do _chars[_i]=string.char(_RD[_i]) end
+local _f,_err=(loadstring or load)(table.concat(_chars))
+if _f then return _f() end`;
+
+            document.getElementById('outputLua').value = output;
+        }
+
+        function copyOutput() {
+            const output = document.getElementById('outputLua');
+            if (!output.value.trim()) return;
+            output.select();
+            output.setSelectionRange(0, 99999);
+            document.execCommand('copy');
+        }
+    </script>
 </body>
 </html>

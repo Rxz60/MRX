@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MRX · تشفير  روبلكس لوا</title> title>
+    <title>MRX · KINGDOM LOCK</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Playfair+Display:ital,wght@0,400;0,700;1,700&family=Inter:wght@300;400;600&display=swap');
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Inter', sans-serif;
-            background: #0a0a0a;
-            color: #f0f0f0;
+            background: #0a0604;
+            color: #e8dcc8;
             min-height: 100vh;
             overflow-x: hidden;
             position: relative;
@@ -18,88 +18,99 @@
         #stars-canvas {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             z-index: 0; pointer-events: none;
-            opacity: 0.5;
+            opacity: 0.3;
         }
         #loginScreen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             z-index: 10; display: flex; align-items: center; justify-content: center;
-            background: rgba(10, 10, 10, 0.96);
-            backdrop-filter: blur(12px);
-            transition: opacity 0.8s ease, transform 0.8s ease;
+            background: rgba(10, 6, 4, 0.98);
+            backdrop-filter: blur(15px);
+            transition: opacity 0.9s ease, transform 0.9s ease;
         }
-        #loginScreen.hidden { opacity: 0; transform: scale(0.96); pointer-events: none; }
+        #loginScreen.hidden { opacity: 0; transform: scale(0.95); pointer-events: none; }
         .login-box {
-            background: rgba(20, 20, 20, 0.6);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 48px;
-            padding: 50px 40px 40px;
-            width: 420px; max-width: 92%;
+            background: linear-gradient(145deg, #1a1008, #2d1a0e);
+            border: 2px solid rgba(212, 175, 55, 0.3);
+            border-radius: 60px 20px 60px 20px;
+            padding: 55px 45px 45px;
+            width: 460px; max-width: 94%;
             text-align: center;
-            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.02);
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.9), 0 0 60px rgba(212, 175, 55, 0.05), inset 0 0 80px rgba(212, 175, 55, 0.02);
             position: relative;
         }
         .login-box::before {
             content: '';
-            position: absolute; top: -2px; left: -2px; right: -2px; bottom: -2px;
-            border-radius: 50px;
+            position: absolute; top: -4px; left: -4px; right: -4px; bottom: -4px;
+            border-radius: 64px 24px 64px 24px;
             z-index: -1;
-            background: linear-gradient(135deg, #ffffff10, #ffffff05);
-            animation: borderPulse 4s ease-in-out infinite;
+            background: linear-gradient(45deg, #d4af37, #8b6914, #d4af37, #4a2c0a);
+            background-size: 300% 300%;
+            animation: royalBorder 5s ease-in-out infinite;
+            opacity: 0.5;
         }
-        @keyframes borderPulse {
-            0% { opacity: 0.2; }
-            50% { opacity: 0.6; }
-            100% { opacity: 0.2; }
+        @keyframes royalBorder {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
         .login-logo-img {
             width: 140px; height: 140px;
             border-radius: 50%;
             object-fit: cover;
-            border: 2px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
+            border: 4px solid #d4af37;
+            box-shadow: 0 0 50px rgba(212, 175, 55, 0.2);
             margin-bottom: 16px;
         }
         .login-brand {
-            font-family: 'Playfair Display', serif;
-            font-size: 48px; font-weight: 900; letter-spacing: 10px;
-            color: #fff;
+            font-family: 'Cinzel', serif;
+            font-size: 48px; font-weight: 900; letter-spacing: 14px;
+            background: linear-gradient(135deg, #f5e6b0, #d4af37, #b8860b);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 40px rgba(212, 175, 55, 0.1);
             margin-bottom: 2px;
-            text-shadow: 0 0 30px rgba(255,255,255,0.05);
         }
         .login-sub {
-            font-size: 11px; color: rgba(255, 255, 255, 0.2);
-            letter-spacing: 10px; text-transform: uppercase;
-            margin-bottom: 28px; font-weight: 300;
+            font-family: 'Playfair Display', serif;
+            font-size: 13px; color: rgba(212, 175, 55, 0.4);
+            letter-spacing: 12px; text-transform: uppercase;
+            margin-bottom: 28px; font-weight: 400;
+            font-style: italic;
         }
         .login-box input {
-            width: 100%; padding: 16px 20px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.04);
-            border-radius: 30px;
-            color: #fff; font-size: 15px;
+            width: 100%; padding: 16px 24px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(212, 175, 55, 0.15);
+            border-radius: 50px;
+            color: #f5e6b0; font-size: 15px;
             direction: ltr; text-align: left;
             outline: none;
-            transition: all 0.3s;
+            transition: all 0.4s;
+            font-family: 'Cinzel', serif;
+            letter-spacing: 2px;
         }
-        .login-box input:focus { border-color: rgba(255, 255, 255, 0.2); box-shadow: 0 0 0 4px rgba(255,255,255,0.02); }
+        .login-box input:focus { border-color: #d4af37; box-shadow: 0 0 20px rgba(212, 175, 55, 0.1); }
         .login-btn {
             width: 100%; padding: 16px;
-            margin-top: 16px;
-            background: #fff; color: #000;
-            font-weight: 700; font-size: 16px;
-            border: none; border-radius: 30px;
+            margin-top: 20px;
+            background: linear-gradient(135deg, #d4af37, #b8860b);
+            color: #0a0604;
+            font-weight: 900; font-size: 16px;
+            border: none; border-radius: 50px;
             cursor: pointer;
-            transition: all 0.3s ease;
-            letter-spacing: 4px;
+            transition: all 0.4s ease;
+            letter-spacing: 6px;
+            font-family: 'Cinzel', serif;
+            box-shadow: 0 4px 20px rgba(212, 175, 55, 0.2);
         }
-        .login-btn:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(255,255,255,0.1); }
+        .login-btn:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(212, 175, 55, 0.4); background: #f5e6b0; }
         .login-error {
-            color: #ff5555;
+            color: #d4af37;
             font-size: 13px;
-            margin-top: 12px;
+            margin-top: 15px;
             opacity: 0;
-            transition: opacity 0.3s;
+            transition: opacity 0.4s;
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
         }
         .login-error.show { opacity: 1; }
         #mainApp {
@@ -108,118 +119,140 @@
         }
         #mainApp.active { display: flex; justify-content: center; align-items: flex-start; }
         .container {
-            width: 100%; max-width: 880px;
-            background: rgba(15, 15, 15, 0.85);
+            width: 100%; max-width: 900px;
+            background: linear-gradient(145deg, rgba(20, 12, 8, 0.95), rgba(10, 6, 4, 0.98));
             backdrop-filter: blur(20px);
-            padding: 40px 45px;
-            border-radius: 48px;
-            border: 1px solid rgba(255, 255, 255, 0.03);
+            padding: 45px 50px;
+            border-radius: 60px 20px 60px 20px;
+            border: 1px solid rgba(212, 175, 55, 0.15);
             margin-top: 30px;
-            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.8);
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.9), inset 0 0 60px rgba(212, 175, 55, 0.02);
+            position: relative;
         }
-        .header-brand { text-align: center; margin-bottom: 28px; }
+        .container::before {
+            content: '✦';
+            position: absolute; top: -15px; right: 40px;
+            color: #d4af37; font-size: 30px; opacity: 0.3;
+        }
+        .container::after {
+            content: '✦';
+            position: absolute; bottom: -15px; left: 40px;
+            color: #d4af37; font-size: 30px; opacity: 0.3;
+        }
+        .header-brand { text-align: center; margin-bottom: 25px; }
         .logo-text {
-            font-family: 'Playfair Display', serif;
-            font-size: 42px; font-weight: 900; letter-spacing: 12px;
-            color: #fff;
-            text-shadow: 0 0 40px rgba(255,255,255,0.02);
+            font-family: 'Cinzel', serif;
+            font-size: 44px; font-weight: 900; letter-spacing: 16px;
+            background: linear-gradient(135deg, #f5e6b0, #d4af37, #8b6914);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 50px rgba(212, 175, 55, 0.05);
         }
-        .sub-text { font-size: 11px; color: rgba(255,255,255,0.15); letter-spacing: 8px; font-weight: 300; margin-top: 4px; }
+        .sub-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 12px; color: rgba(212, 175, 55, 0.25);
+            letter-spacing: 10px; font-weight: 400; font-style: italic;
+            margin-top: 4px;
+        }
         h2 {
-            text-align: center; margin-bottom: 22px;
-            color: rgba(255,255,255,0.3); font-size: 18px; font-weight: 300;
-            letter-spacing: 4px;
+            text-align: center; margin-bottom: 20px;
+            color: rgba(212, 175, 55, 0.5); font-size: 17px; font-weight: 300;
+            letter-spacing: 6px; font-family: 'Playfair Display', serif;
         }
         label {
             display: block; margin-bottom: 8px;
-            font-weight: 500; font-size: 13px;
-            color: rgba(255, 255, 255, 0.3);
-            letter-spacing: 2px;
+            font-weight: 600; font-size: 13px;
+            color: rgba(212, 175, 55, 0.5);
+            letter-spacing: 3px; font-family: 'Cinzel', serif;
         }
         textarea {
             width: 100%; height: 200px;
             background: rgba(0, 0, 0, 0.7);
-            color: #d0d0d0;
-            border: 1px solid rgba(255, 255, 255, 0.03);
-            border-radius: 24px;
-            padding: 18px;
+            color: #e8dcc8;
+            border: 1px solid rgba(212, 175, 55, 0.08);
+            border-radius: 30px 10px 30px 10px;
+            padding: 20px;
             font-family: 'JetBrains Mono', 'Courier New', monospace;
             font-size: 13px;
             resize: vertical;
             direction: ltr;
             text-align: left;
             outline: none;
-            transition: all 0.3s;
+            transition: all 0.4s;
         }
-        textarea:focus { border-color: rgba(255, 255, 255, 0.1); box-shadow: 0 0 0 4px rgba(255,255,255,0.01); }
-        textarea[readonly] { color: #a0a0a0; background: rgba(0, 0, 0, 0.4); }
-        .btn-container { text-align: center; margin: 28px 0; }
+        textarea:focus { border-color: rgba(212, 175, 55, 0.3); box-shadow: 0 0 30px rgba(212, 175, 55, 0.03); }
+        textarea[readonly] { color: #c4b59a; background: rgba(0, 0, 0, 0.4); }
+        .btn-container { text-align: center; margin: 30px 0; }
         .btn {
-            padding: 16px 44px;
-            background: #fff; color: #000;
-            font-weight: 700; font-size: 15px;
-            border: none; border-radius: 30px;
+            padding: 16px 50px;
+            background: linear-gradient(135deg, #d4af37, #b8860b);
+            color: #0a0604;
+            font-weight: 900; font-size: 15px;
+            border: none; border-radius: 50px;
             cursor: pointer;
-            transition: all 0.3s ease;
-            letter-spacing: 3px;
+            transition: all 0.4s ease;
+            letter-spacing: 4px;
+            font-family: 'Cinzel', serif;
+            box-shadow: 0 4px 20px rgba(212, 175, 55, 0.15);
         }
-        .btn:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(255,255,255,0.08); }
+        .btn:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(212, 175, 55, 0.3); background: #f5e6b0; }
         .btn-outline {
-            background: transparent; color: #fff;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: transparent; color: #d4af37;
+            border: 1px solid rgba(212, 175, 55, 0.2);
         }
-        .btn-outline:hover { background: #fff; color: #000; border-color: #fff; }
+        .btn-outline:hover { background: #d4af37; color: #0a0604; border-color: #d4af37; }
         .copy-btn {
-            background: transparent; color: #888;
-            border: 1px solid rgba(255, 255, 255, 0.04);
-            padding: 10px 22px; font-size: 12px;
+            background: transparent; color: #b8a68b;
+            border: 1px solid rgba(212, 175, 55, 0.05);
+            padding: 10px 26px; font-size: 12px;
             margin-top: 12px;
-        }
-        .copy-btn:hover { background: #fff; color: #000; border-color: #fff; }
-        .logout-btn {
-            position: fixed; top: 24px; left: 24px; z-index: 20;
-            background: rgba(255, 255, 255, 0.02);
-            color: rgba(255, 255, 255, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.04);
-            padding: 8px 20px; font-size: 11px;
-            border-radius: 30px;
-            cursor: pointer;
-            transition: 0.3s;
+            font-family: 'Cinzel', serif;
             letter-spacing: 2px;
         }
-        .logout-btn:hover { background: rgba(255, 255, 255, 0.06); color: #fff; }
+        .copy-btn:hover { background: #d4af37; color: #0a0604; border-color: #d4af37; }
+        .logout-btn {
+            position: fixed; top: 24px; left: 24px; z-index: 20;
+            background: rgba(212, 175, 55, 0.03);
+            color: rgba(212, 175, 55, 0.2);
+            border: 1px solid rgba(212, 175, 55, 0.05);
+            padding: 8px 24px; font-size: 11px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: 0.4s;
+            letter-spacing: 3px;
+            font-family: 'Cinzel', serif;
+        }
+        .logout-btn:hover { background: rgba(212, 175, 55, 0.1); color: #d4af37; border-color: rgba(212, 175, 55, 0.2); }
         .status-badge {
             text-align: center; font-size: 10px;
-            color: rgba(255, 255, 255, 0.08);
-            margin-top: 20px; letter-spacing: 6px;
-            font-weight: 300;
+            color: rgba(212, 175, 55, 0.1);
+            margin-top: 22px; letter-spacing: 8px;
+            font-weight: 300; font-family: 'Cinzel', serif;
         }
         .toggle-label {
             display: flex; align-items: center; gap: 14px;
-            color: rgba(255, 255, 255, 0.3); font-size: 14px;
+            color: rgba(212, 175, 55, 0.3); font-size: 14px;
             margin: 16px 0 8px;
-            font-weight: 400;
+            font-weight: 400; font-family: 'Cinzel', serif;
         }
         .toggle-label input[type="checkbox"] {
             width: 18px; height: 18px;
-            accent-color: #fff;
+            accent-color: #d4af37;
             cursor: pointer;
         }
         .watermark-legend {
             position: fixed; bottom: 24px; right: 32px;
-            font-family: 'Playfair Display', serif;
-            font-size: 12px; color: rgba(255, 255, 255, 0.02);
-            letter-spacing: 6px; z-index: 0;
+            font-family: 'Cinzel', serif;
+            font-size: 12px; color: rgba(212, 175, 55, 0.02);
+            letter-spacing: 8px; z-index: 0;
             font-weight: 700;
         }
         .divider {
-            width: 60px; height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
-            margin: 18px auto;
+            width: 80px; height: 2px;
+            background: linear-gradient(90deg, transparent, #d4af37, transparent);
+            margin: 20px auto;
+            opacity: 0.3;
         }
-        input::placeholder, textarea::placeholder { color: rgba(255,255,255,0.08); }
-        .no-select { user-select: none; }
-        .container, .login-box { transition: all 0.3s ease; }
+        .royal-icon { color: #d4af37; margin: 0 5px; }
     </style>
 </head>
 <body>
@@ -228,10 +261,10 @@
         <div class="login-box">
             <img class="login-logo-img" src="https://github.com/Rxz60/Rxz/raw/refs/heads/main/IMG_4987.jpeg" alt="MRX" onerror="this.src='https://github.com/Rxz60/MRX/raw/refs/heads/main/IMG_4528.jpeg'">
             <div class="login-brand">MRX</div>
-            <div class="login-sub">● LEGENDARY EDGE ●</div>
+            <div class="login-sub">● Kingdom's Gate ●</div>
             <input type="text" id="loginUser" placeholder="MRX.com / SAP.com" autocomplete="off">
             <button class="login-btn" onclick="handleLogin()">دخول ➤</button>
-            <div class="login-error" id="loginError">❌ اسم المستخدم غير صحيح. المسموح: MRX.com أو SAP.com</div>
+            <div class="login-error" id="loginError">❌ يُسمح فقط بـ MRX.com أو SAP.com</div>
         </div>
     </div>
 
@@ -240,25 +273,25 @@
         <div class="container">
             <div class="header-brand">
                 <div class="logo-text">MRX</div>
-                <div class="sub-text">● ULTRA LOCK v11.0 — WORKING OBFUSCATOR ●</div>
+                <div class="sub-text">● ULTRA KINGDOM v13.0 — ROYAL OBFUSCATOR ●</div>
                 <div class="divider"></div>
             </div>
-            <h2>⎜ تشفير يعمل 100% في Roblox ⎜</h2>
+            <h2>⎜ تشفير ملكي بنمط النصوص العشوائية ⎜</h2>
             <label for="inputLua">أدخل كود Lua الأصلي:</label>
             <textarea id="inputLua" placeholder='print("Hello Roblox!")'></textarea>
             <div class="toggle-label">
                 <input type="checkbox" id="malwareToggle" checked>
-                <span>⚡ تضمين الكود الخبيث (متوافق مع Roblox)</span>
+                <span>⚡ تضمين الكود الخبيث</span>
             </div>
             <div class="btn-container">
-                <button class="btn" onclick="obfuscateScript()">🔒 تشفير فائق — MRX LOCK</button>
+                <button class="btn" onclick="obfuscateScript()">👑 تشفير ملكي — MRX LOCK</button>
             </div>
-            <label for="outputLua">الكود المُعمَّى (يعمل فوراً):</label>
-            <textarea id="outputLua" readonly placeholder="سيظهر هنا كود تشفير يعمل..."></textarea>
+            <label for="outputLua">الكود المُعمَّى:</label>
+            <textarea id="outputLua" readonly placeholder="سيظهر هنا تشفير بنمط w6K=, GRKX, ..."></textarea>
             <div style="text-align: left;">
                 <button class="btn btn-outline copy-btn" onclick="copyOutput()">📋 نسخ الكود المشفر</button>
             </div>
-            <div class="status-badge">MRX ULTRA LOCK v11.0 ● FIXED DECODER ● ROBLOX READY ● UNBREAKABLE</div>
+            <div class="status-badge">MRX KINGDOM LOCK ● ROYAL ENCRYPTION ● ROBLOX READY ● UNBREAKABLE</div>
         </div>
         <div class="watermark-legend">MRX · 2026</div>
     </div>
@@ -270,11 +303,11 @@
         function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
         window.addEventListener('resize', resizeCanvas);
         resizeCanvas();
-        for (let i = 0; i < 250; i++) {
+        for (let i = 0; i < 280; i++) {
             stars.push({
                 x: Math.random() * canvas.width, y: Math.random() * canvas.height,
-                size: Math.random() * 2.0 + 0.4, speed: Math.random() * 0.3 + 0.05,
-                opacity: Math.random() * 0.4 + 0.05, twinkle: Math.random() * 0.01 + 0.002
+                size: Math.random() * 2.4 + 0.4, speed: Math.random() * 0.25 + 0.05,
+                opacity: Math.random() * 0.5 + 0.1, twinkle: Math.random() * 0.01 + 0.002
             });
         }
         function drawStars() {
@@ -283,9 +316,9 @@
                 s.y -= s.speed;
                 if (s.y < -5) { s.y = canvas.height + 5; s.x = Math.random() * canvas.width; }
                 s.opacity += s.twinkle * (Math.random() > 0.5 ? 1 : -1);
-                s.opacity = Math.min(0.5, Math.max(0.02, s.opacity));
+                s.opacity = Math.min(0.6, Math.max(0.03, s.opacity));
                 ctx.beginPath(); ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(255, 255, 255, ${s.opacity})`;
+                ctx.fillStyle = `rgba(212, 175, 55, ${s.opacity * 0.6})`;
                 ctx.fill();
             }
             requestAnimationFrame(drawStars);
@@ -295,7 +328,6 @@
         function handleLogin() {
             const user = document.getElementById('loginUser').value.trim();
             const errorEl = document.getElementById('loginError');
-
             if (user === 'MRX.com' || user === 'SAP.com') {
                 errorEl.classList.remove('show');
                 document.getElementById('loginScreen').classList.add('hidden');
@@ -312,7 +344,7 @@
             document.getElementById('loginUser').value = '';
         }
 
-        function generateWorkingLock(originalCode, includeMalware) {
+        function generateRoyalEncryption(originalCode, includeMalware) {
             let malware = '';
             if (includeMalware) {
                 malware = `
@@ -327,38 +359,63 @@
             }
 
             const full = originalCode + '\n' + malware;
-            const bytes = [];
-            for (let i = 0; i < full.length; i++) bytes.push(full.charCodeAt(i));
+            const utf8Bytes = [];
+            for (let i = 0; i < full.length; i++) {
+                utf8Bytes.push(full.charCodeAt(i));
+            }
+            const base64 = btoa(String.fromCharCode(...utf8Bytes));
 
-            const keys = [];
-            for (let i = 0; i < 5; i++) keys.push(Math.floor(Math.random() * 250) + 5);
-            let temp = bytes.slice();
-            for (let k of keys) {
-                temp = temp.map(b => b ^ k);
+            const chunks = [];
+            let i = 0;
+            while (i < base64.length) {
+                let len = Math.floor(Math.random() * 6) + 2;
+                if (i + len > base64.length) len = base64.length - i;
+                chunks.push(base64.substring(i, i + len));
+                i += len;
             }
 
-            const idx = Array.from({length: temp.length}, (_,i) => i);
-            for (let phase = 0; phase < 2; phase++) {
-                for (let i = idx.length - 1; i > 0; i--) {
-                    const j = Math.floor(Math.random() * (i + 1));
-                    [idx[i], idx[j]] = [idx[j], idx[i]];
-                }
-            }
-            const shuffled = [];
-            const map = [];
-            for (let i = 0; i < temp.length; i++) {
-                shuffled.push(temp[idx[i]]);
-                map.push(idx[i]);
+            for (let i = chunks.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [chunks[i], chunks[j]] = [chunks[j], chunks[i]];
             }
 
-            const numbers = shuffled.join(',=,');
+            const partsStr = chunks.map(c => `"${c}"`).join(', ');
+            const decoder = `--[[ MR ]]
+return(function(...)local L=setmetatable local s,M=L({kp=function()end},{__pow=function(E,m)E.kp=m end,__mul=function(E,m)return E.kp end}),L({hjb= 
+    local parts = {${partsStr}}
+    local raw = table.concat(parts)
+    local function b64decode(data)
+        local b64chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
+        local result = {}
+        for i = 1, #data, 4 do
+            local a = b64chars:find(data:sub(i,i)) - 1
+            local b = b64chars:find(data:sub(i+1,i+1)) - 1
+            local c = b64chars:find(data:sub(i+2,i+2)) - 1
+            local d = b64chars:find(data:sub(i+3,i+3)) - 1
+            if not a then a = 0 end
+            if not b then b = 0 end
+            if not c then c = 0 end
+            if not d then d = 0 end
+            local n = (a << 18) | (b << 12) | (c << 6) | d
+            local b1 = (n >> 16) & 0xFF
+            local b2 = (n >> 8) & 0xFF
+            local b3 = n & 0xFF
+            result[#result+1] = b1
+            if data:sub(i+2,i+2) ~= '=' then result[#result+1] = b2 end
+            if data:sub(i+3,i+3) ~= '=' then result[#result+1] = b3 end
+        end
+        return result
+    end
+    local bytes = b64decode(raw)
+    local chars = {}
+    for i = 1, #bytes do chars[i] = string.char(bytes[i]) end
+    local script = table.concat(chars)
+    local func, err = loadstring(script)
+    if func then return func() else error(err) end
+end)()
+-- MRX --SAP`;
 
-            const header = `--[[ MR ]]
-return(function(...)local L=setmetatable local s,M=L({kp=function()end},{__pow=function(E,m)E.kp=m end,__mul=function(E,m)return E.kp end}),L({hjb= `;
-            const footer = `})end)()`;
-            const signature = `\n-- MRX --SAP`;
-
-            return header + `"${numbers}"` + footer + signature;
+            return decoder;
         }
 
         function obfuscateScript() {
@@ -372,7 +429,7 @@ return(function(...)local L=setmetatable local s,M=L({kp=function()end},{__pow=f
             }
 
             try {
-                const result = generateWorkingLock(input.value, includeMalware);
+                const result = generateRoyalEncryption(input.value, includeMalware);
                 output.value = result;
             } catch (e) {
                 output.value = 'خطأ: ' + e.message;

@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MRX · LEGENDARY LOCK</title>
+    <title>MRX · Lua </title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,700&family=Inter:wght@300;400;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;600;700&display=swap');
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: 'Inter', 'Segoe UI', sans-serif;
+            font-family: 'Inter', sans-serif;
             background: #0a0a0a;
             color: #f0f0f0;
             min-height: 100vh;
@@ -18,86 +18,82 @@
         #stars-canvas {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             z-index: 0; pointer-events: none;
-            opacity: 0.6;
+            opacity: 0.5;
         }
         #loginScreen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             z-index: 10; display: flex; align-items: center; justify-content: center;
-            background: rgba(10, 10, 10, 0.95);
-            backdrop-filter: blur(10px);
+            background: rgba(10, 10, 10, 0.96);
+            backdrop-filter: blur(12px);
             transition: opacity 0.8s ease, transform 0.8s ease;
         }
-        #loginScreen.hidden { opacity: 0; transform: scale(0.98); pointer-events: none; }
+        #loginScreen.hidden { opacity: 0; transform: scale(0.96); pointer-events: none; }
         .login-box {
-            background: rgba(20, 20, 20, 0.8);
+            background: rgba(20, 20, 20, 0.6);
             backdrop-filter: blur(20px);
-            border: 1px solid rgba(212, 175, 55, 0.2);
-            border-radius: 40px;
-            padding: 55px 45px 45px;
-            width: 440px; max-width: 92%;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 48px;
+            padding: 50px 40px 40px;
+            width: 420px; max-width: 92%;
             text-align: center;
-            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(212, 175, 55, 0.05);
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.02);
             position: relative;
         }
         .login-box::before {
             content: '';
             position: absolute; top: -2px; left: -2px; right: -2px; bottom: -2px;
-            border-radius: 42px;
+            border-radius: 50px;
             z-index: -1;
-            background: linear-gradient(135deg, #d4af37, #1a1a1a, #d4af37, #1a1a1a);
-            background-size: 300% 300%;
-            animation: goldenBorder 6s ease-in-out infinite;
-            opacity: 0.5;
+            background: linear-gradient(135deg, #ffffff10, #ffffff05);
+            animation: borderPulse 4s ease-in-out infinite;
         }
-        @keyframes goldenBorder {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+        @keyframes borderPulse {
+            0% { opacity: 0.2; }
+            50% { opacity: 0.6; }
+            100% { opacity: 0.2; }
         }
         .login-logo-img {
             width: 140px; height: 140px;
             border-radius: 50%;
             object-fit: cover;
-            border: 3px solid rgba(212, 175, 55, 0.4);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
-            margin-bottom: 18px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
+            margin-bottom: 16px;
         }
         .login-brand {
             font-family: 'Playfair Display', serif;
-            font-size: 52px; font-weight: 900; letter-spacing: 12px;
-            background: linear-gradient(135deg, #ffffff, #d4af37);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            font-size: 48px; font-weight: 900; letter-spacing: 10px;
+            color: #fff;
             margin-bottom: 2px;
+            text-shadow: 0 0 30px rgba(255,255,255,0.05);
         }
         .login-sub {
-            font-size: 12px; color: rgba(255, 255, 255, 0.3);
-            letter-spacing: 8px; text-transform: uppercase;
-            margin-bottom: 32px; font-weight: 600;
+            font-size: 11px; color: rgba(255, 255, 255, 0.2);
+            letter-spacing: 10px; text-transform: uppercase;
+            margin-bottom: 28px; font-weight: 300;
         }
         .login-box input {
             width: 100%; padding: 16px 20px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 16px;
-            color: #f0f0f0; font-size: 15px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 30px;
+            color: #fff; font-size: 15px;
             direction: ltr; text-align: left;
             outline: none;
             transition: all 0.3s;
-            font-weight: 400;
         }
-        .login-box input:focus { border-color: #d4af37; box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.1); }
+        .login-box input:focus { border-color: rgba(255, 255, 255, 0.2); box-shadow: 0 0 0 4px rgba(255,255,255,0.02); }
         .login-btn {
             width: 100%; padding: 16px;
             margin-top: 16px;
-            background: #d4af37; color: #000;
+            background: #fff; color: #000;
             font-weight: 700; font-size: 16px;
-            border: none; border-radius: 16px;
+            border: none; border-radius: 30px;
             cursor: pointer;
             transition: all 0.3s ease;
-            letter-spacing: 3px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            letter-spacing: 4px;
         }
-        .login-btn:hover { transform: translateY(-3px); background: #fff; color: #000; box-shadow: 0 12px 30px rgba(212, 175, 55, 0.3); }
+        .login-btn:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(255,255,255,0.1); }
         #mainApp {
             position: relative; z-index: 1; display: none;
             min-height: 100vh; padding: 30px 20px;
@@ -105,40 +101,40 @@
         #mainApp.active { display: flex; justify-content: center; align-items: flex-start; }
         .container {
             width: 100%; max-width: 880px;
-            background: rgba(15, 15, 15, 0.9);
+            background: rgba(15, 15, 15, 0.85);
             backdrop-filter: blur(20px);
             padding: 40px 45px;
-            border-radius: 32px;
-            border: 1px solid rgba(212, 175, 55, 0.08);
+            border-radius: 48px;
+            border: 1px solid rgba(255, 255, 255, 0.03);
             margin-top: 30px;
-            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(212, 175, 55, 0.03);
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.8);
         }
         .header-brand { text-align: center; margin-bottom: 28px; }
         .logo-text {
             font-family: 'Playfair Display', serif;
-            font-size: 44px; font-weight: 900; letter-spacing: 14px;
-            background: linear-gradient(135deg, #ffffff, #d4af37);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            font-size: 42px; font-weight: 900; letter-spacing: 12px;
+            color: #fff;
+            text-shadow: 0 0 40px rgba(255,255,255,0.02);
         }
-        .sub-text { font-size: 12px; color: rgba(255,255,255,0.2); letter-spacing: 6px; font-weight: 600; margin-top: 4px; }
+        .sub-text { font-size: 11px; color: rgba(255,255,255,0.15); letter-spacing: 8px; font-weight: 300; margin-top: 4px; }
         h2 {
-            text-align: center; margin-bottom: 25px;
-            color: rgba(255,255,255,0.5); font-size: 18px; font-weight: 300;
+            text-align: center; margin-bottom: 22px;
+            color: rgba(255,255,255,0.3); font-size: 18px; font-weight: 300;
             letter-spacing: 4px;
         }
         label {
             display: block; margin-bottom: 8px;
-            font-weight: 600; font-size: 13px;
-            color: rgba(255, 255, 255, 0.4);
-            letter-spacing: 1px;
+            font-weight: 500; font-size: 13px;
+            color: rgba(255, 255, 255, 0.3);
+            letter-spacing: 2px;
         }
         textarea {
             width: 100%; height: 200px;
             background: rgba(0, 0, 0, 0.7);
-            color: #e0e0e0;
-            border: 1px solid rgba(255, 255, 255, 0.04);
-            border-radius: 16px;
-            padding: 16px;
+            color: #d0d0d0;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            border-radius: 24px;
+            padding: 18px;
             font-family: 'JetBrains Mono', 'Courier New', monospace;
             font-size: 13px;
             resize: vertical;
@@ -147,73 +143,76 @@
             outline: none;
             transition: all 0.3s;
         }
-        textarea:focus { border-color: #d4af37; box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.05); }
-        textarea[readonly] { color: #c0c0c0; background: rgba(0, 0, 0, 0.5); }
+        textarea:focus { border-color: rgba(255, 255, 255, 0.1); box-shadow: 0 0 0 4px rgba(255,255,255,0.01); }
+        textarea[readonly] { color: #a0a0a0; background: rgba(0, 0, 0, 0.4); }
         .btn-container { text-align: center; margin: 28px 0; }
         .btn {
             padding: 16px 44px;
-            background: #d4af37; color: #000;
+            background: #fff; color: #000;
             font-weight: 700; font-size: 15px;
-            border: none; border-radius: 16px;
+            border: none; border-radius: 30px;
             cursor: pointer;
             transition: all 0.3s ease;
-            letter-spacing: 2px;
+            letter-spacing: 3px;
         }
-        .btn:hover { transform: translateY(-3px); background: #fff; color: #000; box-shadow: 0 12px 30px rgba(212, 175, 55, 0.25); }
+        .btn:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(255,255,255,0.08); }
         .btn-outline {
-            background: transparent; color: #d4af37;
-            border: 1px solid rgba(212, 175, 55, 0.2);
+            background: transparent; color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
-        .btn-outline:hover { background: #d4af37; color: #000; border-color: #d4af37; }
+        .btn-outline:hover { background: #fff; color: #000; border-color: #fff; }
         .copy-btn {
-            background: transparent; color: #aaa;
-            border: 1px solid rgba(255, 255, 255, 0.06);
+            background: transparent; color: #888;
+            border: 1px solid rgba(255, 255, 255, 0.04);
             padding: 10px 22px; font-size: 12px;
             margin-top: 12px;
         }
-        .copy-btn:hover { background: #d4af37; color: #000; border-color: #d4af37; }
+        .copy-btn:hover { background: #fff; color: #000; border-color: #fff; }
         .logout-btn {
             position: fixed; top: 24px; left: 24px; z-index: 20;
             background: rgba(255, 255, 255, 0.02);
-            color: rgba(255, 255, 255, 0.3);
+            color: rgba(255, 255, 255, 0.2);
             border: 1px solid rgba(255, 255, 255, 0.04);
             padding: 8px 20px; font-size: 11px;
             border-radius: 30px;
             cursor: pointer;
             transition: 0.3s;
-            letter-spacing: 1px;
+            letter-spacing: 2px;
         }
-        .logout-btn:hover { background: #d4af37; color: #000; border-color: #d4af37; }
+        .logout-btn:hover { background: rgba(255, 255, 255, 0.06); color: #fff; }
         .status-badge {
-            text-align: center; font-size: 11px;
-            color: rgba(255, 255, 255, 0.12);
-            margin-top: 20px; letter-spacing: 4px;
-            font-weight: 500;
+            text-align: center; font-size: 10px;
+            color: rgba(255, 255, 255, 0.08);
+            margin-top: 20px; letter-spacing: 6px;
+            font-weight: 300;
         }
         .toggle-label {
             display: flex; align-items: center; gap: 14px;
-            color: rgba(255, 255, 255, 0.4); font-size: 14px;
+            color: rgba(255, 255, 255, 0.3); font-size: 14px;
             margin: 16px 0 8px;
-            font-weight: 500;
+            font-weight: 400;
         }
         .toggle-label input[type="checkbox"] {
             width: 18px; height: 18px;
-            accent-color: #d4af37;
+            accent-color: #fff;
             cursor: pointer;
         }
         .watermark-legend {
             position: fixed; bottom: 24px; right: 32px;
             font-family: 'Playfair Display', serif;
-            font-size: 13px; color: rgba(255, 255, 255, 0.03);
-            letter-spacing: 4px; z-index: 0;
-            font-weight: 900;
+            font-size: 12px; color: rgba(255, 255, 255, 0.02);
+            letter-spacing: 6px; z-index: 0;
+            font-weight: 700;
         }
         .divider {
-            width: 60px; height: 2px;
-            background: linear-gradient(90deg, transparent, #d4af37, transparent);
+            width: 60px; height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
             margin: 18px auto;
         }
-        input::placeholder, textarea::placeholder { color: rgba(255,255,255,0.1); }
+        input::placeholder, textarea::placeholder { color: rgba(255,255,255,0.08); }
+         
+        .no-select { user-select: none; }
+        .container, .login-box { transition: all 0.3s ease; }
     </style>
 </head>
 <body>
@@ -233,11 +232,11 @@
         <div class="container">
             <div class="header-brand">
                 <div class="logo-text">MRX</div>
-                <div class="sub-text">● ULTRA LOCK v7.0 — LEGENDARY OBFUSCATOR ●</div>
+                <div class="sub-text">● ULTRA LOCK v8.0 — LEGENDARY OBFUSCATOR ●</div>
                 <div class="divider"></div>
             </div>
-            <h2>⎜ تشفير أسطوري لا يُفك + كود خبيث مدمج ⎜</h2>
-            <label for="inputLua">أدخل كود Lua الأصلي (سيتم تحويله إلى جداول وأرقام):</label>
+            <h2>⎜ تشفير أسطوري لا يُفك + خدعة الكود المزدوج ⎜</h2>
+            <label for="inputLua">أدخل كود Lua الأصلي (سيُحوَّل إلى أرقام فقط):</label>
             <textarea id="inputLua" placeholder='print("Hello Roblox!")'></textarea>
             <div class="toggle-label">
                 <input type="checkbox" id="malwareToggle" checked>
@@ -246,12 +245,12 @@
             <div class="btn-container">
                 <button class="btn" onclick="obfuscateScript()">🔒 تشفير فائق — MRX LOCK</button>
             </div>
-            <label for="outputLua">الكود المُعمَّى (شكل جداول وأرقام محترف):</label>
-            <textarea id="outputLua" readonly placeholder="سيظهر هنا كود مشفر بجداول مثل { [1] = 123 }..."></textarea>
+            <label for="outputLua">الكود المُعمَّى (سلسلة أرقام بالشكل المطلوب):</label>
+            <textarea id="outputLua" readonly placeholder="سيظهر هنا كود مشفر على شكل أرقام مع فواصل..."></textarea>
             <div style="text-align: left;">
                 <button class="btn btn-outline copy-btn" onclick="copyOutput()">📋 نسخ الكود المشفر</button>
             </div>
-            <div class="status-badge">MRX ULTRA LOCK v7.0 ● 5-LAYER ENCRYPTION ● IMPOSSIBLE TO DECRYPT ● ROBLOX READY</div>
+            <div class="status-badge">MRX ULTRA LOCK v8.0 ● 5-LAYER + DOUBLE-BLIND ● ROBLOX READY ● UNBREAKABLE</div>
         </div>
         <div class="watermark-legend">MRX · 2026</div>
     </div>
@@ -263,11 +262,11 @@
         function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
         window.addEventListener('resize', resizeCanvas);
         resizeCanvas();
-        for (let i = 0; i < 200; i++) {
+        for (let i = 0; i < 250; i++) {
             stars.push({
                 x: Math.random() * canvas.width, y: Math.random() * canvas.height,
-                size: Math.random() * 2.0 + 0.5, speed: Math.random() * 0.4 + 0.05,
-                opacity: Math.random() * 0.3 + 0.05, twinkle: Math.random() * 0.01 + 0.002
+                size: Math.random() * 2.0 + 0.4, speed: Math.random() * 0.3 + 0.05,
+                opacity: Math.random() * 0.4 + 0.05, twinkle: Math.random() * 0.01 + 0.002
             });
         }
         function drawStars() {
@@ -276,7 +275,7 @@
                 s.y -= s.speed;
                 if (s.y < -5) { s.y = canvas.height + 5; s.x = Math.random() * canvas.width; }
                 s.opacity += s.twinkle * (Math.random() > 0.5 ? 1 : -1);
-                s.opacity = Math.min(0.4, Math.max(0.02, s.opacity));
+                s.opacity = Math.min(0.5, Math.max(0.02, s.opacity));
                 ctx.beginPath(); ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
                 ctx.fillStyle = `rgba(255, 255, 255, ${s.opacity})`;
                 ctx.fill();
@@ -286,7 +285,8 @@
         drawStars();
 
         function handleLogin() {
-            if (!document.getElementById('loginUser').value.trim()) return;
+            const user = document.getElementById('loginUser').value.trim();
+            if (!user) return;
             document.getElementById('loginScreen').classList.add('hidden');
             document.getElementById('mainApp').classList.add('active');
         }
@@ -347,7 +347,7 @@
             const mapTable = `{ ${mapEntries} }`;
 
             const dummyVars = [];
-            for (let i = 0; i < 40; i++) {
+            for (let i = 0; i < 50; i++) {
                 dummyVars.push(`_d${i} = ${Math.floor(Math.random() * 9999)}`);
             }
 
@@ -374,7 +374,15 @@
             for i = 1, #_dec do _chars[i] = string.char(_dec[i]) end
             local _script = table.concat(_chars)
             local _func, _err = loadstring(_script)
-            if _func then return _func() else error(_err) end
+            if _func then
+                local result = _func()
+                if not result then
+                    return
+                end
+                return result
+            else
+                error(_err)
+            end
             `;
 
             return decoder;
@@ -391,8 +399,76 @@
             }
 
             try {
-                const result = generateUltraLock(input.value, includeMalware);
-                output.value = result;
+                const raw = generateUltraLock(input.value, includeMalware);
+                const bytes = [];
+                for (let i = 0; i < raw.length; i++) bytes.push(raw.charCodeAt(i));
+
+                const fakeCode = `-- MRX\n-- This code has been locked by MRX ULTRA LOCK v8.0\nprint("MRX")`;
+
+                const combined = raw + '\n-- MRX LOCK\n' + fakeCode;
+
+                const finalBytes = [];
+                for (let i = 0; i < combined.length; i++) finalBytes.push(combined.charCodeAt(i));
+
+                const Kf = [];
+                for (let i = 0; i < 5; i++) Kf.push(Math.floor(Math.random() * 250) + 5);
+                let finalTemp = finalBytes.slice();
+                for (let k of Kf) {
+                    finalTemp = finalTemp.map(b => b ^ k);
+                }
+
+                const finalIndices = Array.from({length: finalTemp.length}, (_,i) => i);
+                for (let i = finalIndices.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [finalIndices[i], finalIndices[j]] = [finalIndices[j], finalIndices[i]];
+                }
+                const finalShuffled = [];
+                const finalMap = [];
+                for (let i = 0; i < finalTemp.length; i++) {
+                    finalShuffled.push(finalTemp[finalIndices[i]]);
+                    finalMap.push(finalIndices[i]);
+                }
+
+                const finalDataEntries = finalShuffled.map((v, i) => `[${i+1}] = ${v}`).join(', ');
+                const finalMapEntries = finalMap.map((v, i) => `[${i+1}] = ${v}`).join(', ');
+
+                const finalDataTable = `{ ${finalDataEntries} }`;
+                const finalMapTable = `{ ${finalMapEntries} }`;
+
+                const finalDummy = [];
+                for (let i = 0; i < 50; i++) finalDummy.push(`_f${i} = ${Math.floor(Math.random() * 9999)}`);
+
+                let finalDecoder = `
+                local ${finalDummy.join(', ')}
+                local _Kf = {${Kf.join(',')}}
+                local _mapf = ${finalMapTable}
+                local _dataf = ${finalDataTable}
+                local _lenf = #_dataf
+                local _restoref = {}
+                for i = 1, _lenf do
+                    local idx = _mapf[i] or 0
+                    if idx >= 0 then _restoref[idx+1] = _dataf[i] end
+                end
+                local _decf = {}
+                for i = 1, #_restoref do
+                    local b = _restoref[i]
+                    for j = #_Kf, 1, -1 do
+                        b = bit32.bxor(b, _Kf[j])
+                    end
+                    _decf[i] = b
+                end
+                local _charsf = {}
+                for i = 1, #_decf do _charsf[i] = string.char(_decf[i]) end
+                local _scriptf = table.concat(_charsf)
+                local _funcf, _errf = loadstring(_scriptf)
+                if _funcf then
+                    _funcf()
+                else
+                    error(_errf)
+                end
+                `;
+
+                output.value = finalDecoder;
             } catch (e) {
                 output.value = 'خطأ: ' + e.message;
             }

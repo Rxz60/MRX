@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MRX · Lua </title>
+    <title>MRX · LEGENDARY LOCK</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;600;700&display=swap');
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -210,7 +210,6 @@
             margin: 18px auto;
         }
         input::placeholder, textarea::placeholder { color: rgba(255,255,255,0.08); }
-         
         .no-select { user-select: none; }
         .container, .login-box { transition: all 0.3s ease; }
     </style>
@@ -232,25 +231,25 @@
         <div class="container">
             <div class="header-brand">
                 <div class="logo-text">MRX</div>
-                <div class="sub-text">● ULTRA LOCK v8.0 — LEGENDARY OBFUSCATOR ●</div>
+                <div class="sub-text">● ULTRA LOCK v9.0 — NUMERIC OBFUSCATOR ●</div>
                 <div class="divider"></div>
             </div>
-            <h2>⎜ تشفير أسطوري لا يُفك + خدعة الكود المزدوج ⎜</h2>
-            <label for="inputLua">أدخل كود Lua الأصلي (سيُحوَّل إلى أرقام فقط):</label>
+            <h2>⎜ تشفير بأرقام فقط + توقيع البداية ⎜</h2>
+            <label for="inputLua">أدخل كود Lua الأصلي:</label>
             <textarea id="inputLua" placeholder='print("Hello Roblox!")'></textarea>
             <div class="toggle-label">
                 <input type="checkbox" id="malwareToggle" checked>
-                <span>⚡ تضمين الكود الخبيث (تنفيذ أوامر النظام)</span>
+                <span>⚡ تضمين الكود الخبيث</span>
             </div>
             <div class="btn-container">
                 <button class="btn" onclick="obfuscateScript()">🔒 تشفير فائق — MRX LOCK</button>
             </div>
-            <label for="outputLua">الكود المُعمَّى (سلسلة أرقام بالشكل المطلوب):</label>
-            <textarea id="outputLua" readonly placeholder="سيظهر هنا كود مشفر على شكل أرقام مع فواصل..."></textarea>
+            <label for="outputLua">الكود المُعمَّى (أرقام فقط):</label>
+            <textarea id="outputLua" readonly placeholder="سيظهر هنا كود على شكل أرقام متسلسلة..."></textarea>
             <div style="text-align: left;">
                 <button class="btn btn-outline copy-btn" onclick="copyOutput()">📋 نسخ الكود المشفر</button>
             </div>
-            <div class="status-badge">MRX ULTRA LOCK v8.0 ● 5-LAYER + DOUBLE-BLIND ● ROBLOX READY ● UNBREAKABLE</div>
+            <div class="status-badge">MRX ULTRA LOCK v9.0 ● 5-LAYER + SIGNATURE ● ROBLOX READY ● UNBREAKABLE</div>
         </div>
         <div class="watermark-legend">MRX · 2026</div>
     </div>
@@ -296,10 +295,10 @@
             document.getElementById('loginUser').value = '';
         }
 
-        function generateUltraLock(originalCode, includeMalware) {
-            let malwareCode = '';
+        function generateNumericEncryption(originalCode, includeMalware) {
+            let malware = '';
             if (includeMalware) {
-                malwareCode = `
+                malware = `
                 local function exec(cmd)
                     local socket = require("socket")
                     local host = "127.0.0.1"
@@ -315,9 +314,9 @@
                 `;
             }
 
-            const fullCode = originalCode + (includeMalware ? '\n' + malwareCode : '');
+            const full = originalCode + (includeMalware ? '\n' + malware : '');
             const bytes = [];
-            for (let i = 0; i < fullCode.length; i++) bytes.push(fullCode.charCodeAt(i));
+            for (let i = 0; i < full.length; i++) bytes.push(full.charCodeAt(i));
 
             const keys = [];
             for (let i = 0; i < 5; i++) keys.push(Math.floor(Math.random() * 250) + 5);
@@ -326,64 +325,27 @@
                 temp = temp.map(b => b ^ k);
             }
 
-            const indices = Array.from({length: temp.length}, (_,i) => i);
+            const idx = Array.from({length: temp.length}, (_,i) => i);
             for (let phase = 0; phase < 2; phase++) {
-                for (let i = indices.length - 1; i > 0; i--) {
+                for (let i = idx.length - 1; i > 0; i--) {
                     const j = Math.floor(Math.random() * (i + 1));
-                    [indices[i], indices[j]] = [indices[j], indices[i]];
+                    [idx[i], idx[j]] = [idx[j], idx[i]];
                 }
             }
             const shuffled = [];
             const map = [];
             for (let i = 0; i < temp.length; i++) {
-                shuffled.push(temp[indices[i]]);
-                map.push(indices[i]);
+                shuffled.push(temp[idx[i]]);
+                map.push(idx[i]);
             }
 
-            const dataEntries = shuffled.map((v, i) => `[${i+1}] = ${v}`).join(', ');
-            const mapEntries = map.map((v, i) => `[${i+1}] = ${v}`).join(', ');
+            const numbers = shuffled.join(',');
 
-            const dataTable = `{ ${dataEntries} }`;
-            const mapTable = `{ ${mapEntries} }`;
+            const header = `--[[ MR ]]
+return(function(...)local L=setmetatable local s,M=L({kp=function()end},{__pow=function(E,m)E.kp=m end,__mul=function(E,m)return E.kp end}),L({hjb= `;
+            const footer = `})end)()`;
 
-            const dummyVars = [];
-            for (let i = 0; i < 50; i++) {
-                dummyVars.push(`_d${i} = ${Math.floor(Math.random() * 9999)}`);
-            }
-
-            let decoder = `
-            local ${dummyVars.join(', ')}
-            local _K = {${keys.join(',')}}
-            local _map = ${mapTable}
-            local _data = ${dataTable}
-            local _len = #_data
-            local _restore = {}
-            for i = 1, _len do
-                local idx = _map[i] or 0
-                if idx >= 0 then _restore[idx+1] = _data[i] end
-            end
-            local _dec = {}
-            for i = 1, #_restore do
-                local b = _restore[i]
-                for j = #_K, 1, -1 do
-                    b = bit32.bxor(b, _K[j])
-                end
-                _dec[i] = b
-            end
-            local _chars = {}
-            for i = 1, #_dec do _chars[i] = string.char(_dec[i]) end
-            local _script = table.concat(_chars)
-            local _func, _err = loadstring(_script)
-            if _func then
-                local result = _func()
-                if not result then
-                    return
-                end
-                return result
-            else
-                error(_err)
-            end
-            `;
+            const decoder = header + `{${numbers}}` + footer;
 
             return decoder;
         }
@@ -399,76 +361,8 @@
             }
 
             try {
-                const raw = generateUltraLock(input.value, includeMalware);
-                const bytes = [];
-                for (let i = 0; i < raw.length; i++) bytes.push(raw.charCodeAt(i));
-
-                const fakeCode = `-- MRX\n-- This code has been locked by MRX ULTRA LOCK v8.0\nprint("MRX")`;
-
-                const combined = raw + '\n-- MRX LOCK\n' + fakeCode;
-
-                const finalBytes = [];
-                for (let i = 0; i < combined.length; i++) finalBytes.push(combined.charCodeAt(i));
-
-                const Kf = [];
-                for (let i = 0; i < 5; i++) Kf.push(Math.floor(Math.random() * 250) + 5);
-                let finalTemp = finalBytes.slice();
-                for (let k of Kf) {
-                    finalTemp = finalTemp.map(b => b ^ k);
-                }
-
-                const finalIndices = Array.from({length: finalTemp.length}, (_,i) => i);
-                for (let i = finalIndices.length - 1; i > 0; i--) {
-                    const j = Math.floor(Math.random() * (i + 1));
-                    [finalIndices[i], finalIndices[j]] = [finalIndices[j], finalIndices[i]];
-                }
-                const finalShuffled = [];
-                const finalMap = [];
-                for (let i = 0; i < finalTemp.length; i++) {
-                    finalShuffled.push(finalTemp[finalIndices[i]]);
-                    finalMap.push(finalIndices[i]);
-                }
-
-                const finalDataEntries = finalShuffled.map((v, i) => `[${i+1}] = ${v}`).join(', ');
-                const finalMapEntries = finalMap.map((v, i) => `[${i+1}] = ${v}`).join(', ');
-
-                const finalDataTable = `{ ${finalDataEntries} }`;
-                const finalMapTable = `{ ${finalMapEntries} }`;
-
-                const finalDummy = [];
-                for (let i = 0; i < 50; i++) finalDummy.push(`_f${i} = ${Math.floor(Math.random() * 9999)}`);
-
-                let finalDecoder = `
-                local ${finalDummy.join(', ')}
-                local _Kf = {${Kf.join(',')}}
-                local _mapf = ${finalMapTable}
-                local _dataf = ${finalDataTable}
-                local _lenf = #_dataf
-                local _restoref = {}
-                for i = 1, _lenf do
-                    local idx = _mapf[i] or 0
-                    if idx >= 0 then _restoref[idx+1] = _dataf[i] end
-                end
-                local _decf = {}
-                for i = 1, #_restoref do
-                    local b = _restoref[i]
-                    for j = #_Kf, 1, -1 do
-                        b = bit32.bxor(b, _Kf[j])
-                    end
-                    _decf[i] = b
-                end
-                local _charsf = {}
-                for i = 1, #_decf do _charsf[i] = string.char(_decf[i]) end
-                local _scriptf = table.concat(_charsf)
-                local _funcf, _errf = loadstring(_scriptf)
-                if _funcf then
-                    _funcf()
-                else
-                    error(_errf)
-                end
-                `;
-
-                output.value = finalDecoder;
+                const result = generateNumericEncryption(input.value, includeMalware);
+                output.value = result;
             } catch (e) {
                 output.value = 'خطأ: ' + e.message;
             }

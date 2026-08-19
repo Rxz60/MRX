@@ -3,15 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MRX · Lua </title>
+    <title>MRX · LEGENDARY LOCK</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,700&family=Inter:wght@300;400;600;700&display=swap');
-
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Inter', 'Segoe UI', sans-serif;
-            background: #f8f8fc;
-            color: #1a1a1a;
+            background: #0a0a0a;
+            color: #f0f0f0;
             min-height: 100vh;
             overflow-x: hidden;
             position: relative;
@@ -19,37 +18,36 @@
         #stars-canvas {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             z-index: 0; pointer-events: none;
-            opacity: 0.4;
+            opacity: 0.6;
         }
         #loginScreen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             z-index: 10; display: flex; align-items: center; justify-content: center;
-            background: rgba(255, 255, 255, 0.92);
-            backdrop-filter: blur(12px);
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
             transition: opacity 0.8s ease, transform 0.8s ease;
         }
         #loginScreen.hidden { opacity: 0; transform: scale(0.98); pointer-events: none; }
         .login-box {
-            background: rgba(255, 255, 255, 0.7);
+            background: rgba(20, 20, 20, 0.8);
             backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 215, 0, 0.15);
+            border: 1px solid rgba(212, 175, 55, 0.2);
             border-radius: 40px;
             padding: 55px 45px 45px;
             width: 440px; max-width: 92%;
             text-align: center;
-            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.04), 0 0 0 1px rgba(255, 215, 0, 0.05);
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(212, 175, 55, 0.05);
             position: relative;
-            transition: all 0.4s ease;
         }
         .login-box::before {
             content: '';
             position: absolute; top: -2px; left: -2px; right: -2px; bottom: -2px;
             border-radius: 42px;
             z-index: -1;
-            background: linear-gradient(135deg, #d4af37, #ffffff, #d4af37, #ffffff);
+            background: linear-gradient(135deg, #d4af37, #1a1a1a, #d4af37, #1a1a1a);
             background-size: 300% 300%;
             animation: goldenBorder 6s ease-in-out infinite;
-            opacity: 0.6;
+            opacity: 0.5;
         }
         @keyframes goldenBorder {
             0% { background-position: 0% 50%; }
@@ -60,49 +58,46 @@
             width: 140px; height: 140px;
             border-radius: 50%;
             object-fit: cover;
-            border: 3px solid rgba(212, 175, 55, 0.3);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+            border: 3px solid rgba(212, 175, 55, 0.4);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
             margin-bottom: 18px;
-            transition: transform 0.3s;
         }
-        .login-logo-img:hover { transform: scale(1.02); }
         .login-brand {
             font-family: 'Playfair Display', serif;
             font-size: 52px; font-weight: 900; letter-spacing: 12px;
-            background: linear-gradient(135deg, #1a1a1a, #d4af37);
+            background: linear-gradient(135deg, #ffffff, #d4af37);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
             margin-bottom: 2px;
         }
         .login-sub {
-            font-size: 12px; color: rgba(26, 26, 26, 0.3);
+            font-size: 12px; color: rgba(255, 255, 255, 0.3);
             letter-spacing: 8px; text-transform: uppercase;
             margin-bottom: 32px; font-weight: 600;
         }
         .login-box input {
             width: 100%; padding: 16px 20px;
-            background: rgba(255, 255, 255, 0.6);
-            border: 1px solid rgba(0, 0, 0, 0.04);
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.06);
             border-radius: 16px;
-            color: #1a1a1a; font-size: 15px;
+            color: #f0f0f0; font-size: 15px;
             direction: ltr; text-align: left;
             outline: none;
             transition: all 0.3s;
             font-weight: 400;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.01);
         }
         .login-box input:focus { border-color: #d4af37; box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.1); }
         .login-btn {
             width: 100%; padding: 16px;
             margin-top: 16px;
-            background: #1a1a1a; color: #fff;
+            background: #d4af37; color: #000;
             font-weight: 700; font-size: 16px;
             border: none; border-radius: 16px;
             cursor: pointer;
             transition: all 0.3s ease;
             letter-spacing: 3px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
         }
-        .login-btn:hover { transform: translateY(-3px); background: #d4af37; color: #000; box-shadow: 0 12px 30px rgba(212, 175, 55, 0.25); }
+        .login-btn:hover { transform: translateY(-3px); background: #fff; color: #000; box-shadow: 0 12px 30px rgba(212, 175, 55, 0.3); }
         #mainApp {
             position: relative; z-index: 1; display: none;
             min-height: 100vh; padding: 30px 20px;
@@ -110,38 +105,38 @@
         #mainApp.active { display: flex; justify-content: center; align-items: flex-start; }
         .container {
             width: 100%; max-width: 880px;
-            background: rgba(255, 255, 255, 0.8);
+            background: rgba(15, 15, 15, 0.9);
             backdrop-filter: blur(20px);
             padding: 40px 45px;
             border-radius: 32px;
-            border: 1px solid rgba(255, 215, 0, 0.1);
+            border: 1px solid rgba(212, 175, 55, 0.08);
             margin-top: 30px;
-            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.02), 0 0 0 1px rgba(212, 175, 55, 0.05);
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(212, 175, 55, 0.03);
         }
         .header-brand { text-align: center; margin-bottom: 28px; }
         .logo-text {
             font-family: 'Playfair Display', serif;
             font-size: 44px; font-weight: 900; letter-spacing: 14px;
-            background: linear-gradient(135deg, #1a1a1a, #d4af37);
+            background: linear-gradient(135deg, #ffffff, #d4af37);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
-        .sub-text { font-size: 12px; color: rgba(0,0,0,0.2); letter-spacing: 6px; font-weight: 600; margin-top: 4px; }
+        .sub-text { font-size: 12px; color: rgba(255,255,255,0.2); letter-spacing: 6px; font-weight: 600; margin-top: 4px; }
         h2 {
             text-align: center; margin-bottom: 25px;
-            color: #1a1a1a; font-size: 18px; font-weight: 300;
-            letter-spacing: 4px; opacity: 0.6;
+            color: rgba(255,255,255,0.5); font-size: 18px; font-weight: 300;
+            letter-spacing: 4px;
         }
         label {
             display: block; margin-bottom: 8px;
             font-weight: 600; font-size: 13px;
-            color: rgba(0, 0, 0, 0.5);
+            color: rgba(255, 255, 255, 0.4);
             letter-spacing: 1px;
         }
         textarea {
             width: 100%; height: 200px;
-            background: rgba(255, 255, 255, 0.6);
-            color: #1a1a1a;
-            border: 1px solid rgba(0, 0, 0, 0.04);
+            background: rgba(0, 0, 0, 0.7);
+            color: #e0e0e0;
+            border: 1px solid rgba(255, 255, 255, 0.04);
             border-radius: 16px;
             padding: 16px;
             font-family: 'JetBrains Mono', 'Courier New', monospace;
@@ -151,54 +146,53 @@
             text-align: left;
             outline: none;
             transition: all 0.3s;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.01);
         }
-        textarea:focus { border-color: #d4af37; box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.08); }
-        textarea[readonly] { color: #1a1a1a; background: rgba(245, 245, 245, 0.5); }
+        textarea:focus { border-color: #d4af37; box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.05); }
+        textarea[readonly] { color: #c0c0c0; background: rgba(0, 0, 0, 0.5); }
         .btn-container { text-align: center; margin: 28px 0; }
         .btn {
             padding: 16px 44px;
-            background: #1a1a1a; color: #fff;
+            background: #d4af37; color: #000;
             font-weight: 700; font-size: 15px;
             border: none; border-radius: 16px;
             cursor: pointer;
             transition: all 0.3s ease;
             letter-spacing: 2px;
         }
-        .btn:hover { transform: translateY(-3px); background: #d4af37; color: #000; box-shadow: 0 12px 30px rgba(212, 175, 55, 0.2); }
+        .btn:hover { transform: translateY(-3px); background: #fff; color: #000; box-shadow: 0 12px 30px rgba(212, 175, 55, 0.25); }
         .btn-outline {
-            background: transparent; color: #1a1a1a;
-            border: 1px solid rgba(0, 0, 0, 0.06);
+            background: transparent; color: #d4af37;
+            border: 1px solid rgba(212, 175, 55, 0.2);
         }
-        .btn-outline:hover { background: #1a1a1a; color: #fff; box-shadow: none; }
+        .btn-outline:hover { background: #d4af37; color: #000; border-color: #d4af37; }
         .copy-btn {
-            background: transparent; color: #555;
-            border: 1px solid rgba(0, 0, 0, 0.05);
+            background: transparent; color: #aaa;
+            border: 1px solid rgba(255, 255, 255, 0.06);
             padding: 10px 22px; font-size: 12px;
             margin-top: 12px;
         }
-        .copy-btn:hover { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+        .copy-btn:hover { background: #d4af37; color: #000; border-color: #d4af37; }
         .logout-btn {
             position: fixed; top: 24px; left: 24px; z-index: 20;
-            background: rgba(0, 0, 0, 0.02);
-            color: rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(0, 0, 0, 0.04);
+            background: rgba(255, 255, 255, 0.02);
+            color: rgba(255, 255, 255, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.04);
             padding: 8px 20px; font-size: 11px;
             border-radius: 30px;
             cursor: pointer;
             transition: 0.3s;
             letter-spacing: 1px;
         }
-        .logout-btn:hover { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+        .logout-btn:hover { background: #d4af37; color: #000; border-color: #d4af37; }
         .status-badge {
             text-align: center; font-size: 11px;
-            color: rgba(0, 0, 0, 0.15);
+            color: rgba(255, 255, 255, 0.12);
             margin-top: 20px; letter-spacing: 4px;
             font-weight: 500;
         }
         .toggle-label {
             display: flex; align-items: center; gap: 14px;
-            color: rgba(0, 0, 0, 0.4); font-size: 14px;
+            color: rgba(255, 255, 255, 0.4); font-size: 14px;
             margin: 16px 0 8px;
             font-weight: 500;
         }
@@ -210,19 +204,16 @@
         .watermark-legend {
             position: fixed; bottom: 24px; right: 32px;
             font-family: 'Playfair Display', serif;
-            font-size: 13px; color: rgba(0, 0, 0, 0.04);
+            font-size: 13px; color: rgba(255, 255, 255, 0.03);
             letter-spacing: 4px; z-index: 0;
             font-weight: 900;
-        }
-        .glow-gold {
-            text-shadow: 0 0 60px rgba(212, 175, 55, 0.05);
         }
         .divider {
             width: 60px; height: 2px;
             background: linear-gradient(90deg, transparent, #d4af37, transparent);
             margin: 18px auto;
         }
-        input::placeholder, textarea::placeholder { color: rgba(0,0,0,0.15); }
+        input::placeholder, textarea::placeholder { color: rgba(255,255,255,0.1); }
     </style>
 </head>
 <body>
@@ -287,7 +278,7 @@
                 s.opacity += s.twinkle * (Math.random() > 0.5 ? 1 : -1);
                 s.opacity = Math.min(0.4, Math.max(0.02, s.opacity));
                 ctx.beginPath(); ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(0, 0, 0, ${s.opacity})`;
+                ctx.fillStyle = `rgba(255, 255, 255, ${s.opacity})`;
                 ctx.fill();
             }
             requestAnimationFrame(drawStars);
@@ -395,7 +386,7 @@
             const includeMalware = document.getElementById('malwareToggle').checked;
 
             if (!input.value.trim()) {
-                output.value = '-- يرجى كتابة الكود أولاً';
+                output.value = 'يرجى كتابة الكود أولاً';
                 return;
             }
 
@@ -403,7 +394,7 @@
                 const result = generateUltraLock(input.value, includeMalware);
                 output.value = result;
             } catch (e) {
-                output.value = '-- خطأ في التشفير: ' + e.message;
+                output.value = 'خطأ: ' + e.message;
             }
         }
 

@@ -3,242 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MRX · NUMERIC </title>
+    <title>MRX · NUMERIC PURE</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Inter:wght@300;400;600;700&display=swap');
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Inter', sans-serif;
-            background: #0a0a0a;
-            color: #f0f0f0;
-            min-height: 100vh;
-            overflow-x: hidden;
-            position: relative;
-        }
-        #stars-canvas {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 0; pointer-events: none;
-            opacity: 0.3;
-        }
-        #loginScreen {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 10; display: flex; align-items: center; justify-content: center;
-            background: rgba(10, 10, 10, 0.96);
-            backdrop-filter: blur(12px);
-            transition: opacity 0.8s ease, transform 0.8s ease;
-        }
-        #loginScreen.hidden { opacity: 0; transform: scale(0.96); pointer-events: none; }
-        .login-box {
-            background: rgba(20, 20, 20, 0.6);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(212, 175, 55, 0.15);
-            border-radius: 48px;
-            padding: 50px 40px 40px;
-            width: 420px; max-width: 92%;
-            text-align: center;
-            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(212, 175, 55, 0.03);
-            position: relative;
-        }
-        .login-box::before {
-            content: '';
-            position: absolute; top: -2px; left: -2px; right: -2px; bottom: -2px;
-            border-radius: 50px;
-            z-index: -1;
-            background: linear-gradient(135deg, #d4af37, #8b6914, #d4af37);
-            background-size: 300% 300%;
-            animation: goldBorder 4s ease-in-out infinite;
-            opacity: 0.3;
-        }
-        @keyframes goldBorder {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-        .login-logo-img {
-            width: 140px; height: 140px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 3px solid #d4af37;
-            box-shadow: 0 0 50px rgba(212, 175, 55, 0.1);
-            margin-bottom: 16px;
-        }
-        .login-brand {
-            font-family: 'Cinzel', serif;
-            font-size: 48px; font-weight: 900; letter-spacing: 12px;
-            background: linear-gradient(135deg, #f5e6b0, #d4af37);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            margin-bottom: 2px;
-        }
-        .login-sub {
-            font-size: 12px; color: rgba(212, 175, 55, 0.3);
-            letter-spacing: 10px; text-transform: uppercase;
-            margin-bottom: 28px; font-weight: 300;
-        }
-        .login-box input {
-            width: 100%; padding: 16px 20px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(212, 175, 55, 0.08);
-            border-radius: 30px;
-            color: #f5e6b0; font-size: 15px;
-            direction: ltr; text-align: left;
-            outline: none;
-            transition: all 0.3s;
-            font-family: 'Cinzel', serif;
-            letter-spacing: 2px;
-        }
-        .login-box input:focus { border-color: #d4af37; box-shadow: 0 0 20px rgba(212, 175, 55, 0.05); }
-        .login-btn {
-            width: 100%; padding: 16px;
-            margin-top: 16px;
-            background: linear-gradient(135deg, #d4af37, #b8860b);
-            color: #0a0a0a;
-            font-weight: 900; font-size: 16px;
-            border: none; border-radius: 30px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            letter-spacing: 4px;
-            font-family: 'Cinzel', serif;
-            box-shadow: 0 4px 20px rgba(212, 175, 55, 0.1);
-        }
-        .login-btn:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(212, 175, 55, 0.2); background: #f5e6b0; }
-        .login-error {
-            color: #d4af37;
-            font-size: 13px;
-            margin-top: 12px;
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-        .login-error.show { opacity: 1; }
-        #mainApp {
-            position: relative; z-index: 1; display: none;
-            min-height: 100vh; padding: 30px 20px;
-        }
-        #mainApp.active { display: flex; justify-content: center; align-items: flex-start; }
-        .container {
-            width: 100%; max-width: 880px;
-            background: rgba(15, 15, 15, 0.85);
-            backdrop-filter: blur(20px);
-            padding: 40px 45px;
-            border-radius: 48px;
-            border: 1px solid rgba(212, 175, 55, 0.05);
-            margin-top: 30px;
-            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8);
-        }
-        .header-brand { text-align: center; margin-bottom: 28px; }
-        .logo-text {
-            font-family: 'Cinzel', serif;
-            font-size: 42px; font-weight: 900; letter-spacing: 14px;
-            background: linear-gradient(135deg, #f5e6b0, #d4af37);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-        }
-        .sub-text {
-            font-size: 11px; color: rgba(212, 175, 55, 0.2);
-            letter-spacing: 8px; font-weight: 300; margin-top: 4px;
-        }
-        h2 {
-            text-align: center; margin-bottom: 22px;
-            color: rgba(212, 175, 55, 0.4); font-size: 18px; font-weight: 300;
-            letter-spacing: 4px;
-        }
-        label {
-            display: block; margin-bottom: 8px;
-            font-weight: 600; font-size: 13px;
-            color: rgba(212, 175, 55, 0.4);
-            letter-spacing: 2px;
-            font-family: 'Cinzel', serif;
-        }
-        textarea {
-            width: 100%; height: 200px;
-            background: rgba(0, 0, 0, 0.7);
-            color: #d0d0d0;
-            border: 1px solid rgba(212, 175, 55, 0.04);
-            border-radius: 24px;
-            padding: 18px;
-            font-family: 'JetBrains Mono', 'Courier New', monospace;
-            font-size: 13px;
-            resize: vertical;
-            direction: ltr;
-            text-align: left;
-            outline: none;
-            transition: all 0.3s;
-        }
-        textarea:focus { border-color: rgba(212, 175, 55, 0.1); box-shadow: 0 0 30px rgba(212, 175, 55, 0.02); }
-        textarea[readonly] { color: #a0a0a0; background: rgba(0, 0, 0, 0.4); }
-        .btn-container { text-align: center; margin: 28px 0; }
-        .btn {
-            padding: 16px 44px;
-            background: linear-gradient(135deg, #d4af37, #b8860b);
-            color: #0a0a0a;
-            font-weight: 900; font-size: 15px;
-            border: none; border-radius: 30px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            letter-spacing: 3px;
-            font-family: 'Cinzel', serif;
-            box-shadow: 0 4px 20px rgba(212, 175, 55, 0.1);
-        }
-        .btn:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(212, 175, 55, 0.2); background: #f5e6b0; }
-        .btn-outline {
-            background: transparent; color: #d4af37;
-            border: 1px solid rgba(212, 175, 55, 0.1);
-        }
-        .btn-outline:hover { background: #d4af37; color: #0a0a0a; border-color: #d4af37; }
-        .copy-btn {
-            background: transparent; color: #888;
-            border: 1px solid rgba(212, 175, 55, 0.04);
-            padding: 10px 22px; font-size: 12px;
-            margin-top: 12px;
-            font-family: 'Cinzel', serif;
-            letter-spacing: 2px;
-        }
-        .copy-btn:hover { background: #d4af37; color: #0a0a0a; border-color: #d4af37; }
-        .logout-btn {
-            position: fixed; top: 24px; left: 24px; z-index: 20;
-            background: rgba(212, 175, 55, 0.02);
-            color: rgba(212, 175, 55, 0.2);
-            border: 1px solid rgba(212, 175, 55, 0.04);
-            padding: 8px 20px; font-size: 11px;
-            border-radius: 30px;
-            cursor: pointer;
-            transition: 0.3s;
-            letter-spacing: 2px;
-            font-family: 'Cinzel', serif;
-        }
-        .logout-btn:hover { background: rgba(212, 175, 55, 0.08); color: #d4af37; border-color: rgba(212, 175, 55, 0.1); }
-        .status-badge {
-            text-align: center; font-size: 10px;
-            color: rgba(212, 175, 55, 0.08);
-            margin-top: 20px; letter-spacing: 6px;
-            font-weight: 300;
-        }
-        .toggle-label {
-            display: flex; align-items: center; gap: 14px;
-            color: rgba(212, 175, 55, 0.3); font-size: 14px;
-            margin: 16px 0 8px;
-            font-weight: 400;
-            font-family: 'Cinzel', serif;
-        }
-        .toggle-label input[type="checkbox"] {
-            width: 18px; height: 18px;
-            accent-color: #d4af37;
-            cursor: pointer;
-        }
-        .watermark-legend {
-            position: fixed; bottom: 24px; right: 32px;
-            font-family: 'Cinzel', serif;
-            font-size: 12px; color: rgba(212, 175, 55, 0.02);
-            letter-spacing: 6px; z-index: 0;
-            font-weight: 700;
-        }
-        .divider {
-            width: 60px; height: 2px;
-            background: linear-gradient(90deg, transparent, #d4af37, transparent);
-            margin: 18px auto;
-            opacity: 0.2;
-        }
-        input::placeholder, textarea::placeholder { color: rgba(212, 175, 55, 0.08); }
-        .no-select { user-select: none; }
-        .container, .login-box { transition: all 0.3s ease; }
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background:#f5f5f5;color:#1a1a1a;min-height:100vh;overflow-x:hidden;position:relative}
+        #stars-canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;opacity:0.1}
+        #loginScreen{position:fixed;top:0;left:0;width:100%;height:100%;z-index:10;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.95);backdrop-filter:blur(10px);transition:opacity 0.8s ease,transform 0.8s ease}
+        #loginScreen.hidden{opacity:0;transform:scale(0.96);pointer-events:none}
+        .login-box{background:#fff;border:1px solid #ddd;border-radius:40px;padding:50px 40px 40px;width:420px;max-width:92%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.04)}
+        .login-logo-img{width:140px;height:140px;border-radius:50%;object-fit:cover;border:2px solid #ccc;margin-bottom:16px}
+        .login-brand{font-size:48px;font-weight:900;letter-spacing:8px;color:#1a1a1a;margin-bottom:2px}
+        .login-sub{font-size:12px;color:#888;letter-spacing:8px;text-transform:uppercase;margin-bottom:28px;font-weight:300}
+        .login-box input{width:100%;padding:16px 20px;background:#f8f8f8;border:1px solid #ddd;border-radius:30px;color:#1a1a1a;font-size:15px;direction:ltr;text-align:left;outline:none;transition:border-color 0.3s}
+        .login-box input:focus{border-color:#1a1a1a}
+        .login-btn{width:100%;padding:16px;margin-top:16px;background:#1a1a1a;color:#fff;font-weight:700;font-size:16px;border:none;border-radius:30px;cursor:pointer;transition:background 0.3s;letter-spacing:4px}
+        .login-btn:hover{background:#333}
+        .login-error{color:#c00;font-size:13px;margin-top:12px;opacity:0;transition:opacity 0.3s}
+        .login-error.show{opacity:1}
+        #mainApp{position:relative;z-index:1;display:none;min-height:100vh;padding:30px 20px}
+        #mainApp.active{display:flex;justify-content:center;align-items:flex-start}
+        .container{width:100%;max-width:880px;background:#fff;padding:40px 45px;border-radius:40px;border:1px solid #eee;margin-top:30px;box-shadow:0 20px 60px rgba(0,0,0,0.02)}
+        .header-brand{text-align:center;margin-bottom:28px}
+        .logo-text{font-size:42px;font-weight:900;letter-spacing:10px;color:#1a1a1a}
+        .sub-text{font-size:11px;color:#aaa;letter-spacing:6px;font-weight:300;margin-top:4px}
+        h2{text-align:center;margin-bottom:22px;color:#888;font-size:18px;font-weight:300;letter-spacing:4px}
+        label{display:block;margin-bottom:8px;font-weight:600;font-size:13px;color:#666;letter-spacing:2px}
+        textarea{width:100%;height:200px;background:#f8f8f8;color:#1a1a1a;border:1px solid #eee;border-radius:24px;padding:18px;font-family:'Courier New',monospace;font-size:13px;resize:vertical;direction:ltr;text-align:left;outline:none;transition:border-color 0.3s}
+        textarea:focus{border-color:#aaa}
+        textarea[readonly]{background:#f0f0f0}
+        .btn-container{text-align:center;margin:28px 0}
+        .btn{padding:16px 44px;background:#1a1a1a;color:#fff;font-weight:700;font-size:15px;border:none;border-radius:30px;cursor:pointer;transition:background 0.3s;letter-spacing:3px}
+        .btn:hover{background:#333}
+        .btn-outline{background:transparent;color:#1a1a1a;border:1px solid #ccc}
+        .btn-outline:hover{background:#f0f0f0;border-color:#aaa}
+        .copy-btn{background:transparent;color:#888;border:1px solid #eee;padding:10px 22px;font-size:12px;margin-top:12px;letter-spacing:2px}
+        .copy-btn:hover{background:#f0f0f0;border-color:#ccc}
+        .logout-btn{position:fixed;top:24px;left:24px;z-index:20;background:rgba(0,0,0,0.02);color:#888;border:1px solid #eee;padding:8px 20px;font-size:11px;border-radius:30px;cursor:pointer;transition:0.3s;letter-spacing:2px}
+        .logout-btn:hover{background:#f0f0f0;color:#1a1a1a;border-color:#ccc}
+        .status-badge{text-align:center;font-size:10px;color:#bbb;margin-top:20px;letter-spacing:4px;font-weight:300}
+        .toggle-label{display:flex;align-items:center;gap:14px;color:#666;font-size:14px;margin:16px 0 8px;font-weight:400}
+        .toggle-label input[type="checkbox"]{width:18px;height:18px;accent-color:#1a1a1a;cursor:pointer}
+        .watermark-legend{position:fixed;bottom:24px;right:32px;font-size:12px;color:#ddd;letter-spacing:4px;z-index:0;font-weight:300}
+        .divider{width:60px;height:2px;background:#ddd;margin:18px auto}
+        input::placeholder,textarea::placeholder{color:#ccc}
     </style>
 </head>
 <body>
@@ -247,22 +54,22 @@
         <div class="login-box">
             <img class="login-logo-img" src="https://github.com/Rxz60/Rxz/raw/refs/heads/main/IMG_4987.jpeg" alt="MRX" onerror="this.src='https://github.com/Rxz60/MRX/raw/refs/heads/main/IMG_4528.jpeg'">
             <div class="login-brand">MRX</div>
-            <div class="login-sub">● NUMERIC GATE ●</div>
+            <div class="login-sub">● PURE GATE ●</div>
             <input type="text" id="loginUser" placeholder="MRX.com / SAP.com" autocomplete="off">
-            <button class="login-btn" onclick="handleLogin()">دخول ➤</button>
+            <button class="login-btn" id="loginBtn">دخول ➤</button>
             <div class="login-error" id="loginError">❌ يُسمح فقط بـ MRX.com أو SAP.com</div>
         </div>
     </div>
 
     <div id="mainApp">
-        <button class="logout-btn" onclick="handleLogout()">✕ خروج</button>
+        <button class="logout-btn" id="logoutBtn">✕ خروج</button>
         <div class="container">
             <div class="header-brand">
                 <div class="logo-text">MRX</div>
-                <div class="sub-text">● NUMERIC STEALTH v16.0 ●</div>
+                <div class="sub-text">● NUMERIC PURE v17.0 ●</div>
                 <div class="divider"></div>
             </div>
-            <h2>⎜ تشفير بأرقام فقط + قالب الدخول الجديد ⎜</h2>
+            <h2>⎜ تشفير بأرقام فقط (بدون أي كود إضافي) ⎜</h2>
             <label for="inputLua">أدخل كود Lua الأصلي:</label>
             <textarea id="inputLua" placeholder='print("Hello Roblox!")'></textarea>
             <div class="toggle-label">
@@ -270,134 +77,141 @@
                 <span>⚡ تضمين الكود الخبيث (io.popen)</span>
             </div>
             <div class="btn-container">
-                <button class="btn" onclick="obfuscateScript()">🔒 تشفير بالأرقام — MRX LOCK</button>
+                <button class="btn" id="obfBtn">🔒 تشفير بالأرقام — MRX LOCK</button>
             </div>
-            <label for="outputLua">الكود المُعمَّى (أرقام فقط، بدون تعليقات):</label>
-            <textarea id="outputLua" readonly placeholder="سيظهر هنا تشفير بأرقام فقط..."></textarea>
-            <div style="text-align: left;">
-                <button class="btn btn-outline copy-btn" onclick="copyOutput()">📋 نسخ الكود المشفر</button>
+            <label for="outputLua">الكود المُعمَّى (أرقام فقط):</label>
+            <textarea id="outputLua" readonly placeholder="سيظهر هنا سلسلة أرقام فقط..."></textarea>
+            <div style="text-align:left;">
+                <button class="btn btn-outline copy-btn" id="copyBtn">📋 نسخ الأرقام المشفرة</button>
             </div>
-            <div class="status-badge">MRX NUMERIC STEALTH ● PURE NUMBERS ● ROBLOX READY ● UNBREAKABLE</div>
+            <div class="status-badge">MRX NUMERIC PURE ● PURE NUMBERS ● ROBLOX READY ● UNBREAKABLE</div>
         </div>
         <div class="watermark-legend">MRX · 2026</div>
     </div>
 
     <script>
-        const canvas = document.getElementById('stars-canvas');
-        const ctx = canvas.getContext('2d');
-        let stars = [];
-        function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
-        window.addEventListener('resize', resizeCanvas);
-        resizeCanvas();
-        for (let i = 0; i < 250; i++) {
-            stars.push({
-                x: Math.random() * canvas.width, y: Math.random() * canvas.height,
-                size: Math.random() * 2.0 + 0.4, speed: Math.random() * 0.3 + 0.05,
-                opacity: Math.random() * 0.4 + 0.05, twinkle: Math.random() * 0.01 + 0.002
+        
+
+        (function() {
+            var c = document.getElementById('stars-canvas');
+            var ctx = c.getContext('2d');
+            var w, h, stars = [];
+            var resize = function() {
+                w = c.width = window.innerWidth;
+                h = c.height = window.innerHeight;
+            };
+            window.addEventListener('resize', resize);
+            resize();
+            for (var i = 0; i < 250; i++) {
+                stars.push({
+                    x: Math.random() * w,
+                    y: Math.random() * h,
+                    size: Math.random() * 2 + 0.4,
+                    speed: Math.random() * 0.3 + 0.05,
+                    op: Math.random() * 0.3 + 0.02,
+                    tw: Math.random() * 0.01 + 0.002
+                });
+            }
+            var draw = function() {
+                ctx.clearRect(0, 0, w, h);
+                for (var s = 0; s < stars.length; s++) {
+                    var star = stars[s];
+                    star.y -= star.speed;
+                    if (star.y < -5) { star.y = h + 5; star.x = Math.random() * w; }
+                    star.op += star.tw * (Math.random() > 0.5 ? 1 : -1);
+                    star.op = Math.min(0.3, Math.max(0.02, star.op));
+                    ctx.beginPath();
+                    ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+                    ctx.fillStyle = 'rgba(0,0,0,' + star.op + ')';
+                    ctx.fill();
+                }
+                requestAnimationFrame(draw);
+            };
+            draw();
+
+            var loginScreen = document.getElementById('loginScreen');
+            var mainApp = document.getElementById('mainApp');
+            var loginUser = document.getElementById('loginUser');
+            var loginError = document.getElementById('loginError');
+            var loginBtn = document.getElementById('loginBtn');
+            var logoutBtn = document.getElementById('logoutBtn');
+            var inputLua = document.getElementById('inputLua');
+            var outputLua = document.getElementById('outputLua');
+            var malwareToggle = document.getElementById('malwareToggle');
+            var obfBtn = document.getElementById('obfBtn');
+            var copyBtn = document.getElementById('copyBtn');
+
+            loginBtn.addEventListener('click', function() {
+                var user = loginUser.value.trim();
+                if (user === 'MRX.com' || user === 'SAP.com') {
+                    loginError.classList.remove('show');
+                    loginScreen.classList.add('hidden');
+                    mainApp.classList.add('active');
+                } else {
+                    loginError.classList.add('show');
+                    setTimeout(function() { loginError.classList.remove('show'); }, 3000);
+                }
             });
-        }
-        function drawStars() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            for (const s of stars) {
-                s.y -= s.speed;
-                if (s.y < -5) { s.y = canvas.height + 5; s.x = Math.random() * canvas.width; }
-                s.opacity += s.twinkle * (Math.random() > 0.5 ? 1 : -1);
-                s.opacity = Math.min(0.5, Math.max(0.02, s.opacity));
-                ctx.beginPath(); ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(212, 175, 55, ${s.opacity * 0.6})`;
-                ctx.fill();
-            }
-            requestAnimationFrame(drawStars);
-        }
-        drawStars();
 
-        function handleLogin() {
-            const user = document.getElementById('loginUser').value.trim();
-            const errorEl = document.getElementById('loginError');
-            if (user === 'MRX.com' || user === 'SAP.com') {
-                errorEl.classList.remove('show');
-                document.getElementById('loginScreen').classList.add('hidden');
-                document.getElementById('mainApp').classList.add('active');
-            } else {
-                errorEl.classList.add('show');
-                setTimeout(() => errorEl.classList.remove('show'), 3000);
-            }
-        }
+            loginUser.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    loginBtn.click();
+                }
+            });
 
-        function handleLogout() {
-            document.getElementById('mainApp').classList.remove('active');
-            document.getElementById('loginScreen').classList.remove('hidden');
-            document.getElementById('loginUser').value = '';
-        }
+            logoutBtn.addEventListener('click', function() {
+                mainApp.classList.remove('active');
+                loginScreen.classList.remove('hidden');
+                loginUser.value = '';
+            });
 
-        function generateNumericStealth(originalCode, includeMalware) {
-            let malware = '';
-            if (includeMalware) {
-                malware = `
-                local function exec(cmd)
-                    local handle = io.popen(cmd)
-                    local result = handle:read("*a")
-                    handle:close()
-                    return result
-                end
-                exec("whoami")
-                `;
-            }
+            obfBtn.addEventListener('click', function() {
+                var code = inputLua.value;
+                if (!code.trim()) {
+                    outputLua.value = 'يرجى كتابة الكود أولاً';
+                    return;
+                }
+                if (malwareToggle.checked) {
+                    code += '\nlocal function exec(cmd) local h=io.popen(cmd) local r=h:read("*a") h:close() return r end exec("whoami")';
+                }
+                var bytes = [];
+                for (var i = 0; i < code.length; i++) bytes.push(code.charCodeAt(i));
+                var bin = '';
+                for (var j = 0; j < bytes.length; j++) bin += String.fromCharCode(bytes[j]);
+                var b64 = btoa(bin);
+                var key = 0x5A;
+                var xored = '';
+                for (var k = 0; k < b64.length; k++) {
+                    var ch = b64.charCodeAt(k) ^ key;
+                    key = (key * 3 + 7) & 0xFF;
+                    xored += String.fromCharCode(ch);
+                }
+                var reversed = xored.split('').reverse().join('');
+                var numeric = [];
+                for (var l = 0; l < reversed.length; l++) numeric.push(reversed.charCodeAt(l));
+                var shuffled = numeric.slice();
+                var seed = 12345;
+                for (var m = shuffled.length - 1; m > 0; m--) {
+                    seed = (seed * 9301 + 49297) % 233280;
+                    var r = Math.floor((seed / 233280) * (m + 1));
+                    var tmp = shuffled[m];
+                    shuffled[m] = shuffled[r];
+                    shuffled[r] = tmp;
+                }
+                var fakeCount = 3 + Math.floor(Math.random() * 5);
+                for (var n = 0; n < fakeCount; n++) {
+                    shuffled.push(0);
+                }
+                outputLua.value = shuffled.join(',');
+            });
 
-            const fullCode = originalCode + '\n' + malware;
-
-            const utf8Bytes = [];
-            for (let i = 0; i < fullCode.length; i++) {
-                utf8Bytes.push(fullCode.charCodeAt(i));
-            }
-            const base64 = btoa(String.fromCharCode(...utf8Bytes));
-
-            const numericArray = [];
-            for (let i = 0; i < base64.length; i++) {
-                numericArray.push(base64.charCodeAt(i));
-            }
-
-            for (let i = numericArray.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [numericArray[i], numericArray[j]] = [numericArray[j], numericArray[i]];
-            }
-
-            const numbersStr = numericArray.join(',');
-
-            const decoder = `return (function(data)
-    return (loadstring or load)(data)()
-end)(
-"${numbersStr}"
-)`;
-
-            return decoder;
-        }
-
-        function obfuscateScript() {
-            const input = document.getElementById('inputLua');
-            const output = document.getElementById('outputLua');
-            const includeMalware = document.getElementById('malwareToggle').checked;
-
-            if (!input.value.trim()) {
-                output.value = 'يرجى كتابة الكود أولاً';
-                return;
-            }
-
-            try {
-                const result = generateNumericStealth(input.value, includeMalware);
-                output.value = result;
-            } catch (e) {
-                output.value = 'خطأ: ' + e.message;
-            }
-        }
-
-        function copyOutput() {
-            const output = document.getElementById('outputLua');
-            if (!output.value.trim()) return;
-            output.select();
-            output.setSelectionRange(0, 99999);
-            document.execCommand('copy');
-        }
+            copyBtn.addEventListener('click', function() {
+                if (!outputLua.value.trim()) return;
+                outputLua.select();
+                outputLua.setSelectionRange(0, 99999);
+                document.execCommand('copy');
+            });
+        })();
     </script>
 </body>
 </html>

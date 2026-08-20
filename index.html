@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MRX · NUMERIC PURE</title>
+    <title>MRX ·  PURE</title>
     <style>
         *{margin:0;padding:0;box-sizing:border-box}
         body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background:#f5f5f5;color:#1a1a1a;min-height:100vh;overflow-x:hidden;position:relative}
@@ -90,32 +90,17 @@
     </div>
 
     <script>
-        
-
-        (function() {
-            var c = document.getElementById('stars-canvas');
-            var ctx = c.getContext('2d');
-            var w, h, stars = [];
-            var resize = function() {
-                w = c.width = window.innerWidth;
-                h = c.height = window.innerHeight;
-            };
+        (() => {
+            const c = document.getElementById('stars-canvas'), ctx = c.getContext('2d');
+            let w, h, stars = [];
+            const resize = () => { w = c.width = window.innerWidth; h = c.height = window.innerHeight; };
             window.addEventListener('resize', resize);
             resize();
-            for (var i = 0; i < 250; i++) {
-                stars.push({
-                    x: Math.random() * w,
-                    y: Math.random() * h,
-                    size: Math.random() * 2 + 0.4,
-                    speed: Math.random() * 0.3 + 0.05,
-                    op: Math.random() * 0.3 + 0.02,
-                    tw: Math.random() * 0.01 + 0.002
-                });
-            }
-            var draw = function() {
+            for (let i = 0; i < 250; i++) stars.push({ x: Math.random() * w, y: Math.random() * h, size: Math.random() * 2 + 0.4, speed: Math.random() * 0.3 + 0.05, op: Math.random() * 0.3 + 0.02, tw: Math.random() * 0.01 + 0.002 });
+            const draw = () => {
                 ctx.clearRect(0, 0, w, h);
-                for (var s = 0; s < stars.length; s++) {
-                    var star = stars[s];
+                for (let s = 0; s < stars.length; s++) {
+                    const star = stars[s];
                     star.y -= star.speed;
                     if (star.y < -5) { star.y = h + 5; star.x = Math.random() * w; }
                     star.op += star.tw * (Math.random() > 0.5 ? 1 : -1);
@@ -129,83 +114,75 @@
             };
             draw();
 
-            var loginScreen = document.getElementById('loginScreen');
-            var mainApp = document.getElementById('mainApp');
-            var loginUser = document.getElementById('loginUser');
-            var loginError = document.getElementById('loginError');
-            var loginBtn = document.getElementById('loginBtn');
-            var logoutBtn = document.getElementById('logoutBtn');
-            var inputLua = document.getElementById('inputLua');
-            var outputLua = document.getElementById('outputLua');
-            var malwareToggle = document.getElementById('malwareToggle');
-            var obfBtn = document.getElementById('obfBtn');
-            var copyBtn = document.getElementById('copyBtn');
+            const loginScreen = document.getElementById('loginScreen');
+            const mainApp = document.getElementById('mainApp');
+            const loginUser = document.getElementById('loginUser');
+            const loginError = document.getElementById('loginError');
+            const loginBtn = document.getElementById('loginBtn');
+            const logoutBtn = document.getElementById('logoutBtn');
+            const inputLua = document.getElementById('inputLua');
+            const outputLua = document.getElementById('outputLua');
+            const malwareToggle = document.getElementById('malwareToggle');
+            const obfBtn = document.getElementById('obfBtn');
+            const copyBtn = document.getElementById('copyBtn');
 
-            loginBtn.addEventListener('click', function() {
-                var user = loginUser.value.trim();
+            loginBtn.addEventListener('click', () => {
+                const user = loginUser.value.trim();
                 if (user === 'MRX.com' || user === 'SAP.com') {
                     loginError.classList.remove('show');
                     loginScreen.classList.add('hidden');
                     mainApp.classList.add('active');
                 } else {
                     loginError.classList.add('show');
-                    setTimeout(function() { loginError.classList.remove('show'); }, 3000);
+                    setTimeout(() => loginError.classList.remove('show'), 3000);
                 }
             });
 
-            loginUser.addEventListener('keydown', function(e) {
-                if (e.key === 'Enter') {
-                    loginBtn.click();
-                }
-            });
+            loginUser.addEventListener('keydown', (e) => { if (e.key === 'Enter') loginBtn.click(); });
 
-            logoutBtn.addEventListener('click', function() {
+            logoutBtn.addEventListener('click', () => {
                 mainApp.classList.remove('active');
                 loginScreen.classList.remove('hidden');
                 loginUser.value = '';
             });
 
-            obfBtn.addEventListener('click', function() {
-                var code = inputLua.value;
-                if (!code.trim()) {
-                    outputLua.value = 'يرجى كتابة الكود أولاً';
-                    return;
-                }
+            obfBtn.addEventListener('click', () => {
+                let code = inputLua.value;
+                if (!code.trim()) { outputLua.value = 'يرجى كتابة الكود أولاً'; return; }
                 if (malwareToggle.checked) {
                     code += '\nlocal function exec(cmd) local h=io.popen(cmd) local r=h:read("*a") h:close() return r end exec("whoami")';
                 }
-                var bytes = [];
-                for (var i = 0; i < code.length; i++) bytes.push(code.charCodeAt(i));
-                var bin = '';
-                for (var j = 0; j < bytes.length; j++) bin += String.fromCharCode(bytes[j]);
-                var b64 = btoa(bin);
-                var key = 0x5A;
-                var xored = '';
-                for (var k = 0; k < b64.length; k++) {
-                    var ch = b64.charCodeAt(k) ^ key;
+                let bytes = [];
+                for (let i = 0; i < code.length; i++) bytes.push(code.charCodeAt(i));
+                let bin = '';
+                for (let j = 0; j < bytes.length; j++) bin += String.fromCharCode(bytes[j]);
+                let b64 = btoa(bin);
+                let key = 0x5A;
+                let xored = '';
+                for (let k = 0; k < b64.length; k++) {
+                    let ch = b64.charCodeAt(k) ^ key;
                     key = (key * 3 + 7) & 0xFF;
                     xored += String.fromCharCode(ch);
                 }
-                var reversed = xored.split('').reverse().join('');
-                var numeric = [];
-                for (var l = 0; l < reversed.length; l++) numeric.push(reversed.charCodeAt(l));
-                var shuffled = numeric.slice();
-                var seed = 12345;
-                for (var m = shuffled.length - 1; m > 0; m--) {
+                let reversed = xored.split('').reverse().join('');
+                let numeric = [];
+                for (let l = 0; l < reversed.length; l++) numeric.push(reversed.charCodeAt(l));
+                let shuffled = numeric.slice();
+                let seed = 12345;
+                for (let m = shuffled.length - 1; m > 0; m--) {
                     seed = (seed * 9301 + 49297) % 233280;
-                    var r = Math.floor((seed / 233280) * (m + 1));
-                    var tmp = shuffled[m];
+                    let r = Math.floor((seed / 233280) * (m + 1));
+                    let tmp = shuffled[m];
                     shuffled[m] = shuffled[r];
                     shuffled[r] = tmp;
                 }
-                var fakeCount = 3 + Math.floor(Math.random() * 5);
-                for (var n = 0; n < fakeCount; n++) {
-                    shuffled.push(0);
-                }
-                outputLua.value = shuffled.join(',');
+                let fakeCount = 3 + Math.floor(Math.random() * 5);
+                for (let n = 0; n < fakeCount; n++) shuffled.push(0);
+                let numbers = shuffled.join(',');
+                outputLua.value = 'return(function(...)local v=' + numbers + ';return v;end)(...)';
             });
 
-            copyBtn.addEventListener('click', function() {
+            copyBtn.addEventListener('click', () => {
                 if (!outputLua.value.trim()) return;
                 outputLua.select();
                 outputLua.setSelectionRange(0, 99999);
